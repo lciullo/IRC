@@ -1,3 +1,4 @@
 .VSCode/
 *.dep
 *.o
+ircserv
