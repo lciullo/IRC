@@ -4,6 +4,7 @@
 //======== LIBRAIRIES ==========//
 
 #include <iostream>
+#include <string>
 
 //======== DEFINE =============//
 
