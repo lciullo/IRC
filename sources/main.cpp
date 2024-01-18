@@ -16,6 +16,9 @@ int main(int ac, char **av)
 	socklen_t clilen;
 	char buffer[256];
 	struct sockaddr_in serv_addr, cli_addr;
+	// (void) n;
+	// (void) newsockfd;
+	// (void) cli_addr;
 	if (ac < 2)
 	{
 		std::cout << "[ERROR] Not enough arguments";
@@ -57,7 +60,7 @@ int main(int ac, char **av)
 				new_socket_fd.events = POLLIN;
 				lst_fd.push_back(new_socket_fd);
 			}
-			for (int i=0; i < (int)lst_fd.size(); i++) 
+			for (int i=1; i < (int)lst_fd.size(); i++) 
 			{
 				if (lst_fd[i].revents & POLLIN) {
 					bzero(buffer,256);
@@ -65,7 +68,17 @@ int main(int ac, char **av)
 					std::string str(buffer);
 					if (str.find("QUIT") != std::string::npos)
 						lst_fd.erase(lst_fd.begin()+i);
-					std::cout << "[LOG] : " << buffer << std::endl;
+					if (str.find("JOIN") != std::string::npos)
+					{
+						std::string message = ":ajakubcz!ajakubcz@localhost JOIN coucou\n";
+						send(lst_fd[i].fd, message.c_str(), message.size(), 0);
+
+					}
+					std::cout << "[LOG] " << i <<  " : " << buffer << std::endl;
+					// n = write(lst_fd[i].fd, ":Coucou\n", strlen(":Coucou\n") + 1);
+					// std::string message = "test";
+    				if (n < 0) 
+						std::cout << "ERROR writing to socket" << std::endl;
 				}
 			}
 		}
