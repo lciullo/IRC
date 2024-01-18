@@ -22,9 +22,6 @@ using	std::endl;
 
 //======== INCLUDES ==========//
 
-#include "Lisa.hpp"
-#include "Aymeric.hpp"
-#include "Clemence.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
