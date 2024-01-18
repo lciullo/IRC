@@ -34,9 +34,6 @@ SRCS			=	${DIR_SRCS}main.cpp \
 				
 
 INC				=	${DIR_INC}IRC.hpp \
-					${DIR_INC}Lisa.hpp \
-					${DIR_INC}Clemence.hpp \
-					${DIR_INC}Aymeric.hpp \
 					${DIR_INC}Server.hpp \
 					${DIR_INC}User.hpp \
 					${DIR_INC}Channel.cpp 
