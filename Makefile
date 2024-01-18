@@ -26,14 +26,21 @@ DIR_INC			=	includes/
 
 # --- List ---
 
-SRCS			=	${DIR_SRCS}main.cpp 
+SRCS			=	${DIR_SRCS}main.cpp \
+					${DIR_SRCS}Server.cpp \
+					${DIR_SRCS}User.cpp \
+					${DIR_SRCS}Channel.cpp 
 					
 				
 
 INC				=	${DIR_INC}IRC.hpp \
 					${DIR_INC}Lisa.hpp \
 					${DIR_INC}Clemence.hpp \
-					${DIR_INC}Aymeric.hpp 	
+					${DIR_INC}Aymeric.hpp \
+					${DIR_INC}Server.hpp \
+					${DIR_INC}User.hpp \
+					${DIR_INC}Channel.cpp 
+
 				
 # --- Paths ---
 
