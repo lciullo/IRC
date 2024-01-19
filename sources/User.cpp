@@ -1,8 +1,26 @@
 
 #include "User.hpp"
-#include <iostream>
 
-User::User()
+
+User::User(void){
+
+}
+
+User::User(const std::string& nickname, const std::string& username): _nickname(nickname), _username(username) {
+	return ;
+}
+
+User::~User(void) {
+	return;
+}
+
+const std::string& User::getNickname(void) const 
 {
-    std::cout << "coucou" << std::endl;
+		return (_nickname);
+}
+
+
+const std::string& User::getUsername(void) const 
+{
+	return (_username);
 }

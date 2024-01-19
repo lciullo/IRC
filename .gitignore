@@ -1,4 +1,5 @@
 .VSCode/
+.vscode/
 *.dep
 *.o
 .nfs*
