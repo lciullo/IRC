@@ -5,6 +5,7 @@
 #include "User.hpp"
 // #include "Channel.hpp"
 #include <map>
+class User;
 
 class Server
 {
