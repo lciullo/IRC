@@ -71,6 +71,18 @@ void Server::launch_cmd(std::string msg, int index)
 	// }
 }
 
+/*void printPollfdVector(const std::vector<struct pollfd>& pollfdVector) {
+	std::cout << "Vector content (fd, events, revents):" << std::endl;
+	
+	for (std::vector<struct pollfd>::const_iterator it = pollfdVector.begin(); it != pollfdVector.end(); ++it) {
+		std::cout << "(" << it->fd << ", " << it->events << ", " << it->revents << ") ";
+	}
+	
+	std::cout << std::endl;
+}*/
+
+
+
 void Server::create_user()
 {
 	struct sockaddr_in cli_addr;
@@ -87,7 +99,36 @@ void Server::create_user()
 
 void Server::add_user(std::string msg)
 {
-	std::cout << "New User : " << msg << std::endl;
-	
-	//NEED TO PARSE msg
+	std::istringstream iss(msg);
+	std::string 	line;
+	std::string 	nickname;
+	std::string 	username;
+	size_t			end;
+
+	end = 0;
+	while (std::getline(iss, line)) 
+	{
+		size_t pos = line.find("NICK");
+		if (pos != std::string::npos) {
+			nickname = line.substr(5);
+		}
+		size_t index = line.find("USER");
+		if (index != std::string::npos) 
+		{
+			for (size_t i = 5; i < line.size(); i++){
+				if (line[i] == ' ')
+				{
+					end = i;
+					break ;
+				}
+			}
+			username = line.substr(5,end - 5);
+		}
+	}
+	std::cout << GREEN << "Nickname " << nickname << RESET << std::endl;
+	std::cout << GREEN << "Username " << username << RESET << std::endl;
+	//verif if username already exist before add in list
+	User user(nickname, username);
+	this->_lst_usr.push_back(user);
+	return ;
 }
