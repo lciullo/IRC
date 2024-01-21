@@ -29,7 +29,11 @@ DIR_INC			=	includes/
 SRCS			=	${DIR_SRCS}main.cpp \
 					${DIR_SRCS}Server.cpp \
 					${DIR_SRCS}User.cpp \
-					${DIR_SRCS}Channel.cpp 
+					${DIR_SRCS}Channel.cpp \
+					${DIR_SRCS}commands/invite.cpp \
+					${DIR_SRCS}commands/kick.cpp \
+					${DIR_SRCS}commands/mode.cpp \
+					${DIR_SRCS}commands/topic.cpp
 					
 				
 

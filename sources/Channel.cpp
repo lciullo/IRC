@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/19 17:26:05 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/21 21:38:57 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,3 +143,15 @@ void	test()
 
 //Channel name : no space, no coma, no control G/BELL
 //All members of the chanel can invite users
+
+// Mettre les commande dans la classe server
+// Plus simple pour renvoyer les messages plus simples pour renvoyer les messages 
+// Sinon certains messages vont etre renvoye du cote puis apres il faudra que j'envoie les autres messages
+
+// MODE
+	// <target> [<modestring> [<mode arguments>...]]
+// -i
+// -t 
+// -k 
+// -o
+// -l 

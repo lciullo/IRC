@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:44:19 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/19 17:21:00 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/21 21:40:31 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <iostream>
 # include <vector>
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
 # include "User.hpp"
 
 class Channel
@@ -40,11 +40,6 @@ class Channel
 		void			deleteMode(std::string mode, User &operators);
 		bool			findUserInChannel(User &user) const;
 		bool			findUserInOperators(User &user) const;
-
-		//KICK
-		//INVITE
-		//TOPIC
-		//MODE
 };
 
 void	test();
