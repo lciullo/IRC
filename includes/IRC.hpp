@@ -5,6 +5,8 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
+#include <cctype>
 
 //======== DEFINE =============//
 

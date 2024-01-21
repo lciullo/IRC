@@ -5,6 +5,7 @@
 #include "User.hpp"
 // #include "Channel.hpp"
 #include <map>
+class User;
 
 class Server
 {
@@ -15,7 +16,7 @@ class Server
 		int _port;
 		std::string _password;
 		std::vector<struct pollfd> _lst_fd;
-		std::map<std::string, User> _lst_usr;
+		std::vector<User> _lst_usr;
 		// std::map<std::string, Channel>   _lst_channel;
 
 	public : 
