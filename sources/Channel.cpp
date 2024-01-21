@@ -21,6 +21,8 @@ std::string	Channel::getName() const {return (this->_name);}
 
 std::string	Channel::getTopic() const {return (this->_topic);}
 
+std::vector<User> Channel::getLstUsers() const {return (this->_lstUsers);}
+
 void	Channel::setName(std::string name) {this->_name = name;}
 
 void	Channel::setTopic(std::string topic) {this->_topic = topic;}
@@ -30,6 +32,13 @@ void	Channel::addUser(User &new_user, User &operators)
 	if (findUserInChannel(operators) == false) {
 		return ;
 	}
+	if (findUserInChannel(new_user) == false) {
+		this->_lstUsers.push_back(new_user);
+	}
+}
+
+void	Channel::addUser(User &new_user)
+{
 	if (findUserInChannel(new_user) == false) {
 		this->_lstUsers.push_back(new_user);
 	}
@@ -128,18 +137,18 @@ void	Channel::deleteMode(std::string mode, User &operators)
 	//if it is add the mode
 }
 
-void	test()
-{
-	User	Jack("J", "Jack");
-	User	Luc("L", "Luc");
+//void	test()
+//{
+//	User	Jack("J", "Jack");
+//	User	Luc("L", "Luc");
 
-	Channel	First("First", Luc);
-	First.addUser(Jack, Luc);
-	// First.deleteUser(Jack);
-	First.addMode("i", Jack);
-	First.deleteMode("a", Luc);
-	First.deleteMode("i", Luc);
-}
+//	Channel	First("First", Luc);
+//	First.addUser(Jack, Luc);
+//	// First.deleteUser(Jack);
+//	First.addMode("i", Jack);
+//	First.deleteMode("a", Luc);
+//	First.deleteMode("i", Luc);
+//}
 
 //Channel name : no space, no coma, no control G/BELL
 //All members of the chanel can invite users

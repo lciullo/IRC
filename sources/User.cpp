@@ -6,7 +6,7 @@ User::User(void){
 
 }
 
-User::User(const std::string& nickname, const std::string& username): _nickname(nickname), _username(username) {
+User::User(const std::string& nickname, const std::string& username, int fd): _nickname(nickname), _username(username), _fd(fd) {
 	return ;
 }
 
@@ -23,4 +23,9 @@ const std::string& User::getNickname(void) const
 const std::string& User::getUsername(void) const 
 {
 	return (_username);
+}
+
+const int& User::getFd(void) const
+{
+	return (_fd);
 }

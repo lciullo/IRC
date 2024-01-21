@@ -30,16 +30,18 @@ class Channel
 	public :
 		Channel(std::string name, User &operators);
 		
-		std::string		getName() const;
-		std::string		getTopic() const;
-		void			setName(std::string name);
-		void			setTopic(std::string topic);
-		void			addUser(User &new_user, User &operators);
-		void			deleteUser(User &user);
-		void			addMode(std::string new_mode, User &operators); // or a char?
-		void			deleteMode(std::string mode, User &operators);
-		bool			findUserInChannel(User &user) const;
-		bool			findUserInOperators(User &user) const;
+		std::string			getName() const;
+		std::string			getTopic() const;
+		std::vector<User>	getLstUsers() const;
+		void				setName(std::string name);
+		void				setTopic(std::string topic);
+		void				addUser(User &new_user, User &operators);
+		void				addUser(User &new_user);
+		void				deleteUser(User &user);
+		void				addMode(std::string new_mode, User &operators); // or a char?
+		void				deleteMode(std::string mode, User &operators);
+		bool				findUserInChannel(User &user) const;
+		bool				findUserInOperators(User &user) const;
 
 		//KICK
 		//INVITE
