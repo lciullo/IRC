@@ -110,26 +110,25 @@ void Server::add_user(std::string msg)
 	{
 		size_t pos = line.find("NICK");
 		if (pos != std::string::npos) {
-			nickname = line.substr(4);
+			nickname = line.substr(5);
 		}
 		size_t index = line.find("USER");
 		if (index != std::string::npos) 
 		{
-			for (size_t i = 4; i < line.size(); i++){
+			for (size_t i = 5; i < line.size(); i++){
 				if (line[i] == ' ')
 				{
-					i = end;
-					
-					std::cout << GREEN << "line " << line[i] << RESET << std::endl;
-					std::cout << GREEN << "i" << i << "end" << end << RESET << std::endl;
+					end = i;
 					break ;
 				}
 			}
-			username = line.substr(4,end);
+			username = line.substr(5,end - 5);
 		}
-		
 	}
 	std::cout << GREEN << "Nickname " << nickname << RESET << std::endl;
 	std::cout << GREEN << "Username " << username << RESET << std::endl;
+	//verif if username already exist before add in list
+	User user(nickname, username);
+	this->_lst_usr.push_back(user);
 	return ;
 }
