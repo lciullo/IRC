@@ -18,6 +18,7 @@ class Server
 		std::vector<struct pollfd> _lst_fd;
 		std::vector<User> _lst_usr;
 		std::map<std::string,Channel> _lst_channel;
+		void invite(std::string msg, int index);
 
 	public : 
 		Server(int port, std::string _password);
@@ -29,7 +30,6 @@ class Server
 		//COMMAND
 		void join(std::string msg, int index);
 		void privmsg(std::string msg, int index);
-
 };
 
 #endif

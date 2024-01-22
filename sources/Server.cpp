@@ -68,6 +68,8 @@ void Server::launch_cmd(std::string msg, int index)
 		this->join(msg, index);
 	if (msg.find("PRIVMSG") != std::string::npos)
 		this->privmsg(msg, index);
+	if (msg.find("INVITE") != std::string::npos)
+		this->invite(msg, index);
 }
 
 /*void printPollfdVector(const std::vector<struct pollfd>& pollfdVector) {
