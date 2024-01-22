@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:44:19 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/22 14:51:20 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/22 14:58:44 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ class Channel
 		void			deleteMode(std::string mode);
 		
 		//Find
-		bool			findUserInChannel(User &user) const;
-		// bool			findUserInOperators(User &user) const;
+		bool			findUser(User &user) const;
+		bool			findOperators(User &user) const;
 };
 
 #endif
