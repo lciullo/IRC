@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/22 14:02:33 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/22 14:56:38 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,28 +17,20 @@ Channel::Channel(std::string name, User &operators) : _name(name) {
 	this->_vecUsers.push_back(operators);
 }
 
+/*- - - - - - - - - - - - - - - - - GETTERS - - - - - - - - - - - -- - -  - - */
 std::string	Channel::getName() const {return (this->_name);}
 
 std::string	Channel::getTopic() const {return (this->_topic);}
 
+std::vector<User> Channel::getLstUsers() const {return (this->_vecUsers);}
+
+
+/*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void	Channel::setName(std::string name) {this->_name = name;}
 
 void	Channel::setTopic(std::string topic) {this->_topic = topic;}
 
-std::vector<User> Channel::getLstUsers() const {return (this->_vecUsers);}
-
-void	Channel::deleteUser(User &user) {
-	std::map<User, int>::iterator	it;
-
-	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
-		if (user.getNickname() == it->first.getNickname())
-		{
-			std::cout << it->first.getNickname() << " has been kicked of " << getName() <<std::endl;
-			this->_lstUsers.erase(it);
-			return ;
-		}
-	}
-}
+/*- - - - - - - - - - - - - - - - - - ADD - - - - - - - - - - - - -- - -  - -*/
 
 void	Channel::addUser(User &new_user)
 {
@@ -68,6 +60,20 @@ void	Channel::addMode(std::string new_mode)
 	//if it is add the mode
 }
 
+/*- - - - - - - - - - - - - - - - - -DELETE - - - - - - - - - - -- - -  - - - */
+void	Channel::deleteUser(User &user) {
+	std::map<User, int>::iterator	it;
+
+	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
+		if (user.getNickname() == it->first.getNickname())
+		{
+			std::cout << it->first.getNickname() << " has been kicked of " << getName() <<std::endl;
+			this->_lstUsers.erase(it);
+			return ;
+		}
+	}
+}
+
 void	Channel::deleteMode(std::string mode)
 {
 	if (mode.size() != 1) {
@@ -94,6 +100,7 @@ void	Channel::deleteMode(std::string mode)
 	//if it is add the mode
 }
 
+/*- - - - - - - - - - - - - - - - -  FIND - - - - - - - - - - - - -- - -  - - */
 bool	Channel::findUserInChannel(User &user) const {
 	
 	std::map<User, int>::const_iterator	it;

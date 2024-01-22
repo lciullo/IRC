@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:44:19 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/22 14:02:50 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/22 14:51:20 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,27 +37,27 @@ class Channel
 	public :
 		Channel(std::string name, User &operators);
 		
+		//Getters
 		std::string		getName() const;
 		std::string		getTopic() const;
 		std::vector<User> getLstUsers() const;
 		
+		//Setters
 		void			setName(std::string name);
 		void			setTopic(std::string topic);
 		
+		//Add
 		void			addUser(User &new_user);
-		void			deleteUser(User &user);
-		
 		void			addMode(std::string new_mode); // or a char?
+		void			addTopic(std::string new_topic);
+		
+		//Delete
+		void			deleteUser(User &user);
 		void			deleteMode(std::string mode);
+		
+		//Find
 		bool			findUserInChannel(User &user) const;
 		// bool			findUserInOperators(User &user) const;
-
-		//KICK
-		//INVITE
-		//TOPIC
-		//MODE
 };
-
-void	test();
 
 #endif
