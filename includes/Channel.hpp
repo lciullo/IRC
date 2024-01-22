@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:44:19 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/21 21:40:31 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/22 09:04:58 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,23 @@ class Channel
 		
 		std::string		getName() const;
 		std::string		getTopic() const;
+		std::vector<User>	getLstUsers() const;
 		void			setName(std::string name);
+		
 		void			setTopic(std::string topic);
 		void			addUser(User &new_user, User &operators);
 		void			deleteUser(User &user);
+		void			addUser(User &new_user);
+		
 		void			addMode(std::string new_mode, User &operators); // or a char?
 		void			deleteMode(std::string mode, User &operators);
 		bool			findUserInChannel(User &user) const;
 		bool			findUserInOperators(User &user) const;
+
+		//KICK
+		//INVITE
+		//TOPIC
+		//MODE
 };
 
 void	test();

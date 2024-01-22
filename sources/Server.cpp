@@ -64,12 +64,21 @@ void Server::launch_cmd(std::string msg, int index)
 		this->add_user(msg);
 	if (msg.find("QUIT") != std::string::npos)
 		this->_lst_fd.erase(this->_lst_fd.begin() + index);
-	// if (str.find("JOIN") != std::string::npos)
-	// {
-	// 	std::string message = ":ajakubcz!ajakubcz@localhost JOIN coucou\n";
-	// 	send(this->_lst_fd[i].fd, message.c_str(), message.size(), 0);
-	// }
+	if (msg.find("JOIN") != std::string::npos)
+		this->join(msg, index);
+	if (msg.find("PRIVMSG") != std::string::npos)
+		this->privmsg(msg, index);
 }
+
+/*void printPollfdVector(const std::vector<struct pollfd>& pollfdVector) {
+	std::cout << "Vector content (fd, events, revents):" << std::endl;
+	
+	for (std::vector<struct pollfd>::const_iterator it = pollfdVector.begin(); it != pollfdVector.end(); ++it) {
+		std::cout << "(" << it->fd << ", " << it->events << ", " << it->revents << ") ";
+	}
+	
+	std::cout << std::endl;
+}*/
 
 void Server::create_user()
 {
@@ -79,6 +88,7 @@ void Server::create_user()
 	std::cout << "Create User : " << std::endl;
 	clilen = sizeof(struct sockaddr_in);
 	int newsockfd = accept(this->_socketfd, (struct sockaddr *) &cli_addr, &clilen);
+	std::cout << "fd : " << newsockfd << std::endl;
 	struct pollfd new_socket_fd;
 	new_socket_fd.fd = newsockfd;
 	new_socket_fd.events = POLLIN;
@@ -87,7 +97,38 @@ void Server::create_user()
 
 void Server::add_user(std::string msg)
 {
-	std::cout << "New User : " << msg << std::endl;
-	
-	//NEED TO PARSE msg
+	std::istringstream iss(msg);
+	std::string 	line;
+	std::string 	nickname;
+	std::string 	username;
+	size_t			end;
+
+	end = 0;
+	while (std::getline(iss, line)) 
+	{
+		size_t pos = line.find("NICK");
+		if (pos != std::string::npos) {
+			nickname = line.substr(5);
+			nickname = nickname.substr(0, nickname.size() - 1); //remove last \r
+		}
+		size_t index = line.find("USER");
+		if (index != std::string::npos) 
+		{
+			for (size_t i = 5; i < line.size(); i++){
+				if (line[i] == ' ')
+				{
+					end = i;
+					break ;
+				}
+			}
+			username = line.substr(5,end - 5);
+		}
+	}
+	std::cout << GREEN << "Nickname " << nickname << RESET << std::endl;
+	std::cout << GREEN << "Username " << username << RESET << std::endl;
+	std::cout << GREEN << "Fd " << this->_lst_fd[this->_lst_fd.size() - 1].fd << RESET << std::endl;
+	//verif if username already exist before add in list
+	User user(nickname, username, this->_lst_fd[this->_lst_fd.size() - 1].fd);
+	this->_lst_usr.push_back(user);
+	return ;
 }

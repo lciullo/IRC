@@ -3,8 +3,9 @@
 
 #include "IRC.hpp"
 #include "User.hpp"
-// #include "Channel.hpp"
+#include "Channel.hpp"
 #include <map>
+class User;
 
 class Server
 {
@@ -15,8 +16,8 @@ class Server
 		int _port;
 		std::string _password;
 		std::vector<struct pollfd> _lst_fd;
-		std::map<std::string, User> _lst_usr;
-		// std::map<std::string, Channel>   _lst_channel;
+		std::vector<User> _lst_usr;
+		std::map<std::string,Channel> _lst_channel;
 
 	public : 
 		Server(int port, std::string _password);
@@ -24,6 +25,11 @@ class Server
 		void add_user(std::string msg);
 		void create_user();
 		void launch_cmd(std::string msg, int index);
+
+		//COMMAND
+		void join(std::string msg, int index);
+		void privmsg(std::string msg, int index);
+
 };
 
 #endif
