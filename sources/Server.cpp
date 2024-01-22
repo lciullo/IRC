@@ -126,11 +126,20 @@ void Server::add_user(std::string msg)
 			username = line.substr(5,end - 5);
 		}
 	}
-	std::cout << GREEN << "Nickname " << nickname << RESET << std::endl;
-	std::cout << GREEN << "Username " << username << RESET << std::endl;
-	std::cout << GREEN << "Fd " << this->_lst_fd[this->_lst_fd.size() - 1].fd << RESET << std::endl;
-	//verif if username already exist before add in list
-	User user(nickname, username, this->_lst_fd[this->_lst_fd.size() - 1].fd);
-	this->_lst_usr.push_back(user);
+	User user(nickname, username, this->_lst_fd[this->_lst_fd.size() - 1].fd, false);
+	for (std::vector<User>::const_iterator it = _lst_usr.begin(); it != _lst_usr.end(); ++it) 
+	{
+		if (it->getNickname() == nickname && it->getIsCreate() == true)
+		{
+			std::cout << RED << "[ERROR]" << nickname << " already exist" << RESET << std::endl;
+			std::cout << GREEN << "Enter another Nickname" << RESET << std::endl;
+			return ;
+		}
+		std::cout << BLUE << *it << RESET;
+		it->getNickname();
+	}
+   	this->_lst_usr.push_back(user);
+	this->_lst_usr.back().setIsCreate(true);
+	std::cout << MAGENTA << this->_lst_usr.back() << RESET;
 	return ;
 }
