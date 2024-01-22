@@ -18,6 +18,10 @@ class User
 				const std::string& getNickname(void) const;
 				const std::string& getUsername(void) const;
 				const int& getFd(void) const; 
+
+				bool operator<(const User& other) const {
+        			return this->getNickname() < other.getNickname();
+   				 }
 };
 
 #endif

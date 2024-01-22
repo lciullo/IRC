@@ -6,15 +6,15 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/22 13:14:35 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/22 14:02:33 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
 Channel::Channel(std::string name, User &operators) : _name(name) {
-	// this->_lstOperators.push_back(operators);
-	this->_lstUsers.push_back(operators);
+	this->_lstUsers[operators] = OPERATOR;
+	this->_vecUsers.push_back(operators);
 }
 
 std::string	Channel::getName() const {return (this->_name);}
@@ -25,25 +25,15 @@ void	Channel::setName(std::string name) {this->_name = name;}
 
 void	Channel::setTopic(std::string topic) {this->_topic = topic;}
 
-void	Channel::addUser(User &new_user, User &operators)
-{
-	if (findUserInChannel(operators) == false) {
-		return ;
-	}
-	if (findUserInChannel(new_user) == false) {
-		this->_lstUsers.push_back(new_user);
-	}
-}
-
-std::vector<User> Channel::getLstUsers() const {return (this->_lstUsers);}
+std::vector<User> Channel::getLstUsers() const {return (this->_vecUsers);}
 
 void	Channel::deleteUser(User &user) {
-	std::vector<User>::iterator	it;
+	std::map<User, int>::iterator	it;
 
 	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
-		if (user.getNickname() == it->getNickname())
+		if (user.getNickname() == it->first.getNickname())
 		{
-			std::cout << it->getNickname() << " has been kicked of " << getName() <<std::endl;
+			std::cout << it->first.getNickname() << " has been kicked of " << getName() <<std::endl;
 			this->_lstUsers.erase(it);
 			return ;
 		}
@@ -53,41 +43,13 @@ void	Channel::deleteUser(User &user) {
 void	Channel::addUser(User &new_user)
 {
 	if (findUserInChannel(new_user) == false) {
-		this->_lstUsers.push_back(new_user);
+		this->_vecUsers.push_back(new_user);
+		this->_lstUsers[new_user] = VOICE;
 	}
 }
 
-bool	Channel::findUserInChannel(User &user) const {
-	
-	std::vector<User>::const_iterator	it;
-	
-	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
-		if (user.getNickname() == it->getNickname())
-			return (true);
-	}
-	return (false);
-}
-
-// bool	Channel::findUserInOperators(User &user) const {
-	
-// 	std::vector<User>::const_iterator	it;
-	
-// 	for (it = this->_lstOperators.begin(); it != this->_lstOperators.end(); it++) {
-// 		if (user.getNickname() == it->getNickname())
-// 			return (true);
-// 	}
-// 	return (false);
-// }
-
-void	Channel::addMode(std::string new_mode, User &operators)
+void	Channel::addMode(std::string new_mode)
 {
-	// if (findUserInOperators(operators) == false)
-	// {
-	// 	std::cout << "[ERROR] " << operators.getNickname() << " is not an operator\n";
-	// 	return ;
-	// }
-	(void)operators;
-	
 	if (new_mode.size() != 1) {
 		std::cout << "[ERROR] Non existing mode\n";
 		return ;
@@ -106,15 +68,8 @@ void	Channel::addMode(std::string new_mode, User &operators)
 	//if it is add the mode
 }
 
-void	Channel::deleteMode(std::string mode, User &operators)
+void	Channel::deleteMode(std::string mode)
 {
-	// if (findUserInOperators(operators) == false)
-	// {
-	// 	std::cout << "[ERROR] " << operators.getNickname() << " is not an operator\n";
-	// 	return ;
-	// }
-	(void)operators;
-	
 	if (mode.size() != 1) {
 		std::cout << "[ERROR] Non existing mode\n";
 		return ;
@@ -139,17 +94,26 @@ void	Channel::deleteMode(std::string mode, User &operators)
 	//if it is add the mode
 }
 
-// void	test()
-// {
-// 	User	Jack("J", "Jack");
-// 	User	Luc("L", "Luc");
+bool	Channel::findUserInChannel(User &user) const {
+	
+	std::map<User, int>::const_iterator	it;
+	
+	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
+		if (user.getNickname() == it->first.getNickname())
+			return (true);
+	}
+	return (false);
+}
 
-// 	Channel	First("First", Luc);
-// 	First.addUser(Jack, Luc);
-// 	// First.deleteUser(Jack);
-// 	First.addMode("i", Jack);
-// 	First.deleteMode("a", Luc);
-// 	First.deleteMode("i", Luc);
+// bool	Channel::findUserInOperators(User &user) const {
+	
+// 	std::vector<User>::const_iterator	it;
+	
+// 	for (it = this->_lstOperators.begin(); it != this->_lstOperators.end(); it++) {
+// 		if (user.getNickname() == it->getNickname())
+// 			return (true);
+// 	}
+// 	return (false);
 // }
 
 //Channel name : no space, no coma, no control G/BELL
