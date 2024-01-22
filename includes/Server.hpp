@@ -5,6 +5,12 @@
 #include "User.hpp"
 #include "Channel.hpp"
 #include <map>
+
+
+//======== DEFINE FOR CMD ==========//
+# define HEADER_CMD(User) \
+":" + User.getNickname() + "!" + User.getUsername() + " "
+
 class User;
 
 class Server

@@ -17,6 +17,16 @@ Channel::Channel(std::string name, User &operators) : _name(name) {
 	this->_vecUsers.push_back(operators);
 }
 
+Channel::Channel(const Channel &channel)
+{
+	this->_name = channel._name;
+	this->_topic = channel._topic;
+	this->_mode = channel._mode;
+	this->_waitlist = channel._waitlist;
+	this->_lstUsers = channel._lstUsers;
+	this->_vecUsers = channel._vecUsers;
+}
+
 std::string	Channel::getName() const {return (this->_name);}
 
 std::string	Channel::getTopic() const {return (this->_topic);}

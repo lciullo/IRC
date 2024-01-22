@@ -36,6 +36,7 @@ class Channel
 
 	public :
 		Channel(std::string name, User &operators);
+		Channel(const Channel &channel);
 		
 		std::string		getName() const;
 		std::string		getTopic() const;
