@@ -16,8 +16,11 @@ void Server::launch()
 {
 	char buffer[256];
 	int n;
+	int opt = 1;
 
 	this->_socketfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (setsockopt(this->_socketfd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt))<0)
+		exit(EXIT_FAILURE);
 	if (this->_socketfd < 0)
 	{
 		std::cout << "[ERROR] Creation of socket failed";
@@ -50,9 +53,12 @@ void Server::launch()
 					if (n < 0) 
 						std::cout << "ERROR writing to socket" << std::endl;
 					std::string str(buffer);
+					/*std::cout << GREEN << "buffer = " << buffer << std::endl;
+					std::cout << YELLOW << "str =  " << str << std::endl;*/
 					this->launch_cmd(str, i);
 					std::cout << "[LOG] " << i <<  " : " << buffer << std::endl;
 				}
+				// if regarder l'event deconnection quand on a pas de quit on envoie un quit 
 			}
 		}
 	}
@@ -60,9 +66,24 @@ void Server::launch()
 
 void Server::launch_cmd(std::string msg, int index)
 {
+	//else if 
+	//PASS
+	/*comparer pass level 0
+	si ce n'est pas bon on le deconnecte 
+	close le fd trouver la socket du user pour deconnecter 
+	_lst_fd; trouver le bon fd[index]
+	*/
+	//level 1 nick 
+	//level 2 user 
 	if (msg.find("NICK") != std::string::npos)
 		this->add_user(msg);
-	if (msg.find("QUIT") != std::string::npos)
+	//USER
+	
+	/*
+		/exit = QUIT 
+
+	*/
+	if (msg.find("QUIT") != std::string::npos) 
 		this->_lst_fd.erase(this->_lst_fd.begin() + index);
 	if (msg.find("JOIN") != std::string::npos)
 		this->join(msg, index);
@@ -140,6 +161,13 @@ void Server::add_user(std::string msg)
 	}
    	this->_lst_usr.push_back(user);
 	this->_lst_usr.back().setIsCreate(true);
-	std::cout << MAGENTA << this->_lst_usr.back() << RESET;
 	return ;
 }
+
+/*
+creat une function lors de la deconnection du client qui va supprimer 
+du vecteur user 
+de la map channel 
+std::map<User, int>	_lstUsers;
+std::vector<User>	_vecUsers;
+*/
