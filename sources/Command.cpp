@@ -19,14 +19,14 @@ void Server::join(std::string msg, int index)
     it = this->_lst_channel.find(channel_name);
     if (it == this->_lst_channel.end())
     {
-        Channel new_channel(channel_name, this->_lst_usr[index - 1]);
+        Channel new_channel(channel_name, &this->_lst_usr[index - 1]);
         std::cout << "create channel " << new_channel.getName() << " by " << this->_lst_usr[index - 1].getNickname() << std::endl;
         //this->_lst_channel[channel_name] = new_channel;
         this->_lst_channel.insert(it, std::pair<std::string, Channel>(channel_name,new_channel)); 
     }
     else
     {
-        it->second.addUser(this->_lst_usr[index - 1]);
+        it->second.addUser(&this->_lst_usr[index - 1]);
     }
     std::string message = ":";
     message.append(this->_lst_usr[index - 1].getNickname());
@@ -55,7 +55,7 @@ void Server::privmsg(std::string msg, int index)
         Channel channel = it->second;
         for (size_t i = 0; i < channel.getLstUsers().size(); i++)
         {
-            User user = channel.getLstUsers()[i];
+            User user = *channel.getLstUsers()[i];
             std::string message = ":" + this->_lst_usr[index - 1].getNickname() + " PRIVMSG " + dest + " " + send_msg + "\n"; //
             std::cout << "message : " << message << std::endl;                                                                // SI JE DECALLE CES DEUX LIGNE EN DESSOUS DU IF CA NE MARCHE PLUS BRESSOM                
             if (user.getNickname() == this->_lst_usr[index - 1].getNickname())

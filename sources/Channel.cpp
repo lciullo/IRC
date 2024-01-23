@@ -6,13 +6,13 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/22 15:04:19 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/23 15:43:28 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, User &operators) : _name(name) {
+Channel::Channel(std::string name, User *operators) : _name(name) {
 	this->_lstUsers[operators] = OPERATOR;
 	this->_vecUsers.push_back(operators);
 }
@@ -22,7 +22,7 @@ std::string	Channel::getName() const {return (this->_name);}
 
 std::string	Channel::getTopic() const {return (this->_topic);}
 
-std::vector<User> Channel::getLstUsers() const {return (this->_vecUsers);}
+std::vector<User *> Channel::getLstUsers() const {return (this->_vecUsers);}
 
 /*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void	Channel::setName(std::string name) {this->_name = name;}
@@ -30,7 +30,7 @@ void	Channel::setName(std::string name) {this->_name = name;}
 void	Channel::setTopic(std::string topic) {this->_topic = topic;}
 
 /*- - - - - - - - - - - - - - - - - - ADD - - - - - - - - - - - - -- - -  - -*/
-void	Channel::addUser(User &new_user)
+void	Channel::addUser(User *new_user)
 {
 	if (findUser(new_user) == false) {
 		this->_vecUsers.push_back(new_user);
@@ -51,10 +51,10 @@ void	Channel::addMode(std::string new_mode)
 /*- - - - - - - - - - - - - - - - - -DELETE - - - - - - - - - - -- - -  - - - */
 void	Channel::deleteUser(User &user) 
 {
-	std::map<User, int>::iterator	it;
+	std::map<User *, int>::iterator	it;
 
 	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
-		if (user.getNickname() == it->first.getNickname())
+		if (user.getNickname() == it->first->getNickname())
 		{
 			this->_lstUsers.erase(it);
 			return ;
@@ -78,12 +78,12 @@ void	Channel::deleteMode(std::string mode)
 }
 
 /*- - - - - - - - - - - - - - - - -  FIND - - - - - - - - - - - - -- - -  - - */
-bool	Channel::findUser(User &user) const {
+bool	Channel::findUser(User *user) const {
 	
-	std::map<User, int>::const_iterator	it;
+	std::map<User *, int>::const_iterator	it;
 	
 	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
-		if (user.getNickname() == it->first.getNickname())
+		if (user->getNickname() == it->first->getNickname())
 			return (true);
 	}
 	return (false);
@@ -91,10 +91,10 @@ bool	Channel::findUser(User &user) const {
 
 bool	Channel::findOperators(User &user) const {
 	
-	std::map<User, int>::const_iterator	it;
+	std::map<User *, int>::const_iterator	it;
 	
 	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
-		if ((user.getNickname() == it->first.getNickname()) && it->second == OPERATOR)
+		if ((user.getNickname() == it->first->getNickname()) && it->second == OPERATOR)
 			return (true);
 	}
 	return (false);
