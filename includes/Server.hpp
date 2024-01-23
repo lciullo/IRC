@@ -29,12 +29,14 @@ class Server
 	public : 
 		Server(int port, std::string _password);
 		void launch();
-		void add_user(std::string msg);
+		void add_user(std::string msg, int index);
 		void create_user();
 		void launch_cmd(std::string msg, int index);
 		//COMMAND
 		void join(std::string msg, int index);
 		void privmsg(std::string msg, int index);
+
+		User &GetUserByFd(int fd);
 };
 
 #endif

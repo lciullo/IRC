@@ -76,7 +76,7 @@ void Server::launch_cmd(std::string msg, int index)
 	//level 1 nick 
 	//level 2 user 
 	if (msg.find("NICK") != std::string::npos)
-		this->add_user(msg);
+		this->add_user(msg, index);
 	//USER
 	
 	/*
@@ -115,10 +115,11 @@ void Server::create_user()
 	struct pollfd new_socket_fd;
 	new_socket_fd.fd = newsockfd;
 	new_socket_fd.events = POLLIN;
+	new_socket_fd.revents = 0;
 	this->_lst_fd.push_back(new_socket_fd);
 }
 
-void Server::add_user(std::string msg)
+void Server::add_user(std::string msg, int index)
 {
 	std::istringstream iss(msg);
 	std::string 	line;
@@ -147,7 +148,7 @@ void Server::add_user(std::string msg)
 			username = line.substr(5,end - 5);
 		}
 	}
-	User user(nickname, username, this->_lst_fd[this->_lst_fd.size() - 1].fd, false);
+	User user(nickname, username, this->_lst_fd[index].fd, false);
 	for (std::vector<User>::const_iterator it = _lst_usr.begin(); it != _lst_usr.end(); ++it) 
 	{
 		if (it->getNickname() == nickname && it->getIsCreate() == true)
