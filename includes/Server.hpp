@@ -31,6 +31,7 @@ class Server
 		std::string getUsername(std::string msg);
 		void join(std::string msg, int index);
 		void privmsg(std::string msg, int index);
+		bool isRightPassword(std::string msg);
 		/*class ambiguousNickname : public std::exception
 		{
 			public :

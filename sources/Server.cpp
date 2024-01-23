@@ -71,8 +71,8 @@ void Server::launch_cmd(std::string msg, int index, int *level)
 { 
 	if (msg.find("PASS") != std::string::npos && *level == 0)
 	{
-		if (isRightPassword(msg))
-			std::cout << RED << "OK C BON" << RESET << std::endl;
+		if (!isRightPassword(msg))
+			close(_lst_fd[index]);
 	}
 	//PASS
 	/*comparer pass level 0
@@ -100,6 +100,33 @@ void Server::launch_cmd(std::string msg, int index, int *level)
 		this->invite(msg, index);
 }
 
+
+/*void Server::_closeCurrentUser(int currentIndex)
+{
+	for (size_t i = 0; i < this->_pollFD.size(); i++)
+	{
+		if (this->_pollFD[i].fd == currentIndex) {
+			this->_pollFD.erase(this->_pollFD.begin() + i);
+			break;
+		}
+	}
+
+	// Delete user's presence in all channels
+	for (size_t i = 0; i < this->_users[currentIndex]->getChannels().size(); i++)
+	{
+		this->_users[currentIndex]->getChannels()[i]->removeUser(this->_users[currentIndex]);
+	
+		// Resend to all channels the list of users
+		this->_users[currentIndex]->getChannels()[i]->sendUsersList();
+	}
+	this->_users[currentIndex]->clearChannels();
+
+	delete (this->_users[currentIndex]);
+	this->_users.erase(currentIndex);
+	close(currentIndex);
+}*/
+
+
 void Server::create_user()
 {
 	struct sockaddr_in cli_addr;
@@ -118,19 +145,25 @@ void Server::create_user()
 /*- - - - - - - - - - - - - - - - - PASS - - - - - - - - - - - -- - -  - - */
 
 
-bool isRightPassword(std::string msg)
+bool Server::isRightPassword(std::string msg)
 {
 	std::istringstream	iss(msg);
 	std::string			line;
+	std::string			password;
 	while (std::getline(iss, line)) 
 	{
 		size_t pos = line.find("PASS");
 		if (pos != std::string::npos) {
-			std::cout << GREEN << "line = " << line << std::endl;
+			password = line.substr(5);
+			password = password.substr(0, password.size() - 1);
+			std::cout << BLUE << "PASSWORD = " << password << RESET << std::endl;
 		}
 	}
-
-
+	if (password != this->_password)
+	{
+		std::cout << RED << "[ERROR] wrong password" << RESET << std::endl;
+		return (false);
+	}
 	return (true);
 }
 
