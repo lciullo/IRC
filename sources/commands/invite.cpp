@@ -10,9 +10,9 @@
 // /JOIN #nom_server
 
 #include "Server.hpp"
+#include "Numerics.hpp"
 void	split_cmd(std::vector<std::string> *cmd, std::string msg);
 void	print_vector(std::vector<std::string> cmd);
-void	send_msg(User user, std::string message);
 
 void Server::invite(std::string msg, int index)
 {
@@ -20,10 +20,9 @@ void Server::invite(std::string msg, int index)
 	(void)index;
 
 	split_cmd(&cmd, msg);
-	std::cout << cmd.size() << std::endl;
-	// if (cmd.size() != 2) {
-	// 	// ERR_NEEDMOREPARAMS(this->_lst_usr[index - 1], "INVITE");
-	// }
+	if (cmd.size() == 2) {
+		ERR_NEEDMOREPARAMS(this->_lst_usr[index - 1], "INVITE");
+	}
 	// checker que la commnade est de la bonne taille -> ERR_NEEDMOREPARAMS
 
 	// checker que le channel existe -> -> ERR_NOSUCHCHANNEL
@@ -36,6 +35,22 @@ void Server::invite(std::string msg, int index)
 	//checker que la personne qu'on veut ajouter n'est pas deja le serveur -> ERR_USERONCHANNEL
 
 	//la personne a ete invite
+}
+
+// Quand j'essaie d'invite  et que je mets qu'un argument automatiquement un autre argument s'ajoute
+
+void	send_msg(User user, std::string msg)
+{
+	size_t byteSent = 0;
+
+	while (byteSent < msg.length())
+	{
+		std::cout << msg << std::endl;
+		long len = send(user.getFd(), msg.c_str(), msg.size(), 0);
+		if (len < 0)
+			break ;
+		byteSent += len;
+	}
 }
 
 void	split_cmd(std::vector<std::string> *cmd, std::string msg)

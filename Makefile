@@ -41,7 +41,8 @@ SRCS			=	${DIR_SRCS}main.cpp \
 INC				=	${DIR_INC}IRC.hpp \
 					${DIR_INC}Server.hpp \
 					${DIR_INC}User.hpp \
-					${DIR_INC}Channel.cpp 
+					${DIR_INC}Channel.cpp \
+					${DIR_INC}Numerics.hpp
 
 				
 # --- Paths ---
