@@ -32,7 +32,6 @@ class Server
 		void add_user(std::string msg);
 		void create_user();
 		void launch_cmd(std::string msg, int index);
-
 		//COMMAND
 		void join(std::string msg, int index);
 		void privmsg(std::string msg, int index);

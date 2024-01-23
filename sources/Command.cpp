@@ -17,14 +17,14 @@ void Server::join(std::string msg, int index)
 	it = this->_lst_channel.find(channel_name);
 	if (it == this->_lst_channel.end())
 	{
-		Channel new_channel(channel_name, user);
+		Channel new_channel(channel_name, &user);
 		std::cout << "create channel " << new_channel.getName() << " by " << user.getNickname() << std::endl;
 		//this->_lst_channel[channel_name] = new_channel;
 		this->_lst_channel.insert(it, std::pair<std::string, Channel>(channel_name,new_channel)); 
 	}
 	else
 	{
-		it->second.addUser(user);
+		it->second.addUser(&user);
 	}
 	//Channel channel = it->second;
 	std::string message = ":";
@@ -58,7 +58,7 @@ void Server::privmsg(std::string msg, int index)
 		Channel channel = it->second;
 		for (size_t i = 0; i < channel.getLstUsers().size(); i++)
 		{
-			User user = channel.getLstUsers()[i];
+			User user = *channel.getLstUsers()[i];
 			std::string message = ":" + this->_lst_usr[index - 1].getNickname() + " PRIVMSG " + dest + " " + send_msg + "\n"; //
 			std::cout << "message : " << message << std::endl;                                                                // SI JE DECALLE CES DEUX LIGNE EN DESSOUS DU IF CA NE MARCHE PLUS BRESSOM                
 			if (user.getNickname() == this->_lst_usr[index - 1].getNickname())
