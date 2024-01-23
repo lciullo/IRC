@@ -13,11 +13,10 @@ int main(int ac, char **av)
 		return (1);
 	}
 	if (!good_arg(av[1], av[2]))
-	{
 		return (1);
-	}
 	Server srv(atoi(av[1]), av[2]);
 	srv.launch();
+	return (0);
 }
 
 bool good_arg(char *port, char *address)

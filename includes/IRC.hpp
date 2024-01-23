@@ -33,4 +33,8 @@
 #include <poll.h>
 
 
+//======== FUNCTIONS ==========//
+
+bool isRightPassword(std::string msg);
+
 #endif 
