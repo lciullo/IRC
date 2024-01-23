@@ -20,9 +20,6 @@
 # define CYAN		"\033[36m"
 # define WHITE		"\033[37m"
 
-using	std::cout;
-using	std::endl;
-
 //======== INCLUDES ==========//
 
 #include <stdio.h>

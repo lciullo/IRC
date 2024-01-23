@@ -6,7 +6,8 @@ User::User(void){
 
 }
 
-User::User(const std::string& nickname, const std::string& username, int fd): _nickname(nickname), _username(username), _fd(fd) {
+User::User(const std::string& nickname, const std::string& username, int fd, bool isCreate): _nickname(nickname), _username(username), _fd(fd), _isCreate(isCreate)
+{
 	return ;
 }
 
@@ -28,4 +29,26 @@ const std::string& User::getUsername(void) const
 const int& User::getFd(void) const
 {
 	return (_fd);
+}
+
+const std::string& User::getChannel(void) const 
+{
+	return (_channel);
+}
+
+const bool& User::getIsCreate(void) const
+{
+	return (_isCreate);
+}
+
+void User::setIsCreate(bool isCreate)
+{
+	this->_isCreate = isCreate;
+	return ;
+}
+
+std::ostream &operator<<(std::ostream &out, const User &Object) {
+
+	out << Object.getNickname() << " " << Object.getUsername() << " " << Object.getIsCreate() << std::endl;
+	return (out);
 }
