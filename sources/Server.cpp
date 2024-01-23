@@ -1,5 +1,7 @@
 
 #include "Server.hpp"
+class User;
+
 
 Server::Server(int port, std::string password)
 {
@@ -17,6 +19,7 @@ void Server::launch()
 	char buffer[256];
 	int n;
 	int opt = 1;
+	int level = 0;
 
 	this->_socketfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (setsockopt(this->_socketfd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt))<0)
@@ -53,10 +56,7 @@ void Server::launch()
 					if (n < 0) 
 						std::cout << "ERROR writing to socket" << std::endl;
 					std::string str(buffer);
-					/*std::cout << GREEN << "buffer = " << buffer << std::endl;
-					std::cout << YELLOW << "str =  " << str << std::endl;*/
-					this->launch_cmd(str, i);
-					std::cout << "[LOG] " << i <<  " : " << buffer << std::endl;
+					this->launch_cmd(str, i, &level);
 				}
 				// if regarder l'event deconnection quand on a pas de quit on envoie un quit 
 			}
@@ -64,9 +64,16 @@ void Server::launch()
 	}
 }
 
-void Server::launch_cmd(std::string msg, int index)
-{
-	//else if 
+
+/*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
+
+void Server::launch_cmd(std::string msg, int index, int *level)
+{ 
+	if (msg.find("PASS") != std::string::npos && *level == 0)
+	{
+		if (isRightPassword(msg))
+			std::cout << RED << "OK C BON" << RESET << std::endl;
+	}
 	//PASS
 	/*comparer pass level 0
 	si ce n'est pas bon on le deconnecte 
@@ -75,7 +82,7 @@ void Server::launch_cmd(std::string msg, int index)
 	*/
 	//level 1 nick 
 	//level 2 user 
-	if (msg.find("NICK") != std::string::npos)
+	else if (msg.find("NICK") != std::string::npos)
 		this->add_user(msg);
 	//USER
 	
@@ -83,25 +90,15 @@ void Server::launch_cmd(std::string msg, int index)
 		/exit = QUIT 
 
 	*/
-	if (msg.find("QUIT") != std::string::npos) 
+	else if (msg.find("QUIT") != std::string::npos) 
 		this->_lst_fd.erase(this->_lst_fd.begin() + index);
-	if (msg.find("JOIN") != std::string::npos)
+	else if (msg.find("JOIN") != std::string::npos)
 		this->join(msg, index);
-	if (msg.find("PRIVMSG") != std::string::npos)
+	else if (msg.find("PRIVMSG") != std::string::npos)
 		this->privmsg(msg, index);
-	if (msg.find("INVITE") != std::string::npos)
+	else if (msg.find("INVITE") != std::string::npos)
 		this->invite(msg, index);
 }
-
-/*void printPollfdVector(const std::vector<struct pollfd>& pollfdVector) {
-	std::cout << "Vector content (fd, events, revents):" << std::endl;
-	
-	for (std::vector<struct pollfd>::const_iterator it = pollfdVector.begin(); it != pollfdVector.end(); ++it) {
-		std::cout << "(" << it->fd << ", " << it->events << ", " << it->revents << ") ";
-	}
-	
-	std::cout << std::endl;
-}*/
 
 void Server::create_user()
 {
@@ -118,22 +115,83 @@ void Server::create_user()
 	this->_lst_fd.push_back(new_socket_fd);
 }
 
+/*- - - - - - - - - - - - - - - - - PASS - - - - - - - - - - - -- - -  - - */
+
+
+bool isRightPassword(std::string msg)
+{
+	std::istringstream	iss(msg);
+	std::string			line;
+	while (std::getline(iss, line)) 
+	{
+		size_t pos = line.find("PASS");
+		if (pos != std::string::npos) {
+			std::cout << GREEN << "line = " << line << std::endl;
+		}
+	}
+
+
+	return (true);
+}
+
+
+/*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
+
 void Server::add_user(std::string msg)
 {
-	std::istringstream iss(msg);
-	std::string 	line;
 	std::string 	nickname;
 	std::string 	username;
-	size_t			end;
+	
+	nickname = getNickname(msg);
+	username = getUsername(msg);
+	User user(nickname, username, this->_lst_fd[this->_lst_fd.size() - 1].fd, false);
+	for (std::vector<User>::const_iterator it = _lst_usr.begin(); it != _lst_usr.end(); ++it) 
+	{
+		if (it->getNickname() == nickname && it->getIsCreate() == true)
+		{
+			//change error msg
+			std::cout << RED << "[ERROR]" << nickname << " already exist" << RESET << std::endl;
+			std::cout << GREEN << "Enter another Nickname" << RESET << std::endl;
+			return ;
+		}
+		it->getNickname();
+	}
+   	this->_lst_usr.push_back(user);
+	this->_lst_usr.back().setIsCreate(true);
+	return ;
+}
 
-	end = 0;
+std::string Server::getNickname(std::string msg)
+{
+	std::istringstream	iss(msg);
+	std::string			line;
+	std::string			nickname;
+
 	while (std::getline(iss, line)) 
 	{
 		size_t pos = line.find("NICK");
 		if (pos != std::string::npos) {
 			nickname = line.substr(5);
-			nickname = nickname.substr(0, nickname.size() - 1); //remove last \r
+			nickname = nickname.substr(0, nickname.size() - 1);
 		}
+	}
+	/*std::string	array[6] = {"PASS", "NICK", "USER", "JOIN", "KICK", "TOPIC"};
+	for (int i = 0; i < 6; i++)
+	{
+		if (array[i] == nickname)
+			throw ambiguousNickname();
+	}*/
+	return (nickname);
+}
+std::string Server::getUsername(std::string msg)
+{
+	size_t				end = 0;
+	std::istringstream	iss(msg);
+	std::string			line;
+	std::string			username;
+
+	while (std::getline(iss, line)) 
+	{
 		size_t index = line.find("USER");
 		if (index != std::string::npos) 
 		{
@@ -147,21 +205,7 @@ void Server::add_user(std::string msg)
 			username = line.substr(5,end - 5);
 		}
 	}
-	User user(nickname, username, this->_lst_fd[this->_lst_fd.size() - 1].fd, false);
-	for (std::vector<User>::const_iterator it = _lst_usr.begin(); it != _lst_usr.end(); ++it) 
-	{
-		if (it->getNickname() == nickname && it->getIsCreate() == true)
-		{
-			std::cout << RED << "[ERROR]" << nickname << " already exist" << RESET << std::endl;
-			std::cout << GREEN << "Enter another Nickname" << RESET << std::endl;
-			return ;
-		}
-		std::cout << BLUE << *it << RESET;
-		it->getNickname();
-	}
-   	this->_lst_usr.push_back(user);
-	this->_lst_usr.back().setIsCreate(true);
-	return ;
+	return (username);
 }
 
 /*

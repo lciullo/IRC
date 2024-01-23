@@ -99,7 +99,7 @@ debug:
 leaks:
 	clear
 	${MAKE} -j VALGRIND=yes
-	${LEAKS} ./ircserv
+	${LEAKS} ./ircserv 7070 coucou
 
 # ---- Clean ---- #
 
