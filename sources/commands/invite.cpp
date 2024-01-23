@@ -1,11 +1,6 @@
 // INVITE
 	// <nickname> <channel>
 	// L'invitation a bien ete envoye -> RPL_INVITING 
-	// Commande different de 2 arguments -> ERR_NEEDMOREPARAMS
-	// Le nom du channle fourni n'exite pas -> ERR_NOSUCHCHANNEL
-	// La persoone qui essaye de faire l'action ne fait pas parti du channel -> ERR_NOTONCHANNEL
-	// La personne qui vuet executer la commande n'a pas les bon privilege -> ERR_CHANOPRIVSNEEDED
-	// La personne qu'on essaye de kick ne fait pas parti du channel -> ERR_USERONCHANNEL
 
 	//faire idx - 1 dans lst_user pour avoir le user
 
@@ -15,7 +10,7 @@
 // /JOIN #nom_server
 
 #include "Server.hpp"
-
+#include "Numerics.hpp"
 void	split_cmd(std::vector<std::string> *cmd, std::string msg);
 void	print_vector(std::vector<std::string> cmd);
 
@@ -25,7 +20,37 @@ void Server::invite(std::string msg, int index)
 	(void)index;
 
 	split_cmd(&cmd, msg);
-	print_vector(cmd);
+	if (cmd.size() == 2) {
+		ERR_NEEDMOREPARAMS(this->_lst_usr[index - 1], "INVITE");
+	}
+	// checker que la commnade est de la bonne taille -> ERR_NEEDMOREPARAMS
+
+	// checker que le channel existe -> -> ERR_NOSUCHCHANNEL
+
+	//checker que la personne qui veut ajouter est bien dans le serveur -> ERR_NOTONCHANNEL
+
+
+	//Si cette personne est dans le channel checker quelle a les bon priviliege -> ERR_CHANOPRIVSNEEDED
+	
+	//checker que la personne qu'on veut ajouter n'est pas deja le serveur -> ERR_USERONCHANNEL
+
+	//la personne a ete invite
+}
+
+// Quand j'essaie d'invite  et que je mets qu'un argument automatiquement un autre argument s'ajoute
+
+void	send_msg(User user, std::string msg)
+{
+	size_t byteSent = 0;
+
+	while (byteSent < msg.length())
+	{
+		std::cout << msg << std::endl;
+		long len = send(user.getFd(), msg.c_str(), msg.size(), 0);
+		if (len < 0)
+			break ;
+		byteSent += len;
+	}
 }
 
 void	split_cmd(std::vector<std::string> *cmd, std::string msg)
@@ -40,7 +65,6 @@ void	split_cmd(std::vector<std::string> *cmd, std::string msg)
 		end = msg.find(" ", begin);
 
 		str = msg.substr(begin, end);
-		std::cout << str << std::endl;
 		if (str == "INVITE") {
 			msg.erase(0, end);
 			continue ;
