@@ -5,6 +5,12 @@
 #include "User.hpp"
 #include "Channel.hpp"
 #include <map>
+
+
+//======== DEFINE FOR CMD ==========//
+# define HEADER_CMD(User) \
+":" + User.getNickname() + "!" + User.getUsername() + " "
+
 class User;
 
 class Server
@@ -23,7 +29,7 @@ class Server
 	public : 
 		Server(int port, std::string _password);
 		void launch();
-		void add_user(std::string msg);
+		void add_user(std::string msg, int index);
 		void create_user();
 		void launch_cmd(std::string msg, int index, int *level);
 		//COMMAND
@@ -31,6 +37,9 @@ class Server
 		std::string getUsername(std::string msg);
 		void join(std::string msg, int index);
 		void privmsg(std::string msg, int index);
+
+
+		User &GetUserByFd(int fd);
 		/*class ambiguousNickname : public std::exception
 		{
 			public :
@@ -39,6 +48,7 @@ class Server
 							return ("Error, ambiguous nickname");
 						}
 		};*/
+
 };
 
 #endif

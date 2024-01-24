@@ -17,6 +17,27 @@ Channel::Channel(std::string name, User *operators) : _name(name) {
 	this->_vecUsers.push_back(operators);
 }
 
+Channel::Channel(const Channel &channel)
+{
+	this->_name = channel._name;
+	this->_topic = channel._topic;
+	this->_mode = channel._mode;
+	this->_waitlist = channel._waitlist;
+	this->_lstUsers = channel._lstUsers;
+	this->_vecUsers = channel._vecUsers;
+}
+
+Channel &Channel::operator=(const Channel &channel)
+{
+	this->_name = channel._name;
+	this->_topic = channel._topic;
+	this->_mode = channel._mode;
+	this->_waitlist = channel._waitlist;
+	this->_lstUsers = channel._lstUsers;
+	this->_vecUsers = channel._vecUsers;
+	return (*this);
+}
+
 /*- - - - - - - - - - - - - - - - - GETTERS - - - - - - - - - - - -- - -  - - */
 std::string	Channel::getName() const {return (this->_name);}
 
@@ -24,18 +45,21 @@ std::string	Channel::getTopic() const {return (this->_topic);}
 
 std::vector<User *> Channel::getLstUsers() const {return (this->_vecUsers);}
 
+std::map<User *, int> Channel::getMapUsers() const {return (this->_lstUsers);}
+
 /*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void	Channel::setName(std::string name) {this->_name = name;}
 
 void	Channel::setTopic(std::string topic) {this->_topic = topic;}
 
 /*- - - - - - - - - - - - - - - - - - ADD - - - - - - - - - - - - -- - -  - -*/
+
 void	Channel::addUser(User *new_user)
 {
-	if (findUser(new_user) == false) {
+	//if (findUser(new_user) == false) {
 		this->_vecUsers.push_back(new_user);
 		this->_lstUsers[new_user] = VOICE;
-	}
+	//}
 }
 
 void	Channel::addMode(std::string new_mode)

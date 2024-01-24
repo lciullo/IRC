@@ -35,12 +35,16 @@ class Channel
 		std::vector<User *>	_vecUsers;
 
 	public :
+		Channel() {}
 		Channel(std::string name, User *operators);
+		Channel(const Channel &channel);
+		Channel &operator=(const Channel &channel);
 		
 		//Getters
 		std::string		getName() const;
 		std::string		getTopic() const;
 		std::vector<User *> getLstUsers() const;
+		std::map<User *, int>	getMapUsers() const;
 		
 		//Setters
 		void			setName(std::string name);
