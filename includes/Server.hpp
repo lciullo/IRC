@@ -31,12 +31,24 @@ class Server
 		void launch();
 		void add_user(std::string msg, int index);
 		void create_user();
-		void launch_cmd(std::string msg, int index);
+		void launch_cmd(std::string msg, int index, int *level);
 		//COMMAND
+		std::string getNickname(std::string msg);
+		std::string getUsername(std::string msg);
 		void join(std::string msg, int index);
 		void privmsg(std::string msg, int index);
 
+
 		User &GetUserByFd(int fd);
+		/*class ambiguousNickname : public std::exception
+		{
+			public :
+						const char *	what() const throw() 
+						{
+							return ("Error, ambiguous nickname");
+						}
+		};*/
+
 };
 
 #endif
