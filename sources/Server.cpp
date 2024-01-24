@@ -66,13 +66,49 @@ void Server::launch()
 
 
 /*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
+/*void Server::_closeCurrentUser(int currentIndex)
+{
+	for (size_t i = 0; i < this->_pollFD.size(); i++)
+	{
+		if (this->_pollFD[i].fd == currentIndex) {
+			this->_pollFD.erase(this->_pollFD.begin() + i);
+			break;
+		}
+	}
+
+	// Delete user's presence in all channels
+	for (size_t i = 0; i < this->_users[currentIndex]->getChannels().size(); i++)
+	{
+		this->_users[currentIndex]->getChannels()[i]->removeUser(this->_users[currentIndex]);
+	
+		// Resend to all channels the list of users
+		this->_users[currentIndex]->getChannels()[i]->sendUsersList();
+	}
+	this->_users[currentIndex]->clearChannels();
+
+	delete (this->_users[currentIndex]);
+	this->_users.erase(currentIndex);
+	close(currentIndex);
+}*/
+
 
 void Server::launch_cmd(std::string msg, int index, int *level)
 { 
 	if (msg.find("PASS") != std::string::npos && *level == 0)
 	{
-		if (!isRightPassword(msg))
-			close(_lst_fd[index]);
+		if (isRightPassword(msg) == false)
+		{
+			for (size_t i = 0; i < this->_lst_fd.size(); i++)
+			{
+				if (this->_lst_fd[i].fd == index) {
+					this->_lst_fd.erase(this->_lst_fd.begin() + i);
+					break;
+				}
+			}
+			const char* quitMessage = "QUIT :Goodbye!\r\n";
+   			send(this->_socketfd, quitMessage, strlen(quitMessage), 0);
+			close(this->_socketfd);
+		}
 	}
 	//PASS
 	/*comparer pass level 0
@@ -101,30 +137,7 @@ void Server::launch_cmd(std::string msg, int index, int *level)
 }
 
 
-/*void Server::_closeCurrentUser(int currentIndex)
-{
-	for (size_t i = 0; i < this->_pollFD.size(); i++)
-	{
-		if (this->_pollFD[i].fd == currentIndex) {
-			this->_pollFD.erase(this->_pollFD.begin() + i);
-			break;
-		}
-	}
 
-	// Delete user's presence in all channels
-	for (size_t i = 0; i < this->_users[currentIndex]->getChannels().size(); i++)
-	{
-		this->_users[currentIndex]->getChannels()[i]->removeUser(this->_users[currentIndex]);
-	
-		// Resend to all channels the list of users
-		this->_users[currentIndex]->getChannels()[i]->sendUsersList();
-	}
-	this->_users[currentIndex]->clearChannels();
-
-	delete (this->_users[currentIndex]);
-	this->_users.erase(currentIndex);
-	close(currentIndex);
-}*/
 
 
 void Server::create_user()
