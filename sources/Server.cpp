@@ -138,7 +138,7 @@ bool isRightPassword(std::string msg)
 
 /*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
 
-void Svoid Server::add_user(std::string msg, int index)
+void  Server::add_user(std::string msg, int index)
 {
 	std::string 	nickname;
 	std::string 	username;
