@@ -1,25 +1,25 @@
-
 #include "Server.hpp"
 
-void sendUserList(Channel channel, User user)
+void sendUserList(Channel channel)
 {
 	std::string message;
 
 	for (size_t i = 0; i < channel.getLstUsers().size(); i++)
 	{
-		//for (size_t j = 0; j < channel.getLstUsers().size(); j++)
-		//{
-			User userToSend = *channel.getLstUsers()[i];
+		User &user2 = *channel.getLstUsers()[i];
+		for (size_t j = 0; j < channel.getLstUsers().size(); j++)
+		{
+			User userToSend = *channel.getLstUsers()[j];
 			std::cout << userToSend.getNickname() << std::endl;
-			message = HEADER_CMD(userToSend) + "353 " + user.getNickname() + " = " + channel.getName() + " :";
-			if (channel.getMapUsers()[&user] == OPERATOR)
+			message = HEADER_CMD(userToSend) + "353 " + userToSend.getNickname() + " = " + channel.getName() + " :";
+			if (channel.getMapUsers()[&user2] == OPERATOR)
 				message.append("@");
-			else
+			else if (channel.getMapUsers()[&user2] == VOICE)
 				message.append("+");
-			message.append(user.getNickname() + "\r\n");
+			message.append(user2.getNickname() + "\r\n");
 			std::cout << "message : " << message << std::endl;
-			send(channel.getLstUsers()[i]->getFd(), message.c_str(), message.size(), 0);
-		//}
+			send(userToSend.getFd(), message.c_str(), message.size(), 0);
+		}
 	}
 	for (size_t j = 0; j < channel.getLstUsers().size(); j++)
 	{
@@ -27,17 +27,6 @@ void sendUserList(Channel channel, User user)
 		message = HEADER_CMD(userToSend) + "366 " + userToSend.getNickname() + " " + channel.getName() + " :End of /NAMES list\r\n";
 		send(channel.getLstUsers()[j]->getFd(), message.c_str(), message.size(), 0);
 	}
-}
-
-User &Server::GetUserByFd(int fd)
-{
-	std::vector<User>::iterator ite = this->_lst_usr.end();
-	for (std::vector<User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
-	{
-		if (it->getFd() == fd)
-			return (*it);
-	}
-	return (*ite);
 }
 
 void Server::join(std::string msg, int index)
@@ -74,28 +63,5 @@ void Server::join(std::string msg, int index)
 	//std::cout << "message : " << message << std::endl;
 	send(this->_lst_fd[index].fd, message.c_str(), message.size(), 0);
 	std::cout << "channel : " << channel.getName() << std::endl;
-	sendUserList(channel, user);
-}
-
-void Server::privmsg(std::string msg, int index)
-{
-	int i = msg.find("PRIVMSG");
-	std::string dest = msg.substr(i + 8);
-	std::string send_msg = msg.substr(msg.find(":"));
-	send_msg = send_msg.substr(0, send_msg.size() - 2); //for remove last \r\n
-	i = dest.find(" ");
-	dest = dest.substr(0, i);
-	
-	if (dest[0] == '#')
-	{
-		Channel channel = this->_lst_channel[dest];
-		for (size_t i = 0; i < channel.getLstUsers().size(); i++)
-		{
-			User *user = channel.getLstUsers()[i];
-			std::string message = ":" + this->GetUserByFd(this->_lst_fd[index].fd).getNickname() + " PRIVMSG " + dest + " " + send_msg + "\n"; //
-			if (user->getNickname() == this->GetUserByFd(this->_lst_fd[index].fd).getNickname())
-				continue ;
-			send(user->getFd(), message.c_str(), message.size(), 0);
-		}
-	}
+	sendUserList(channel);
 }
