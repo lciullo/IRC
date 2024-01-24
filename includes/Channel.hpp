@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:44:19 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/23 15:43:10 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/24 17:21:54 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ class Channel
 		void			addUser(User *new_user);
 		void			addMode(std::string new_mode); // or a char?
 		void			addTopic(std::string new_topic);
+		void			addUserToWaitlist(User *guest);
 		
 		//Delete
 		void			deleteUser(User &user);

@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/23 15:43:28 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/24 17:23:29 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,11 @@ void	Channel::addMode(std::string new_mode)
 	
 	const char *mode = new_mode.c_str();
 	this->_mode.push_back(mode[0]);
+}
+
+void	Channel::addUserToWaitlist(User *guest)
+{
+	this->_waitlist.push_back(guest);
 }
 
 /*- - - - - - - - - - - - - - - - - -DELETE - - - - - - - - - - -- - -  - - - */

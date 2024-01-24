@@ -38,7 +38,6 @@ class Server
 		void join(std::string msg, int index);
 		void privmsg(std::string msg, int index);
 
-
 		User &GetUserByFd(int fd);
 		/*class ambiguousNickname : public std::exception
 		{
