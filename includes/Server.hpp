@@ -26,6 +26,9 @@ class Server
 		std::map<std::string,Channel> _lst_channel;
 		void invite(std::string msg, int index);
 		void kick(std::string msg, int index);
+		void join(std::string msg, int index);
+		void privmsg(std::string msg, int index);
+		void part(std::string msg, int index);
 
 	public : 
 		Server(int port, std::string _password);
@@ -33,13 +36,10 @@ class Server
 		void add_user(std::string msg, int index);
 		void create_user();
 		void launch_cmd(std::string msg, int index, int *level);
-		//COMMAND
 		std::string getNickname(std::string msg);
 		std::string getUsername(std::string msg);
-		void join(std::string msg, int index);
-		void privmsg(std::string msg, int index);
+		std::vector<struct pollfd> getLstFd() const;
 		bool isRightPassword(std::string msg);
-		void part(std::string msg, int index);
 		User &GetUserByFd(int fd);
 		User &GetUserByNickname(std::string nickname);
 		/*class ambiguousNickname : public std::exception

@@ -53,7 +53,7 @@ void Server::launch()
 				if (this->_lst_fd[i].revents & POLLIN) {
 					bzero(buffer,256);
 					n = read(this->_lst_fd[i].fd,buffer,255);
-					if (n < 0) 
+					if (n < 0)
 						std::cout << "ERROR writing to socket" << std::endl;
 					std::string str(buffer);
 					std::cout << "[LOG] " << i << " " << str << std::endl;
@@ -261,6 +261,8 @@ std::string Server::getUsername(std::string msg)
 	}
 	return (username);
 }
+
+std::vector<struct pollfd> Server::getLstFd() const {return (this->_lst_fd);}
 
 User &Server::GetUserByFd(int fd)
 {
