@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/24 17:23:29 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/25 11:24:27 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 Channel::Channel(std::string name, User *operators) : _name(name) {
 	this->_lstUsers[operators] = OPERATOR;
 	this->_vecUsers.push_back(operators);
+	this->_private = false;
 }
 
 Channel::Channel(const Channel &channel)
@@ -47,6 +48,7 @@ std::map<User *, int>  Channel::getLstUsers() const {return (this->_lstUsers);}
 
 std::vector<User *> Channel::getVecUsers() const {return (this->_vecUsers);}
 
+bool	Channel::getStatus() const {return (this->_private);}
 /*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void	Channel::setName(std::string name) {this->_name = name;}
 

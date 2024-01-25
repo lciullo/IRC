@@ -25,6 +25,7 @@ class Server
 		std::vector<User> _lst_usr;
 		std::map<std::string,Channel> _lst_channel;
 		void invite(std::string msg, int index);
+		void kick(std::string msg, int index);
 
 	public : 
 		Server(int port, std::string _password);

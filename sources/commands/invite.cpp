@@ -11,7 +11,6 @@
 
 #include "Server.hpp"
 #include "Numerics.hpp"
-void	split_cmd(std::vector<std::string> *cmd, std::string msg);
 void	print_vector(std::vector<std::string> cmd);
 
 User &	User::operator=(const User &obj){
@@ -53,6 +52,9 @@ void Server::invite(std::string msg, int index)
 	else {
 		std::cout << "We fond the channel " << channel_name << std::endl;
 		current_channel = &it_serv->second;
+		if (current_channel->getStatus() == false) {
+			std::cout << "ERROR Channel is not in private no eed to ivite someoe everybody is free to join\n"; //a tester
+		}
 	}
 
 	std::vector<User>::iterator	it_serv_usr;
@@ -99,6 +101,7 @@ void Server::invite(std::string msg, int index)
 	}
 
 	current_channel->addUserToWaitlist(guest);
+	std::cout << "SUCCES Guest invited to guest list\n";
 	//send message to new gust and to inviter
 	//checker qu'il n'a pas deja ete invite avant
 	//la personne a ete invite
@@ -137,7 +140,7 @@ void	split_cmd(std::vector<std::string> *cmd, std::string msg)
 		str = msg.substr(begin, end);
 		if ((last_non_space = str.find_last_not_of(whitespace)) != std::string::npos)
 			str.erase(last_non_space + 1);
-		if (str == "INVITE") {
+		if (str == "INVITE" || str == "KICK") {
 			msg.erase(0, end);
 			continue ;
 		}
