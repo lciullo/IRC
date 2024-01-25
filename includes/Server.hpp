@@ -27,7 +27,9 @@ class Server
 		void invite(std::string msg, int index);
 		void kick(std::string msg, int index);
 		bool isRightPassword(std::string msg, int index);
-		std::string getNickname(std::string msg);
+		void join(std::string msg, int index);
+		void privmsg(std::string msg, int index);
+		void part(std::string msg, int index);
 	public : 
 		Server(int port, std::string _password);
 		void launch();
@@ -35,9 +37,10 @@ class Server
 		void create_user();
 		void launch_cmd(std::string msg, int index, int *level, std::string nickname, std::string username);
 		std::string getUsername(std::string msg);
-		void join(std::string msg, int index);
-		void privmsg(std::string msg, int index);
-		void part(std::string msg, int index);
+		void launch_cmd(std::string msg, int index, int *level);
+		std::string getNickname(std::string msg);
+		std::string getUsername(std::string msg);
+		std::vector<struct pollfd> getLstFd() const;
 		User &GetUserByFd(int fd);
 		User &GetUserByNickname(std::string nickname);
 };
