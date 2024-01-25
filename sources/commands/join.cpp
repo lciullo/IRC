@@ -10,14 +10,12 @@ void sendUserList(Channel channel)
 		for (size_t j = 0; j < channel.getVecUsers().size(); j++)
 		{
 			User userToSend = *channel.getVecUsers()[j];
-			std::cout << userToSend.getNickname() << std::endl;
 			message = HEADER_CMD(userToSend) + "353 " + userToSend.getNickname() + " = " + channel.getName() + " :";
 			if (channel.getLstUsers()[&user2] == OPERATOR)
 				message.append("@");
 			else if (channel.getLstUsers()[&user2] == VOICE)
 				message.append("+");
 			message.append(user2.getNickname() + "\r\n");
-			std::cout << "message : " << message << std::endl;
 			send(userToSend.getFd(), message.c_str(), message.size(), 0);
 		}
 	}
@@ -49,19 +47,12 @@ void Server::join(std::string msg, int index)
 	{
 		Channel new_channel(channel_name, &user);
 		std::cout << "create channel " << new_channel.getName() << " by " << user.getNickname() << std::endl;
-		//this->_lst_channel[channel_name] = new_channel;
-		this->_lst_channel.insert(it, std::pair<std::string, Channel>(channel_name,new_channel)); 
-		//channel = new_channel;
+		this->_lst_channel[channel_name] = new_channel;
 	}
 	else
-	{
 		it->second.addUser(&user);
-		//channel = it->second;
-	}
 	Channel channel = this->_lst_channel[channel_name];
 	std::string message = HEADER_CMD(user) + "JOIN " + channel_name + "\r\n";
-	//std::cout << "message : " << message << std::endl;
 	send(this->_lst_fd[index].fd, message.c_str(), message.size(), 0);
-	std::cout << "channel : " << channel.getName() << std::endl;
 	sendUserList(channel);
 }
