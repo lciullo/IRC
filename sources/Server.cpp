@@ -56,6 +56,7 @@ void Server::launch()
 					if (n < 0) 
 						std::cout << "ERROR writing to socket" << std::endl;
 					std::string str(buffer);
+					std::cout << "[LOG] " << i << " " << str << std::endl;
 					this->launch_cmd(str, i, &level);
 				}
 				// if regarder l'event deconnection quand on a pas de quit on envoie un quit 
@@ -82,7 +83,7 @@ void Server::launch_cmd(std::string msg, int index, int *level)
 	*/
 	//level 1 nick 
 	//level 2 user 
-	else if (msg.find("NICK") != std::string::npos)
+	if (msg.find("NICK") != std::string::npos)
 		this->add_user(msg, index);
 	//USER
 	
@@ -94,6 +95,8 @@ void Server::launch_cmd(std::string msg, int index, int *level)
 		this->_lst_fd.erase(this->_lst_fd.begin() + index);
 	else if (msg.find("JOIN") != std::string::npos)
 		this->join(msg, index);
+	else if (msg.find("PART") != std::string::npos)
+		this->part(msg, index);
 	else if (msg.find("PRIVMSG") != std::string::npos)
 		this->privmsg(msg, index);
 	else if (msg.find("INVITE") != std::string::npos)
@@ -209,6 +212,28 @@ std::string Server::getUsername(std::string msg)
 		}
 	}
 	return (username);
+}
+
+User &Server::GetUserByFd(int fd)
+{
+	std::vector<User>::iterator ite = this->_lst_usr.end();
+	for (std::vector<User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
+	{
+		if (it->getFd() == fd)
+			return (*it);
+	}
+	return (*ite);
+}
+
+User &Server::GetUserByNickname(std::string nickname)
+{
+	std::vector<User>::iterator ite = this->_lst_usr.end();
+	for (std::vector<User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
+	{
+		if (it->getNickname() == nickname)
+			return (*it);
+	}
+	return (*ite);
 }
 
 /*
