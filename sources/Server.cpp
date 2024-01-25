@@ -56,6 +56,7 @@ void Server::launch()
 					if (n < 0) 
 						std::cout << "ERROR writing to socket" << std::endl;
 					std::string str(buffer);
+					std::cout << "[LOG] " << i << " " << str << std::endl;
 					this->launch_cmd(str, i, &level);
 				}
 				// if regarder l'event deconnection quand on a pas de quit on envoie un quit 
@@ -118,8 +119,8 @@ void Server::launch_cmd(std::string msg, int index, int *level)
 	*/
 	//level 1 nick 
 	//level 2 user 
-	else if (msg.find("NICK") != std::string::npos)
-		this->add_user(msg);
+	if (msg.find("NICK") != std::string::npos)
+		this->add_user(msg, index);
 	//USER
 	
 	/*
@@ -130,10 +131,14 @@ void Server::launch_cmd(std::string msg, int index, int *level)
 		this->_lst_fd.erase(this->_lst_fd.begin() + index);
 	else if (msg.find("JOIN") != std::string::npos)
 		this->join(msg, index);
+	else if (msg.find("PART") != std::string::npos)
+		this->part(msg, index);
 	else if (msg.find("PRIVMSG") != std::string::npos)
 		this->privmsg(msg, index);
 	else if (msg.find("INVITE") != std::string::npos)
 		this->invite(msg, index);
+	else if (msg.find("KICK") != std::string::npos)
+		this->kick(msg, index);
 }
 
 
@@ -152,6 +157,7 @@ void Server::create_user()
 	struct pollfd new_socket_fd;
 	new_socket_fd.fd = newsockfd;
 	new_socket_fd.events = POLLIN;
+	new_socket_fd.revents = 0;
 	this->_lst_fd.push_back(new_socket_fd);
 }
 
@@ -183,14 +189,14 @@ bool Server::isRightPassword(std::string msg)
 
 /*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
 
-void Server::add_user(std::string msg)
+void  Server::add_user(std::string msg, int index)
 {
 	std::string 	nickname;
 	std::string 	username;
 	
 	nickname = getNickname(msg);
 	username = getUsername(msg);
-	User user(nickname, username, this->_lst_fd[this->_lst_fd.size() - 1].fd, false);
+	User user(nickname, username, this->_lst_fd[index].fd, false);
 	for (std::vector<User>::const_iterator it = _lst_usr.begin(); it != _lst_usr.end(); ++it) 
 	{
 		if (it->getNickname() == nickname && it->getIsCreate() == true)
@@ -200,6 +206,7 @@ void Server::add_user(std::string msg)
 			std::cout << GREEN << "Enter another Nickname" << RESET << std::endl;
 			return ;
 		}
+    std::cout << BLUE << *it << RESET;
 		it->getNickname();
 	}
    	this->_lst_usr.push_back(user);
@@ -229,6 +236,7 @@ std::string Server::getNickname(std::string msg)
 	}*/
 	return (nickname);
 }
+
 std::string Server::getUsername(std::string msg)
 {
 	size_t				end = 0;
@@ -252,6 +260,28 @@ std::string Server::getUsername(std::string msg)
 		}
 	}
 	return (username);
+}
+
+User &Server::GetUserByFd(int fd)
+{
+	std::vector<User>::iterator ite = this->_lst_usr.end();
+	for (std::vector<User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
+	{
+		if (it->getFd() == fd)
+			return (*it);
+	}
+	return (*ite);
+}
+
+User &Server::GetUserByNickname(std::string nickname)
+{
+	std::vector<User>::iterator ite = this->_lst_usr.end();
+	for (std::vector<User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
+	{
+		if (it->getNickname() == nickname)
+			return (*it);
+	}
+	return (*ite);
 }
 
 /*

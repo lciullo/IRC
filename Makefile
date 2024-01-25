@@ -28,13 +28,15 @@ DIR_INC			=	includes/
 
 SRCS			=	${DIR_SRCS}main.cpp \
 					${DIR_SRCS}Server.cpp \
-					${DIR_SRCS}Command.cpp \
 					${DIR_SRCS}User.cpp \
 					${DIR_SRCS}Channel.cpp \
 					${DIR_SRCS}commands/invite.cpp \
 					${DIR_SRCS}commands/kick.cpp \
 					${DIR_SRCS}commands/mode.cpp \
-					${DIR_SRCS}commands/topic.cpp
+					${DIR_SRCS}commands/topic.cpp \
+					${DIR_SRCS}commands/join.cpp \
+					${DIR_SRCS}commands/part.cpp \
+					${DIR_SRCS}commands/privmsg.cpp
 					
 				
 
@@ -99,7 +101,7 @@ debug:
 leaks:
 	clear
 	${MAKE} -j VALGRIND=yes
-	${LEAKS} ./ircserv 7070 coucou
+	${LEAKS} ./ircserv 6969 test
 
 # ---- Clean ---- #
 

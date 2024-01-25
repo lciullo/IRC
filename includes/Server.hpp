@@ -5,6 +5,12 @@
 #include "User.hpp"
 #include "Channel.hpp"
 #include <map>
+
+
+//======== DEFINE FOR CMD ==========//
+# define HEADER_CMD(User) \
+":" + User.getNickname() + "!" + User.getUsername() + " "
+
 class User;
 
 class Server
@@ -19,11 +25,12 @@ class Server
 		std::vector<User> _lst_usr;
 		std::map<std::string,Channel> _lst_channel;
 		void invite(std::string msg, int index);
+		void kick(std::string msg, int index);
 
 	public : 
 		Server(int port, std::string _password);
 		void launch();
-		void add_user(std::string msg);
+		void add_user(std::string msg, int index);
 		void create_user();
 		void launch_cmd(std::string msg, int index, int *level);
 		//COMMAND
@@ -31,7 +38,14 @@ class Server
 		std::string getUsername(std::string msg);
 		void join(std::string msg, int index);
 		void privmsg(std::string msg, int index);
+<<<<<<< HEAD
 		bool isRightPassword(std::string msg);
+=======
+		void part(std::string msg, int index);
+
+		User &GetUserByFd(int fd);
+		User &GetUserByNickname(std::string nickname);
+>>>>>>> eb9682cb97fe6d1a1cd8ae059ef2c7d833972bf8
 		/*class ambiguousNickname : public std::exception
 		{
 			public :
@@ -40,6 +54,9 @@ class Server
 							return ("Error, ambiguous nickname");
 						}
 		};*/
+
 };
+
+void sendUserList(Channel channel);
 
 #endif

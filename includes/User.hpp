@@ -7,7 +7,7 @@ class User
 {
 	private :
 				std::string	_nickname;
-				std::string	_channel;
+				std::string	_channel; // pourquoi? plutot un vector non?
 				std::string	_username;
 				int 		_fd;
 				bool		_isCreate;
@@ -16,6 +16,8 @@ class User
 	public :
 				User(const std::string& nickname, const std::string& username, int fd, bool isCreate);
 				~User(void);
+				User &	operator=(const User &obj);
+
 				const std::string& getNickname(void) const;
 				const std::string& getUsername(void) const;
 				const std::string& getChannel(void) const;
