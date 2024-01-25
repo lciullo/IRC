@@ -37,8 +37,10 @@ class Server
 		std::string getUsername(std::string msg);
 		void join(std::string msg, int index);
 		void privmsg(std::string msg, int index);
+		void part(std::string msg, int index);
 
 		User &GetUserByFd(int fd);
+		User &GetUserByNickname(std::string nickname);
 		/*class ambiguousNickname : public std::exception
 		{
 			public :
@@ -49,5 +51,7 @@ class Server
 		};*/
 
 };
+
+void sendUserList(Channel channel);
 
 #endif

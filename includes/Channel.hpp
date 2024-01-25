@@ -43,8 +43,8 @@ class Channel
 		//Getters
 		std::string		getName() const;
 		std::string		getTopic() const;
-		std::vector<User *> getLstUsers() const;
-		std::map<User *, int>	getMapUsers() const;
+		std::map<User *, int> getLstUsers() const;
+		std::vector<User *>	getVecUsers() const;
 		
 		//Setters
 		void			setName(std::string name);
