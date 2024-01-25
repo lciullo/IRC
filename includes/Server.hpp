@@ -26,7 +26,8 @@ class Server
 		std::map<std::string,Channel> _lst_channel;
 		void invite(std::string msg, int index);
 		void kick(std::string msg, int index);
-
+		void mode(std::string msg, int index);
+		
 	public : 
 		Server(int port, std::string _password);
 		void launch();
