@@ -12,9 +12,9 @@ void Server::privmsg(std::string msg, int index)
 	if (dest[0] == '#')
 	{
 		Channel channel = this->_lst_channel[dest];
-		for (size_t i = 0; i < channel.getLstUsers().size(); i++)
+		for (size_t i = 0; i < channel.getVecUsers().size(); i++)
 		{
-			User *user = channel.getLstUsers()[i];
+			User *user = channel.getVecUsers()[i];
 			std::string message = ":" + this->GetUserByFd(this->_lst_fd[index].fd).getNickname() + " PRIVMSG " + dest + " " + send_msg + "\n"; //
 			if (user->getNickname() == this->GetUserByFd(this->_lst_fd[index].fd).getNickname())
 				continue ;

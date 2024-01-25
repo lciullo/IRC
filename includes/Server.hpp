@@ -52,4 +52,6 @@ class Server
 
 };
 
+void sendUserList(Channel channel);
+
 #endif

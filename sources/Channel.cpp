@@ -43,9 +43,9 @@ std::string	Channel::getName() const {return (this->_name);}
 
 std::string	Channel::getTopic() const {return (this->_topic);}
 
-std::vector<User *> Channel::getLstUsers() const {return (this->_vecUsers);}
+std::map<User *, int>  Channel::getLstUsers() const {return (this->_lstUsers);}
 
-std::map<User *, int> Channel::getMapUsers() const {return (this->_lstUsers);}
+std::vector<User *> Channel::getVecUsers() const {return (this->_vecUsers);}
 
 /*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void	Channel::setName(std::string name) {this->_name = name;}

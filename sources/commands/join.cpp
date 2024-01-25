@@ -4,28 +4,28 @@ void sendUserList(Channel channel)
 {
 	std::string message;
 
-	for (size_t i = 0; i < channel.getLstUsers().size(); i++)
+	for (size_t i = 0; i < channel.getVecUsers().size(); i++)
 	{
-		User &user2 = *channel.getLstUsers()[i];
-		for (size_t j = 0; j < channel.getLstUsers().size(); j++)
+		User &user2 = *channel.getVecUsers()[i];
+		for (size_t j = 0; j < channel.getVecUsers().size(); j++)
 		{
-			User userToSend = *channel.getLstUsers()[j];
+			User userToSend = *channel.getVecUsers()[j];
 			std::cout << userToSend.getNickname() << std::endl;
 			message = HEADER_CMD(userToSend) + "353 " + userToSend.getNickname() + " = " + channel.getName() + " :";
-			if (channel.getMapUsers()[&user2] == OPERATOR)
+			if (channel.getLstUsers()[&user2] == OPERATOR)
 				message.append("@");
-			else if (channel.getMapUsers()[&user2] == VOICE)
+			else if (channel.getLstUsers()[&user2] == VOICE)
 				message.append("+");
 			message.append(user2.getNickname() + "\r\n");
 			std::cout << "message : " << message << std::endl;
 			send(userToSend.getFd(), message.c_str(), message.size(), 0);
 		}
 	}
-	for (size_t j = 0; j < channel.getLstUsers().size(); j++)
+	for (size_t j = 0; j < channel.getVecUsers().size(); j++)
 	{
-		User userToSend = *channel.getLstUsers()[j];
+		User userToSend = *channel.getVecUsers()[j];
 		message = HEADER_CMD(userToSend) + "366 " + userToSend.getNickname() + " " + channel.getName() + " :End of /NAMES list\r\n";
-		send(channel.getLstUsers()[j]->getFd(), message.c_str(), message.size(), 0);
+		send(channel.getVecUsers()[j]->getFd(), message.c_str(), message.size(), 0);
 	}
 }
 
