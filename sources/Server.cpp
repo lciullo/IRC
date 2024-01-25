@@ -16,10 +16,12 @@ Server::Server(int port, std::string password)
 
 void Server::launch()
 {
-	char buffer[256];
-	int n;
-	int opt = 1;
-	int level = 0;
+	char 			buffer[256];
+	std::string 	nickname;
+	std::string 	username;
+	int 			n;
+	int 			opt = 1;
+	int 			level = 0;
 
 	this->_socketfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (setsockopt(this->_socketfd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt))<0)
@@ -57,7 +59,9 @@ void Server::launch()
 						std::cout << "ERROR writing to socket" << std::endl;
 					std::string str(buffer);
 					std::cout << "[LOG] " << i << " " << str << std::endl;
-					this->launch_cmd(str, i, &level);
+					this->launch_cmd(str, i, &level, nickname, username);
+					if (level == 2)
+						this->add_user(i, nickname, username);
 				}
 				// if regarder l'event deconnection quand on a pas de quit on envoie un quit 
 			}
@@ -67,66 +71,24 @@ void Server::launch()
 
 
 /*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
-/*void Server::_closeCurrentUser(int currentIndex)
-{
-	for (size_t i = 0; i < this->_pollFD.size(); i++)
-	{
-		if (this->_pollFD[i].fd == currentIndex) {
-			this->_pollFD.erase(this->_pollFD.begin() + i);
-			break;
-		}
-	}
 
-	// Delete user's presence in all channels
-	for (size_t i = 0; i < this->_users[currentIndex]->getChannels().size(); i++)
-	{
-		this->_users[currentIndex]->getChannels()[i]->removeUser(this->_users[currentIndex]);
-	
-		// Resend to all channels the list of users
-		this->_users[currentIndex]->getChannels()[i]->sendUsersList();
-	}
-	this->_users[currentIndex]->clearChannels();
-
-	delete (this->_users[currentIndex]);
-	this->_users.erase(currentIndex);
-	close(currentIndex);
-}*/
-
-
-void Server::launch_cmd(std::string msg, int index, int *level)
+void Server::launch_cmd(std::string msg, int index, int *level, std::string nickname, std::string username)
 { 
 	if (msg.find("PASS") != std::string::npos && *level == 0)
 	{
-		if (isRightPassword(msg) == false)
-		{
-			for (size_t i = 0; i < this->_lst_fd.size(); i++)
-			{
-				if (this->_lst_fd[i].fd == index) {
-					this->_lst_fd.erase(this->_lst_fd.begin() + i);
-					break;
-				}
-			}
-			const char* quitMessage = "QUIT :Goodbye!\r\n";
-   			send(this->_lst_fd[index].fd, quitMessage, strlen(quitMessage), 0);
-			close(this->_lst_fd[index].fd);
-		}
+		if (isRightPassword(msg, index) == true)
+			*level += 1;
+	} 
+	else if (msg.find("NICK") != std::string::npos && *level == 1)
+	{
+		nickname = getNickname(msg);
+		*level += 1;
 	}
-	//PASS
-	/*comparer pass level 0
-	si ce n'est pas bon on le deconnecte 
-	close le fd trouver la socket du user pour deconnecter 
-	_lst_fd; trouver le bon fd[index]
-	*/
-	//level 1 nick 
-	//level 2 user 
-	if (msg.find("NICK") != std::string::npos)
-		this->add_user(msg, index);
-	//USER
-	
-	/*
-		/exit = QUIT 
-
-	*/
+	else if (msg.find("USER") != std::string::npos && *level == 2)
+	{
+		username = getUsername(msg);	
+		*level += 1;
+	}
 	else if (msg.find("QUIT") != std::string::npos) 
 		this->_lst_fd.erase(this->_lst_fd.begin() + index);
 	else if (msg.find("JOIN") != std::string::npos)
@@ -140,9 +102,6 @@ void Server::launch_cmd(std::string msg, int index, int *level)
 	else if (msg.find("KICK") != std::string::npos)
 		this->kick(msg, index);
 }
-
-
-
 
 
 void Server::create_user()
@@ -161,105 +120,25 @@ void Server::create_user()
 	this->_lst_fd.push_back(new_socket_fd);
 }
 
-/*- - - - - - - - - - - - - - - - - PASS - - - - - - - - - - - -- - -  - - */
-
-
-bool Server::isRightPassword(std::string msg)
-{
-	std::istringstream	iss(msg);
-	std::string			line;
-	std::string			password;
-	while (std::getline(iss, line)) 
-	{
-		size_t pos = line.find("PASS");
-		if (pos != std::string::npos) {
-			password = line.substr(5);
-			password = password.substr(0, password.size() - 1);
-			std::cout << BLUE << "PASSWORD = " << password << RESET << std::endl;
-		}
-	}
-	if (password != this->_password)
-	{
-		std::cout << RED << "[ERROR] wrong password" << RESET << std::endl;
-		return (false);
-	}
-	return (true);
-}
-
 
 /*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
 
-void  Server::add_user(std::string msg, int index)
+void  Server::add_user(int index, std::string nickname, std::string username)
 {
-	std::string 	nickname;
-	std::string 	username;
-	
-	nickname = getNickname(msg);
-	username = getUsername(msg);
 	User user(nickname, username, this->_lst_fd[index].fd, false);
 	for (std::vector<User>::const_iterator it = _lst_usr.begin(); it != _lst_usr.end(); ++it) 
 	{
 		if (it->getNickname() == nickname && it->getIsCreate() == true)
 		{
-			//change error msg
-			std::cout << RED << "[ERROR]" << nickname << " already exist" << RESET << std::endl;
-			std::cout << GREEN << "Enter another Nickname" << RESET << std::endl;
+			std::cout << RED << "<client> <nick> :Nickname is already in use" << RESET << std::endl;
 			return ;
 		}
-    std::cout << BLUE << *it << RESET;
+	std::cout << BLUE << *it << RESET;
 		it->getNickname();
 	}
    	this->_lst_usr.push_back(user);
 	this->_lst_usr.back().setIsCreate(true);
 	return ;
-}
-
-std::string Server::getNickname(std::string msg)
-{
-	std::istringstream	iss(msg);
-	std::string			line;
-	std::string			nickname;
-
-	while (std::getline(iss, line)) 
-	{
-		size_t pos = line.find("NICK");
-		if (pos != std::string::npos) {
-			nickname = line.substr(5);
-			nickname = nickname.substr(0, nickname.size() - 1);
-		}
-	}
-	/*std::string	array[6] = {"PASS", "NICK", "USER", "JOIN", "KICK", "TOPIC"};
-	for (int i = 0; i < 6; i++)
-	{
-		if (array[i] == nickname)
-			throw ambiguousNickname();
-	}*/
-	return (nickname);
-}
-
-std::string Server::getUsername(std::string msg)
-{
-	size_t				end = 0;
-	std::istringstream	iss(msg);
-	std::string			line;
-	std::string			username;
-
-	while (std::getline(iss, line)) 
-	{
-		size_t index = line.find("USER");
-		if (index != std::string::npos) 
-		{
-			for (size_t i = 5; i < line.size(); i++){
-				if (line[i] == ' ')
-				{
-					end = i;
-					break ;
-				}
-			}
-			username = line.substr(5,end - 5);
-		}
-	}
-	return (username);
 }
 
 User &Server::GetUserByFd(int fd)
