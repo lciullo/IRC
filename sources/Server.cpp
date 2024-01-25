@@ -107,8 +107,8 @@ void Server::launch_cmd(std::string msg, int index, int *level)
 				}
 			}
 			const char* quitMessage = "QUIT :Goodbye!\r\n";
-   			send(this->_socketfd, quitMessage, strlen(quitMessage), 0);
-			close(this->_socketfd);
+   			send(this->_lst_fd[index].fd, quitMessage, strlen(quitMessage), 0);
+			close(this->_lst_fd[index].fd);
 		}
 	}
 	//PASS
