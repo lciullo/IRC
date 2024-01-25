@@ -11,7 +11,6 @@
 
 #include "Server.hpp"
 #include "Numerics.hpp"
-void	print_vector(std::vector<std::string> cmd);
 
 User &	User::operator=(const User &obj){
 	this->_nickname = obj._nickname;
@@ -75,7 +74,7 @@ void Server::invite(std::string msg, int index)
 
 	//checker que la personne qui veut ajouter est bien dans le serveur -> ERR_NOTONCHANNEL
 	//Si cette personne est dans le channel checker quelle a les bon priviliege -> ERR_CHANOPRIVSNEEDED
-	std::map<User *, int>	lstUsrChannel = current_channel->getMapUsers();
+	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
 		if (it_channel->first->getUsername() == protagonist) {

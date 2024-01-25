@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:44:19 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/25 11:34:52 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/25 12:44:40 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,10 @@ class Channel
 		Channel &operator=(const Channel &channel);
 		
 		//Getters
-		std::string		getName() const;
-		std::string		getTopic() const;
-		std::map<User *, int> getLstUsers() const;
-		std::vector<User *>	getVecUsers() const;
+		std::string				getName() const;
+		std::string				getTopic() const;
+		std::map<User *, int>	getLstUsers() const;
+		std::vector<User *>		getVecUsers() const;
 		bool					getStatus() const;
 		//Setters
 		void			setName(std::string name);
@@ -67,5 +67,5 @@ class Channel
 };
 
 void	split_cmd(std::vector<std::string> *cmd, std::string msg);
-
+void	print_vector(std::vector<std::string> cmd);;
 #endif
