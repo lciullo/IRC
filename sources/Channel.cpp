@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/23 15:43:28 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/25 12:50:37 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 Channel::Channel(std::string name, User *operators) : _name(name) {
 	this->_lstUsers[operators] = OPERATOR;
 	this->_vecUsers.push_back(operators);
+	this->_private = false;
 }
 
 Channel::Channel(const Channel &channel)
@@ -47,6 +48,7 @@ std::map<User *, int>  Channel::getLstUsers() const {return (this->_lstUsers);}
 
 std::vector<User *> Channel::getVecUsers() const {return (this->_vecUsers);}
 
+bool	Channel::getStatus() const {return (this->_private);}
 /*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void	Channel::setName(std::string name) {this->_name = name;}
 
@@ -72,16 +74,27 @@ void	Channel::addMode(std::string new_mode)
 	this->_mode.push_back(mode[0]);
 }
 
+void	Channel::addUserToWaitlist(User *guest)
+{
+	this->_waitlist.push_back(guest);
+}
+
 /*- - - - - - - - - - - - - - - - - -DELETE - - - - - - - - - - -- - -  - - - */
 void	Channel::deleteUser(User &user) 
 {
-	std::map<User *, int>::iterator	it;
-
-	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
-		if (user.getNickname() == it->first->getNickname())
-		{
-			this->_lstUsers.erase(it);
-			return ;
+	std::map<User *, int>::iterator	it_map;
+	for (it_map = this->_lstUsers.begin(); it_map != this->_lstUsers.end(); it_map++) {
+		if (user.getNickname() == it_map->first->getNickname()){
+			this->_lstUsers.erase(it_map);
+			break ;
+		}
+	}
+	
+	std::vector<User *>::iterator	it_vec;
+	for (it_vec = this->_vecUsers.begin(); it_vec != this->_vecUsers.end(); it_vec++) {
+		if (user.getNickname() == (*it_vec)->getNickname()) {
+			this->_vecUsers.erase(it_vec);
+			break ;
 		}
 	}
 }

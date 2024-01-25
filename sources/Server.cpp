@@ -101,6 +101,8 @@ void Server::launch_cmd(std::string msg, int index, int *level)
 		this->privmsg(msg, index);
 	else if (msg.find("INVITE") != std::string::npos)
 		this->invite(msg, index);
+	else if (msg.find("KICK") != std::string::npos)
+		this->kick(msg, index);
 }
 
 void Server::create_user()
