@@ -29,7 +29,7 @@ int main(int ac, char **av)
 	catch (std::exception &e)
 	{
 		std::cout << std::endl << RED << "Close server" << RESET << std::endl; 
-		for (int i = 0; i < srv.getLstFd().size(); i++)
+		for (size_t i = 0; i < srv.getLstFd().size(); i++)
 		{
 			close(srv.getLstFd()[i].fd);
 		}

@@ -14,5 +14,6 @@ std::string Server::getNickname(std::string msg)
 			nickname = nickname.substr(0, nickname.size() - 1);
 		}
 	}
+	//check if is already 
 	return (nickname);
 }
