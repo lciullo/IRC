@@ -4,6 +4,12 @@
 
 bool good_arg(char *port, char *address);
 
+void handler(int sig)
+{
+	(void) sig;
+	throw std::exception();
+}
+
 int main(int ac, char **av)
 {
 	if (ac != 3)
@@ -15,7 +21,19 @@ int main(int ac, char **av)
 	if (!good_arg(av[1], av[2]))
 		return (1);
 	Server srv(atoi(av[1]), av[2]);
-	srv.launch();
+	try
+	{
+		signal(SIGINT,handler);
+		srv.launch();
+	}
+	catch (std::exception &e)
+	{
+		std::cout << std::endl << RED << "Close server" << RESET << std::endl; 
+		for (size_t i = 0; i < srv.getLstFd().size(); i++)
+		{
+			close(srv.getLstFd()[i].fd);
+		}
+	}
 	return (0);
 }
 

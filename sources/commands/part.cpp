@@ -20,24 +20,7 @@ void Server::part(std::string msg, int index)
 	std::cout << "[PART] channel : " << channel_name << " | reason : " << reason << " | who : " << user.getNickname() << std::endl;
 	Channel &channel = this->_lst_channel[channel_name];
 	channel.deleteUser(user);
-	std::vector<User *> test = channel.getVecUsers();
-	std::vector<User *>::iterator ite = test.end();
-	std::cout << "[TEST]" << std::endl;
-	for (std::vector<User *>::iterator it = test.begin(); it != ite; ++it)
-	{
-		std::cout << "USER : " << (*it)->getNickname() << " " << user.getNickname() << std::endl;
-		//if ((*it)->getNickname() == user.getNickname())
-		//{
-		//	test.erase(it);
-		//	break;
-		//}
-	}
-	std::cout << "[TEST]" << std::endl;
-	//if (it == ite)
-	//{
-	//	//ERR_NOTONCHANNEL
-	//}
 	std::string message = HEADER_CMD(user) + "PART " + channel_name + " " + reason + "\r\n";
+	send(user.getFd(), message.c_str(), message.size(), 0);
 	sendUserList(channel);
-	std::cout << "[TEST]" << std::endl;
 }
