@@ -36,7 +36,6 @@ class Server
 		void add_user(int index, std::string nickname, std::string username);
 		void create_user();
 		void launch_cmd(std::string msg, int index, int *level, std::string nickname, std::string username);
-		std::string getUsername(std::string msg);
 		void launch_cmd(std::string msg, int index, int *level);
 		std::string getNickname(std::string msg);
 		std::string getUsername(std::string msg);
