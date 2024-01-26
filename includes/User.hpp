@@ -7,8 +7,8 @@ class User
 {
 	private :
 				std::string	_nickname;
-				std::string	_channel; // pourquoi? plutot un vector non?
 				std::string	_username;
+				std::vector<std::string>	_lstChannel; //vector avec le nom de tout les channel dans lequel est l'user
 				int 		_fd;
 				bool		_isCreate;
 				User(void);

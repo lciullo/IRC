@@ -101,6 +101,8 @@ void Server::launch_cmd(std::string msg, int index, int *level, std::string nick
 		this->invite(msg, index);
 	else if (msg.find("KICK") != std::string::npos)
 		this->kick(msg, index);
+	// else if (msg.find("MODE") != std::string::npos)
+	// 	this->mode(msg, index);
 }
 
 

@@ -31,11 +31,6 @@ const int& User::getFd(void) const
 	return (_fd);
 }
 
-const std::string& User::getChannel(void) const 
-{
-	return (_channel);
-}
-
 const bool& User::getIsCreate(void) const
 {
 	return (_isCreate);

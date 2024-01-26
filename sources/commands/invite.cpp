@@ -14,7 +14,6 @@
 
 User &	User::operator=(const User &obj){
 	this->_nickname = obj._nickname;
-	this->_channel = obj._channel;
 	this->_username = obj._username;
 	this->_fd = obj._fd;
 	this->_isCreate = obj._isCreate;
@@ -34,7 +33,6 @@ void Server::invite(std::string msg, int index)
 	guest_username = cmd.at(0);
 	protagonist = this->_lst_usr[index - 1].getUsername();
 
-	std::cout << "\"" << guest_username[guest_username.size() - 1] << "\"" << std::endl; 
 	// checker que la commnade est de la bonne taille -> ERR_NEEDMOREPARAMS
 	if (cmd.size() != 2) {
 		ERR_NEEDMOREPARAMS(this->_lst_usr[index - 1], "INVITE");
@@ -42,8 +40,8 @@ void Server::invite(std::string msg, int index)
 	}
 
 	// checker que le channel existe -> -> ERR_NOSUCHCHANNEL
-	std::map<std::string, Channel>::iterator	it_serv;
 	Channel						*current_channel;
+	std::map<std::string, Channel>::iterator	it_serv;
 	if ((it_serv = this->_lst_channel.find(channel_name)) == this->_lst_channel.end()) {
 		std::cout << "ERROR no such channel\n";
 		return ;
@@ -56,6 +54,7 @@ void Server::invite(std::string msg, int index)
 		}
 	}
 
+	//checker que la personne qu'on veut inviter est dans le serveur
 	std::vector<User>::iterator	it_serv_usr;
 	User	*guest;
 	for (it_serv_usr = this->_lst_usr.begin(); it_serv_usr != this->_lst_usr.end(); it_serv_usr++)
@@ -104,7 +103,7 @@ void Server::invite(std::string msg, int index)
 	//send message to new gust and to inviter
 	//checker qu'il n'a pas deja ete invite avant
 	//la personne a ete invite
-
+	
 }
 
 // Quand j'essaie d'invite  et que je mets qu'un argument automatiquement un autre argument s'ajoute
@@ -139,7 +138,7 @@ void	split_cmd(std::vector<std::string> *cmd, std::string msg)
 		str = msg.substr(begin, end);
 		if ((last_non_space = str.find_last_not_of(whitespace)) != std::string::npos)
 			str.erase(last_non_space + 1);
-		if (str == "INVITE" || str == "KICK") {
+		if (str == "INVITE" || str == "KICK" || str == "MODE") {
 			msg.erase(0, end);
 			continue ;
 		}
