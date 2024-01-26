@@ -35,8 +35,8 @@ class Server
 		void launch();
 		void add_user(int index, std::string nickname, std::string username);
 		void create_user();
-		void launch_cmd(std::string msg, int index, int *level, std::string nickname, std::string username);
-		void launch_cmd(std::string msg, int index, int *level);
+		//void launch_cmd(std::string msg, int index, int *level, std::string &nickname, std::string &username);
+		void launch_cmd(std::string msg, int index);
 		std::string getNickname(std::string msg);
 		std::string getUsername(std::string msg);
 		std::vector<struct pollfd> getLstFd() const;
@@ -45,5 +45,6 @@ class Server
 };
 
 void sendUserList(Channel channel);
+void getcmd(std::string str, std::string &cmd);
 
 #endif

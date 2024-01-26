@@ -11,7 +11,7 @@ std::string Server::getNickname(std::string msg)
 		size_t pos = line.find("NICK");
 		if (pos != std::string::npos) {
 			nickname = line.substr(5);
-			nickname = nickname.substr(0, nickname.size() - 1);
+			nickname = nickname.substr(0, nickname.size());
 		}
 	}
 	//check if is already 

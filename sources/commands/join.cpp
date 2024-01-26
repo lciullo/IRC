@@ -31,10 +31,11 @@ void Server::join(std::string msg, int index)
 {
 	//Channel channel;
 	//User &user = this->_lst_usr[index - 1];
+	std::cout << "[CMD] JOIN" << std::endl; 
 	User &user = this->GetUserByFd(this->_lst_fd[index].fd);
 	int i = msg.find("JOIN");
 	std::string channel_name = msg.substr(i + 5);
-	channel_name = channel_name.substr(0, channel_name.size() - 2); //for remove last \r\n
+	channel_name = channel_name.substr(0, channel_name.size());
 	if (channel_name[0] != '#' && channel_name[0] != '&')
 	{  
 		std::string err_msg = HEADER_CMD(user) + "403 " + user.getNickname() + " " + channel_name + " :Put an # before channel name\r\n";
@@ -54,5 +55,5 @@ void Server::join(std::string msg, int index)
 	Channel channel = this->_lst_channel[channel_name];
 	std::string message = HEADER_CMD(user) + "JOIN " + channel_name + "\r\n";
 	send(this->_lst_fd[index].fd, message.c_str(), message.size(), 0);
-	sendUserList(channel);
+	//sendUserList(channel);
 }
