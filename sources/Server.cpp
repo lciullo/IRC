@@ -17,11 +17,8 @@ Server::Server(int port, std::string password)
 void Server::launch()
 {
 	char 			buffer[256];
-	std::string 	nickname;
-	std::string 	username;
 	int 			n;
 	int 			opt = 1;
-	int 			level = 0;
 
 	this->_socketfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (setsockopt(this->_socketfd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt))<0)
@@ -58,10 +55,21 @@ void Server::launch()
 					if (n < 0)
 						std::cout << "ERROR writing to socket" << std::endl;
 					std::string str(buffer);
-					std::cout << "[LOG] " << i << " " << str << std::endl;
-					this->launch_cmd(str, i, &level, nickname, username);
-					if (level == 2)
-						this->add_user(i, nickname, username);
+					std::string cmd = "";
+					getcmd(str, cmd);
+					while (cmd.size() != 0)
+					{
+						std::cout << "[LOG] " << i << " " << cmd << "|" << std::endl;
+						str = str.substr(cmd.size() + 2);
+						this->launch_cmd(cmd, i);
+						getcmd(str, cmd);
+					}
+					//this->launch_cmd(str, i, &level, nickname, username);
+					//if (level == 3)
+					//{
+					//	this->add_user(i, nickname, username);
+					//	level = 0;
+					//}
 				}
 				// if regarder l'event deconnection quand on a pas de quit on envoie un quit 
 			}
@@ -69,25 +77,25 @@ void Server::launch()
 	}
 }
 
-
 /*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
 
-void Server::launch_cmd(std::string msg, int index, int *level, std::string nickname, std::string username)
-{ 
-	if (msg.find("PASS") != std::string::npos && *level == 0)
+void Server::launch_cmd(std::string msg, int index)
+{
+	User &user = GetUserByFd(this->_lst_fd[index].fd);
+	if (msg.find("PASS") != std::string::npos)
 	{
 		if (isRightPassword(msg, index) == true)
-			*level += 1;
+			user.addLevel();
 	} 
-	else if (msg.find("NICK") != std::string::npos && *level == 1)
+	else if (msg.find("NICK") != std::string::npos)
 	{
-		nickname = getNickname(msg);
-		*level += 1;
+		user.setNickname(getNickname(msg));
+		user.addLevel();
 	}
-	else if (msg.find("USER") != std::string::npos && *level == 2)
+	else if (msg.find("USER") != std::string::npos)
 	{
-		username = getUsername(msg);	
-		*level += 1;
+		user.setUsername(getUsername(msg));	
+		user.addLevel();
 	}
 	else if (msg.find("QUIT") != std::string::npos) 
 		this->_lst_fd.erase(this->_lst_fd.begin() + index);
@@ -117,29 +125,31 @@ void Server::create_user()
 	new_socket_fd.fd = newsockfd;
 	new_socket_fd.events = POLLIN;
 	new_socket_fd.revents = 0;
+	User user(newsockfd);
+	this->_lst_usr.push_back(user);
 	this->_lst_fd.push_back(new_socket_fd);
 }
 
 
 /*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
 
-void  Server::add_user(int index, std::string nickname, std::string username)
-{
-	User user(nickname, username, this->_lst_fd[index].fd, false);
-	for (std::vector<User>::const_iterator it = _lst_usr.begin(); it != _lst_usr.end(); ++it) 
-	{
-		if (it->getNickname() == nickname && it->getIsCreate() == true)
-		{
-			std::cout << RED << "<client> <nick> :Nickname is already in use" << RESET << std::endl;
-			return ;
-		}
-	std::cout << BLUE << *it << RESET;
-		it->getNickname();
-	}
-   	this->_lst_usr.push_back(user);
-	this->_lst_usr.back().setIsCreate(true);
-	return ;
-}
+//void  Server::add_user(int index, std::string nickname, std::string username)
+//{
+//	//User user(nickname, username, this->_lst_fd[index].fd, false);
+//	for (std::vector<User>::const_iterator it = _lst_usr.begin(); it != _lst_usr.end(); ++it) 
+//	{
+//		if (it->getNickname() == nickname && it->getIsCreate() == true)
+//		{
+//			std::cout << RED << "<client> <nick> :Nickname is already in use" << RESET << std::endl;
+//			return ;
+//		}
+//	std::cout << BLUE << *it << RESET;
+//		it->getNickname();
+//	}
+//   	this->_lst_usr.push_back(user);
+//	this->_lst_usr.back().setIsCreate(true);
+//	return ;
+//}
 
 std::vector<struct pollfd> Server::getLstFd() const {return (this->_lst_fd);}
 

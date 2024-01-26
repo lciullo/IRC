@@ -10,7 +10,7 @@ bool Server::isRightPassword(std::string msg, int index)
 		size_t pos = line.find("PASS");
 		if (pos != std::string::npos) {
 			password = line.substr(5);
-			password = password.substr(0, password.size() - 1);
+			password = password.substr(0, password.size());
 		}
 	}
 	if (password != this->_password)
