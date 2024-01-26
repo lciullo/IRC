@@ -8,6 +8,8 @@
 	//
 
 // /JOIN #nom_server
+//every member of the channel can invite no need to be an operator except if it's an invite only channel
+// in this cse the person who invite must be an operator
 
 #include "Server.hpp"
 #include "Numerics.hpp"
