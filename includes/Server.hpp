@@ -23,7 +23,7 @@ class Server
 		std::string _password;
 		std::vector<struct pollfd> _lst_fd;
 		std::vector<User> _lst_usr;
-		std::map<std::string,Channel> _lst_channel;
+		std::map<std::string,Channel> _lst_channel; //std::string == non du channel
 		void invite(std::string msg, int index);
 		void kick(std::string msg, int index);
 		void mode(std::string msg, int index);

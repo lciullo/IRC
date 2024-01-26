@@ -14,7 +14,6 @@
 
 User &	User::operator=(const User &obj){
 	this->_nickname = obj._nickname;
-	this->_channel = obj._channel;
 	this->_username = obj._username;
 	this->_fd = obj._fd;
 	this->_isCreate = obj._isCreate;
@@ -104,7 +103,7 @@ void Server::invite(std::string msg, int index)
 	//send message to new gust and to inviter
 	//checker qu'il n'a pas deja ete invite avant
 	//la personne a ete invite
-
+	
 }
 
 // Quand j'essaie d'invite  et que je mets qu'un argument automatiquement un autre argument s'ajoute

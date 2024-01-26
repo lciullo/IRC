@@ -82,12 +82,3 @@ void Server::kick(std::string msg, int index)
 
 	current_channel->deleteUser(*guest);
 }
-
-//pourquoi quand je fais kick il me met 2 fois le nom du chanel alors 
-//que l'ai ecrit qu'une seule fois et pourqoi il rajoute : avant le 
-//nom de l'user que je veux kick
-//KICK #coucou #coucou :user
-//kick #coucou user
-//Pourquoi quand je deco et que je me reco au serveur, sans relancer hexchat,
-// que j'essaie de faire la commande join je segfaulte ? 
-// Quand j'ai 2 user d'ouvert

@@ -13,19 +13,17 @@
 #include "Server.hpp"
 #include "Numerics.hpp"
 
-void Server::mode(std::string msg, int index) {
-	(void) index;
-	std::cout << msg << std::endl;
+// void Server::mode(std::string msg, int index) {
+	// (void) index;
+	// std::cout << msg << std::endl;
 
-	std::vector<std::string>	cmd;
-	std::string					target;
-	std::string					mode;
-	std::string					protagonist;
+	// std::vector<std::string>	cmd;
+	// std::string					target;
+	// std::string					protagonist;
+	// // char						sign;
 
-	split_cmd(&cmd, msg);
-	target = cmd.at(0);
-	mode = cmd.at(1);
-	protagonist = this->_lst_usr[index - 1].getUsername();
+	// split_cmd(&cmd, msg);
+	// protagonist = this->_lst_usr[index - 1].getUsername();
 
 	// // checker que la commnade est de la bonne taille -> ERR_NEEDMOREPARAMS
 	// if (cmd.size() <= 1) {
@@ -38,9 +36,17 @@ void Server::mode(std::string msg, int index) {
 	//if the mode string is not given -> RPL_CHANNELMODEIS and RPL_CREATIONTIME following
 
 	//Ckeck that the user who is doing the mode command have the proper rights
+	// print_vector(cmd);
 
+	// int	i = 0;
+	// while (cmd.size() != 0) {
+	// 	if (it[0] == '#') {
+	// 		//check_channel
+	// 	}
 
-	print_vector(cmd);
-}
+	// 	if (it)
+		
+	// }
+// }
 
 //<channel/nickanme> <+/-> <mode> [parametre]
