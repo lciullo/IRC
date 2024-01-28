@@ -12,10 +12,10 @@ class User
 				int 		_fd;
 				bool		_isCreate;
 				int			_level;
-				User(void);
 
 	public :
 				//User(const std::string& nickname, const std::string& username, int fd, bool isCreate);
+				User(void);
 				User(int fd);
 				~User(void);
 				User &	operator=(const User &obj);

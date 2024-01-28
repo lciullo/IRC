@@ -56,12 +56,12 @@ void Server::invite(std::string msg, int index)
 		}
 	}
 
-	std::vector<User>::iterator	it_serv_usr;
+	std::map<int, User>::iterator	it_serv_usr;
 	User	*guest;
 	for (it_serv_usr = this->_lst_usr.begin(); it_serv_usr != this->_lst_usr.end(); it_serv_usr++)
 	{
-		if (it_serv_usr->getUsername() == guest_username) {
-			guest = &(*it_serv_usr);
+		if (it_serv_usr->second.getUsername() == guest_username) {
+			guest = &(it_serv_usr->second);
 			std::cout << "Guest is in the server\n";
 			break ;
 		}

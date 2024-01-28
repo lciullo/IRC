@@ -126,7 +126,7 @@ void Server::create_user()
 	new_socket_fd.events = POLLIN;
 	new_socket_fd.revents = 0;
 	User user(newsockfd);
-	this->_lst_usr.push_back(user);
+	this->_lst_usr[newsockfd] = user;
 	this->_lst_fd.push_back(new_socket_fd);
 }
 
@@ -155,24 +155,24 @@ std::vector<struct pollfd> Server::getLstFd() const {return (this->_lst_fd);}
 
 User &Server::GetUserByFd(int fd)
 {
-	std::vector<User>::iterator ite = this->_lst_usr.end();
-	for (std::vector<User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
+	std::map<int, User>::iterator ite = this->_lst_usr.end();
+	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
 	{
-		if (it->getFd() == fd)
-			return (*it);
+		if (it->second.getFd() == fd)
+			return (it->second);
 	}
-	return (*ite);
+	return (ite->second);
 }
 
 User &Server::GetUserByNickname(std::string nickname)
 {
-	std::vector<User>::iterator ite = this->_lst_usr.end();
-	for (std::vector<User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
+	std::map<int, User>::iterator ite = this->_lst_usr.end();
+	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
 	{
-		if (it->getNickname() == nickname)
-			return (*it);
+		if (it->second.getNickname() == nickname)
+			return (it->second);
 	}
-	return (*ite);
+	return (ite->second);
 }
 
 /*

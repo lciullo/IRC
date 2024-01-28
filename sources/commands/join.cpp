@@ -55,5 +55,5 @@ void Server::join(std::string msg, int index)
 	Channel channel = this->_lst_channel[channel_name];
 	std::string message = HEADER_CMD(user) + "JOIN " + channel_name + "\r\n";
 	send(this->_lst_fd[index].fd, message.c_str(), message.size(), 0);
-	//sendUserList(channel);
+	sendUserList(channel);
 }
