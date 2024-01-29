@@ -61,7 +61,6 @@ void Server::mode(std::string msg, int fd) {
 	// std::cout << std::endl;
 	// print_vector(cmd);
 	if (cmd[0][0] == '+') {
-		// std::cout << "it's a plus" << std::endl;
 		if (cmd.size() > 1)
 			param = cmd[1];
 		else
@@ -72,7 +71,6 @@ void Server::mode(std::string msg, int fd) {
 			current_channel->addChannelMode(cmd[0][1], param);
 	}
 	else if (cmd[0][0] == '-') {
-		// std::cout << "it's a minus" << std::endl;
 		if (cmd.size() > 1)
 			param = cmd[1];
 		else
