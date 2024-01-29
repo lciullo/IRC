@@ -1,10 +1,10 @@
 #include "Server.hpp"
 
-void Server::part(std::string msg, int index)
+void Server::part(std::string msg, int fd)
 {
-	(void) index;
+	(void) fd;
 
-	User &user = this->GetUserByFd(this->_lst_fd[index].fd);
+	User &user = this->GetUserByFd(fd);
 	int i = msg.find("PART");
 	std::string channel_name = msg.substr(i + 5);
 	i = channel_name.find(" ");

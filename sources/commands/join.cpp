@@ -27,19 +27,17 @@ void sendUserList(Channel channel)
 	}
 }
 
-void Server::join(std::string msg, int index)
+void Server::join(std::string msg, int fd)
 {
-	//Channel channel;
-	//User &user = this->_lst_usr[index - 1];
 	std::cout << "[CMD] JOIN" << std::endl; 
-	User &user = this->GetUserByFd(this->_lst_fd[index].fd);
+	User &user = this->GetUserByFd(fd);
 	int i = msg.find("JOIN");
 	std::string channel_name = msg.substr(i + 5);
 	channel_name = channel_name.substr(0, channel_name.size());
 	if (channel_name[0] != '#' && channel_name[0] != '&')
 	{  
 		std::string err_msg = HEADER_CMD(user) + "403 " + user.getNickname() + " " + channel_name + " :Put an # before channel name\r\n";
-		send(this->_lst_fd[index].fd, err_msg.c_str(), err_msg.size(), 0);
+		send(fd, err_msg.c_str(), err_msg.size(), 0);
 		return ;
 	}
 	std::map<std::string , Channel>::iterator it;
@@ -54,6 +52,6 @@ void Server::join(std::string msg, int index)
 		it->second.addUser(&user);
 	Channel channel = this->_lst_channel[channel_name];
 	std::string message = HEADER_CMD(user) + "JOIN " + channel_name + "\r\n";
-	send(this->_lst_fd[index].fd, message.c_str(), message.size(), 0);
-	//sendUserList(channel);
+	send(fd, message.c_str(), message.size(), 0);
+	sendUserList(channel);
 }
