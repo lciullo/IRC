@@ -97,10 +97,6 @@ void Server::launch_cmd(std::string msg, int fd)
 		user.setUsername(getUsername(msg));	
 		user.addLevel();
 	}
-	//else if (msg.find("QUIT") != std::string::npos) 
-	//{
-	//	this->_lst_fd.erase(this->_lst_fd.begin() + index);
-	//}
 	else if (msg.find("JOIN") != std::string::npos)
 		this->join(msg, fd);
 	else if (msg.find("PART") != std::string::npos)
@@ -156,6 +152,16 @@ void Server::create_user()
 //}
 
 std::vector<struct pollfd> Server::getLstFd() const {return (this->_lst_fd);}
+
+std::map<int, User> Server::getLstUsr(void)
+{
+	return (this->_lst_usr);
+}
+
+std::vector<std::string> User::getUserChannels(void)
+{
+	return (this->_userChannels);
+}
 
 User &Server::GetUserByFd(int fd)
 {

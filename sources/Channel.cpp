@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: lciullo <lciullo@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/26 16:09:55 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/29 10:44:49 by lciullo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 Channel::Channel(std::string name, User *operators) : _name(name) {
 	this->_lstUsers[operators] = OPERATOR;
 	this->_vecUsers.push_back(operators);
+	operators->addChannel(this->_name);
 	this->_private = false;
 	this->_nbrUser += 1;
 }
@@ -65,6 +66,7 @@ void	Channel::addUser(User *new_user)
 		this->_vecUsers.push_back(new_user);
 		this->_lstUsers[new_user] = VOICE;
 		this->_nbrUser += 1;
+		new_user->addChannel(this->_name);
 	//}
 }
 
@@ -84,6 +86,7 @@ void	Channel::addUserToWaitlist(User *guest)
 }
 
 /*- - - - - - - - - - - - - - - - - -DELETE - - - - - - - - - - -- - -  - - - */
+
 void	Channel::deleteUser(User &user) 
 {
 	std::map<User *, int>::iterator	it_map;
