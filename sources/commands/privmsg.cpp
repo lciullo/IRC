@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-void Server::privmsg(std::string msg, int index)
+void Server::privmsg(std::string msg, int fd)
 {
 	int i = msg.find("PRIVMSG");
 	std::string dest = msg.substr(i + 8);
@@ -15,15 +15,15 @@ void Server::privmsg(std::string msg, int index)
 		for (size_t i = 0; i < channel.getVecUsers().size(); i++)
 		{
 			User *user = channel.getVecUsers()[i];
-			std::string message = ":" + this->GetUserByFd(this->_lst_fd[index].fd).getNickname() + " PRIVMSG " + dest + " " + send_msg + "\r\n";
-			if (user->getNickname() == this->GetUserByFd(this->_lst_fd[index].fd).getNickname())
+			std::string message = ":" + this->GetUserByFd(fd).getNickname() + " PRIVMSG " + dest + " " + send_msg + "\r\n";
+			if (user->getNickname() == this->GetUserByFd(fd).getNickname())
 				continue ;
 			send(user->getFd(), message.c_str(), message.size(), 0);
 		}
 	}
 	else
 	{
-		User &sender = this->GetUserByFd(this->_lst_fd[index].fd);
+		User &sender = this->GetUserByFd(fd);
 		User &userToSend = this->GetUserByNickname(dest);
 		std::string message = HEADER_CMD(sender) + "PRIVMSG " + dest + " " + send_msg + "\r\n";
 		send(userToSend.getFd(), message.c_str(), message.size(), 0);

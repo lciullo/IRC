@@ -16,20 +16,23 @@ class User;
 class Server
 {
 	private :
-		int _socketfd;
-		struct sockaddr_in _serv_addr;
-		unsigned long _address;
-		int _port;
-		std::string _password;
-		std::vector<struct pollfd> _lst_fd;
-		std::vector<User> _lst_usr;
-		std::map<std::string,Channel> _lst_channel;
+		int 				_socketfd;
+		struct sockaddr_in	_serv_addr;
+		unsigned long		_address;
+		int					_port;
+		std::string			_password;
+
+		std::vector<struct pollfd>		_lst_fd;
+		std::map<int, User>				_lst_usr;
+		std::map<std::string, Channel>	_lst_channel;
+
 		void invite(std::string msg, int index);
 		void kick(std::string msg, int index);
 		bool isRightPassword(std::string msg, int index);
 		void join(std::string msg, int index);
 		void privmsg(std::string msg, int index);
 		void part(std::string msg, int index);
+
 	public : 
 		Server(int port, std::string _password);
 		void launch();

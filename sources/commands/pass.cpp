@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-bool Server::isRightPassword(std::string msg, int index)
+bool Server::isRightPassword(std::string msg, int fd)
 {
 	std::istringstream	iss(msg);
 	std::string			line;
@@ -17,11 +17,11 @@ bool Server::isRightPassword(std::string msg, int index)
 	{
 		std::cout << RED << "[ERROR] wrong password" << RESET << std::endl;
 		const char* quitMessage = " <client> :Password incorrect";
-   		send(this->_lst_fd[index].fd, quitMessage, strlen(quitMessage), 0);
-		close(this->_lst_fd[index].fd);
+   		send(fd, quitMessage, strlen(quitMessage), 0);
+		close(fd);
 		for (size_t i = 0; i < this->_lst_fd.size(); i++)
 		{
-			if (this->_lst_fd[i].fd == index) {
+			if (this->_lst_fd[i].fd == fd) {
 				this->_lst_fd.erase(this->_lst_fd.begin() + i);
 				break;
 			}

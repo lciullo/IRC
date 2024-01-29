@@ -47,9 +47,9 @@ void Server::launch()
 				std::cout << "NEW USER" << std::endl;
 				this->create_user();
 			}
-			for (int i=1; i < (int)this->_lst_fd.size(); i++) 
+			for (int i=1; i < (int)this->_lst_fd.size(); i++)
 			{
-				if (this->_lst_fd[i].revents & POLLIN) {
+				if (this->_lst_fd[i].revents & POLLIN){
 					bzero(buffer,256);
 					n = read(this->_lst_fd[i].fd,buffer,255);
 					if (n < 0)
@@ -61,7 +61,7 @@ void Server::launch()
 					{
 						std::cout << "[LOG] " << i << " " << cmd << "|" << std::endl;
 						str = str.substr(cmd.size() + 2);
-						this->launch_cmd(cmd, i);
+						this->launch_cmd(cmd, this->_lst_fd[i].fd);
 						getcmd(str, cmd);
 					}
 					//this->launch_cmd(str, i, &level, nickname, username);
@@ -79,12 +79,12 @@ void Server::launch()
 
 /*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
 
-void Server::launch_cmd(std::string msg, int index)
+void Server::launch_cmd(std::string msg, int fd)
 {
-	User &user = GetUserByFd(this->_lst_fd[index].fd);
+	User &user = GetUserByFd(fd);
 	if (msg.find("PASS") != std::string::npos)
 	{
-		if (isRightPassword(msg, index) == true)
+		if (isRightPassword(msg, fd) == true)
 			user.addLevel();
 	} 
 	else if (msg.find("NICK") != std::string::npos)
@@ -97,18 +97,20 @@ void Server::launch_cmd(std::string msg, int index)
 		user.setUsername(getUsername(msg));	
 		user.addLevel();
 	}
-	else if (msg.find("QUIT") != std::string::npos) 
-		this->_lst_fd.erase(this->_lst_fd.begin() + index);
+	//else if (msg.find("QUIT") != std::string::npos) 
+	//{
+	//	this->_lst_fd.erase(this->_lst_fd.begin() + index);
+	//}
 	else if (msg.find("JOIN") != std::string::npos)
-		this->join(msg, index);
+		this->join(msg, fd);
 	else if (msg.find("PART") != std::string::npos)
-		this->part(msg, index);
+		this->part(msg, fd);
 	else if (msg.find("PRIVMSG") != std::string::npos)
-		this->privmsg(msg, index);
+		this->privmsg(msg, fd);
 	else if (msg.find("INVITE") != std::string::npos)
-		this->invite(msg, index);
+		this->invite(msg, fd);
 	else if (msg.find("KICK") != std::string::npos)
-		this->kick(msg, index);
+		this->kick(msg, fd);
 }
 
 
@@ -126,7 +128,7 @@ void Server::create_user()
 	new_socket_fd.events = POLLIN;
 	new_socket_fd.revents = 0;
 	User user(newsockfd);
-	this->_lst_usr.push_back(user);
+	this->_lst_usr[newsockfd] = user;
 	this->_lst_fd.push_back(new_socket_fd);
 }
 
@@ -155,24 +157,24 @@ std::vector<struct pollfd> Server::getLstFd() const {return (this->_lst_fd);}
 
 User &Server::GetUserByFd(int fd)
 {
-	std::vector<User>::iterator ite = this->_lst_usr.end();
-	for (std::vector<User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
+	std::map<int, User>::iterator ite = this->_lst_usr.end();
+	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
 	{
-		if (it->getFd() == fd)
-			return (*it);
+		if (it->second.getFd() == fd)
+			return (it->second);
 	}
-	return (*ite);
+	return (ite->second);
 }
 
 User &Server::GetUserByNickname(std::string nickname)
 {
-	std::vector<User>::iterator ite = this->_lst_usr.end();
-	for (std::vector<User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
+	std::map<int, User>::iterator ite = this->_lst_usr.end();
+	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
 	{
-		if (it->getNickname() == nickname)
-			return (*it);
+		if (it->second.getNickname() == nickname)
+			return (it->second);
 	}
-	return (*ite);
+	return (ite->second);
 }
 
 /*
