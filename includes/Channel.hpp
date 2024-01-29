@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:44:19 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/25 12:44:40 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/26 16:08:30 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class Channel
 		std::map<User *, int>	_lstUsers;
 		std::vector<User *>		_vecUsers;
 		bool					_private;
+		int						_nbrUser;
 
 	public :
 		Channel() {}
@@ -47,6 +48,8 @@ class Channel
 		std::map<User *, int>	getLstUsers() const;
 		std::vector<User *>		getVecUsers() const;
 		bool					getStatus() const;
+		int						getNbrUser() const;
+		
 		//Setters
 		void			setName(std::string name);
 		void			setTopic(std::string topic);
