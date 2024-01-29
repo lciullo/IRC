@@ -10,8 +10,7 @@
 #include "Server.hpp"
 #include "Numerics.hpp"
 
-void Server::kick(std::string msg, int index)
-{
+void Server::kick(std::string msg, int fd) {
 	std::vector<std::string>	cmd;
 	std::string					channel_name;
 	std::string					username;
@@ -21,12 +20,12 @@ void Server::kick(std::string msg, int index)
 	split_cmd(&cmd, msg);
 	channel_name = cmd.at(0);
 	username = cmd.at(1);
-	protagonist = this->_lst_usr[index - 1].getUsername();
+	protagonist = this->GetUserByFd(fd).getUsername();
 	if (cmd.size() == 3)
 		reason = cmd.at(3);
 	
 	if (cmd.size() <= 1) {
-		ERR_NEEDMOREPARAMS(this->_lst_usr[index - 1], "INVITE");
+		ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "INVITE");
 		return ;
 	}
 
@@ -82,3 +81,12 @@ void Server::kick(std::string msg, int index)
 
 	current_channel->deleteUser(*guest);
 }
+
+//pourquoi quand je fais kick il me met 2 fois le nom du chanel alors 
+//que l'ai ecrit qu'une seule fois et pourqoi il rajoute : avant le 
+//nom de l'user que je veux kick
+//KICK #coucou #coucou :user
+// /kick #coucou user
+//Pourquoi quand je deco et que je me reco au serveur, sans relancer hexchat,
+// que j'essaie de faire la commande join je segfaulte ? 
+// Quand j'ai 2 user d'ouvert

@@ -30,6 +30,10 @@ SRCS			=	${DIR_SRCS}main.cpp \
 					${DIR_SRCS}Server.cpp \
 					${DIR_SRCS}User.cpp \
 					${DIR_SRCS}Channel.cpp \
+					${DIR_SRCS}utils.cpp \
+					${DIR_SRCS}commands/pass.cpp \
+					${DIR_SRCS}commands/nick.cpp \
+					${DIR_SRCS}commands/user.cpp \
 					${DIR_SRCS}commands/invite.cpp \
 					${DIR_SRCS}commands/kick.cpp \
 					${DIR_SRCS}commands/mode.cpp \
