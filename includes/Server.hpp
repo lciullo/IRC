@@ -8,6 +8,7 @@
 
 
 //======== DEFINE FOR CMD ==========//
+
 # define HEADER_CMD(User) \
 ":" + User.getNickname() + "!" + User.getUsername() + " "
 
@@ -24,6 +25,7 @@ class Server
 		std::vector<struct pollfd> _lst_fd;
 		std::vector<User> _lst_usr;
 		std::map<std::string,Channel> _lst_channel;
+		void quit(int index);
 		void invite(std::string msg, int index);
 		void kick(std::string msg, int index);
 		bool isRightPassword(std::string msg, int index);
@@ -35,7 +37,6 @@ class Server
 		void launch();
 		void add_user(int index, std::string nickname, std::string username);
 		void create_user();
-		//void launch_cmd(std::string msg, int index, int *level, std::string &nickname, std::string &username);
 		void launch_cmd(std::string msg, int index);
 		std::string getNickname(std::string msg);
 		std::string getUsername(std::string msg);

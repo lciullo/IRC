@@ -40,6 +40,7 @@ SRCS			=	${DIR_SRCS}main.cpp \
 					${DIR_SRCS}commands/topic.cpp \
 					${DIR_SRCS}commands/join.cpp \
 					${DIR_SRCS}commands/part.cpp \
+					${DIR_SRCS}commands/quit.cpp \
 					${DIR_SRCS}commands/privmsg.cpp
 					
 				

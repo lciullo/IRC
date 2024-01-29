@@ -109,6 +109,8 @@ void Server::launch_cmd(std::string msg, int index)
 		this->invite(msg, index);
 	else if (msg.find("KICK") != std::string::npos)
 		this->kick(msg, index);
+	else if (msg.find("QUIT") != std::string::npos)
+		this->quit(index);
 }
 
 
