@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:44:19 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/26 16:08:30 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/29 13:47:48 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,14 @@ class Channel
 	private :
 		std::string				_name;
 		std::string				_topic;
+		std::string				_password;
 		std::vector<char>		_mode;
 		std::vector<User *>		_waitlist;
 		std::map<User *, int>	_lstUsers;
 		std::vector<User *>		_vecUsers;
 		bool					_private;
 		int						_nbrUser;
+		int						_nbrUserMax;
 
 	public :
 		Channel() {}
@@ -56,13 +58,15 @@ class Channel
 		
 		//Add
 		void			addUser(User *new_user);
-		void			addMode(std::string new_mode); // or a char?
+		void			addChannelMode(char new_mode, std::string param); // or a char?
 		void			addTopic(std::string new_topic);
 		void			addUserToWaitlist(User *guest);
+		void			addOperatorMode(std::string user_name);
 		
 		//Delete
 		void			deleteUser(User &user);
-		void			deleteMode(std::string mode);
+		void			deleteChannelMode(char mode, std::string param);
+		void			deleteOperatorMode(std::string user_name);
 		
 		//Find
 		bool			findUser(User *user) const;
