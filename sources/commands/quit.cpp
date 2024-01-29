@@ -1,7 +1,7 @@
 #include "Server.hpp"
 
-void Server::quit(int index)
+void Server::quit(int fd)
 {
-	(void)index;
+	(void)fd;
 	return ;
 }
