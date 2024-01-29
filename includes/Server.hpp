@@ -22,7 +22,6 @@ class Server
 		unsigned long		_address;
 		int					_port;
 		std::string			_password;
-
 		std::vector<struct pollfd>		_lst_fd;
 		std::map<int, User>				_lst_usr;
 		std::map<std::string, Channel>	_lst_channel;
@@ -32,7 +31,6 @@ class Server
 		void join(std::string msg, int fd);
 		void privmsg(std::string msg, int fd);
 		void part(std::string msg, int fd);
-		//quit
 		void quit(int fd);
 		bool searchChannelInServer(std::string target);
 	public : 
@@ -45,6 +43,7 @@ class Server
 		std::string getUsername(std::string msg);
 		std::vector<struct pollfd> getLstFd() const;
 		std::map<int, User> getLstUsr(void);
+		//time_t*							getTime();
 		User &GetUserByFd(int fd);
 		User &GetUserByNickname(std::string nickname);
 };

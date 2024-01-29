@@ -158,11 +158,6 @@ std::map<int, User> Server::getLstUsr(void)
 	return (this->_lst_usr);
 }
 
-std::vector<std::string> User::getUserChannels(void)
-{
-	return (this->_userChannels);
-}
-
 User &Server::GetUserByFd(int fd)
 {
 	std::map<int, User>::iterator ite = this->_lst_usr.end();
@@ -184,11 +179,3 @@ User &Server::GetUserByNickname(std::string nickname)
 	}
 	return (ite->second);
 }
-
-/*
-creat une function lors de la deconnection du client qui va supprimer 
-du vecteur user 
-de la map channel 
-std::map<User, int>	_lstUsers;
-std::vector<User>	_vecUsers;
-*/
