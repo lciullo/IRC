@@ -10,7 +10,7 @@
 #include "Server.hpp"
 #include "Numerics.hpp"
 
-void Server::kick(std::string msg, int index)
+void Server::kick(std::string msg, int fd)
 {
 	std::vector<std::string>	cmd;
 	std::string					channel_name;
@@ -20,7 +20,7 @@ void Server::kick(std::string msg, int index)
 	split_cmd(&cmd, msg);
 	channel_name = cmd.at(0);
 	username = cmd.at(1);
-	protagonist = this->_lst_usr[index - 1].getUsername();
+	protagonist = this->GetUserByFd(fd).getUsername();
 	// print_vector(cmd);
 	std::cout << msg << std::endl;
 }

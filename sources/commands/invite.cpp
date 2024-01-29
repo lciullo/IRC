@@ -22,7 +22,7 @@ User &	User::operator=(const User &obj){
 	return (*this);
 }
 
-void Server::invite(std::string msg, int index)
+void Server::invite(std::string msg, int fd)
 {
 	std::vector<std::string>	cmd;
 	std::string					channel_name;
@@ -32,12 +32,12 @@ void Server::invite(std::string msg, int index)
 	split_cmd(&cmd, msg);
 	channel_name = cmd.at(1);
 	guest_username = cmd.at(0);
-	protagonist = this->_lst_usr[index - 1].getUsername();
+	protagonist = this->GetUserByFd(fd).getUsername();
 
 	std::cout << "\"" << guest_username[guest_username.size() - 1] << "\"" << std::endl; 
 	// checker que la commnade est de la bonne taille -> ERR_NEEDMOREPARAMS
 	if (cmd.size() != 2) {
-		ERR_NEEDMOREPARAMS(this->_lst_usr[index - 1], "INVITE");
+		ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "INVITE");
 		return ;
 	}
 
