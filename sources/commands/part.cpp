@@ -1,26 +1,47 @@
 #include "Server.hpp"
+#include "Numerics.hpp"
 
 void Server::part(std::string msg, int fd)
 {
-	(void) fd;
+	std::string reason = "";
+	std::vector<std::string> cmd;
 
+	split_cmd(&cmd, msg);
 	User &user = this->GetUserByFd(fd);
-	int i = msg.find("PART");
-	std::string channel_name = msg.substr(i + 5);
-	i = channel_name.find(" ");
-	channel_name = channel_name.substr(0, i);
-	//std::map<std::string, Channel>::iterator *it;
-	//it=this->_lst_channel.find(channel_name);
-	//if (it == this->_lst_channel.end())
-	//{
-	//	//ERR_NOSUCHCHANNEL
-	//}
-	std::string reason = msg.substr(msg.find(":"));
-	reason = reason.substr(0, reason.size() - 2); //for remove last \r\n
-	std::cout << "[PART] channel : " << channel_name << " | reason : " << reason << " | who : " << user.getNickname() << std::endl;
-	Channel &channel = this->_lst_channel[channel_name];
-	channel.deleteUser(user);
-	std::string message = HEADER_CMD(user) + "PART " + channel_name + " " + reason + "\r\n";
-	send(user.getFd(), message.c_str(), message.size(), 0);
-	sendUserList(channel);
+	if (cmd.size() < 2)
+	{
+		ERR_NEEDMOREPARAMS(user, "PART");
+		return ;
+	}
+	std::string arg_channel = cmd[1];
+	std::vector<std::string> channels_name;
+	split_arg(&channels_name, arg_channel);
+	for (size_t i = 0; i < channels_name.size(); i++)
+	{
+		std::map<std::string, Channel>::iterator it;
+		it=this->_lst_channel.find(channels_name[i]);
+		if (it == this->_lst_channel.end())
+		{
+			ERR_NOSUCHCHANNEL(user, channels_name[i]);
+			return ;
+		}
+		Channel &channel = this->_lst_channel[channels_name[i]];
+		if (!channel.findUser(&user))
+		{
+			ERR_NOTONCHANNEL(user, channels_name[i]);
+			return ;
+		}
+		channel.deleteUser(user);
+		std::string message = HEADER_CMD(user) + "PART " + channels_name[i];
+		if (cmd.size() > 2)
+		{
+			reason = cmd[2];
+			message.append(" " + reason);
+		}
+		message.append("\r\n");
+		std::cout << "[PART] channel : " << channels_name[i] << " | reason : " << reason << " | who : " << user.getNickname() << std::endl;
+		send(user.getFd(), message.c_str(), message.size(), 0);
+		sendUserList(channel);
+		//if last user left channel rm channel of list
+	}
 }
