@@ -1,6 +1,15 @@
 #include "IRC.hpp"
 
 
+void sendStringSocket(int socket, const std::string& str)
+{
+	std::cout << "[Server]: Sending : " << str;
+	ssize_t bytesSent = send(socket, str.c_str(), str.length(), 0);
+	if (bytesSent == -1)
+		std::cerr << "Error sending data to client" << std::endl;
+	return ;
+}
+
 void getcmd(std::string str, std::string &cmd)
 {
 	int i = 0;

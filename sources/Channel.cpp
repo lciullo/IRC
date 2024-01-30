@@ -6,7 +6,7 @@
 /*   By: lciullo <lciullo@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/29 14:46:05 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/30 14:57:07 by lciullo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ void	Channel::deleteChannelMode(char mode, std::string param)
 	{
 		std::vector<char>::iterator	it;
 		for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
-			if (*it == new_mode) {
+			if (*it == mode) {
 				break ;
 			}
 		}
