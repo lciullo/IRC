@@ -4,12 +4,8 @@
 #include "IRC.hpp"
 #include "User.hpp"
 #include "Channel.hpp"
+#include "Numerics.hpp"
 #include <map>
-
-
-//======== DEFINE FOR CMD ==========//
-# define HEADER_CMD(User) \
-":" + User.getNickname() + "!" + User.getUsername() + " "
 
 class User;
 
@@ -52,5 +48,6 @@ class Server
 
 void sendUserList(Channel channel);
 void getcmd(std::string str, std::string &cmd);
+void split_arg(std::vector<std::string> *cmd, std::string arg);
 
 #endif
