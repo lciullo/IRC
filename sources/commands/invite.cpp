@@ -129,25 +129,28 @@ void	split_cmd(std::vector<std::string> *cmd, std::string msg)
 	size_t	end;
 	std::string	str;
 	std::string	whitespace = " \t\n\r\f\v";
-	size_t	last_non_space;
+	size_t	last_non_space = 0;
 
 	while (msg.size() != 0)
 	{
-		begin = msg.find_first_not_of(" ");
+		if (msg.find_first_not_of(whitespace) == std::string::npos)
+			break ;
+
+		begin = msg.find_first_not_of(whitespace);
 		end = msg.find(" ", begin);
 
 		str = msg.substr(begin, end);
 		if ((last_non_space = str.find_last_not_of(whitespace)) != std::string::npos)
-			str.erase(last_non_space + 1);
+		{
+			str = str.substr(0, last_non_space + 1);
+		}
 		if (str == "INVITE" || str == "KICK" || str == "MODE") {
 			msg.erase(0, end);
 			continue ;
 		}
 		cmd->push_back(str.c_str());
-
 		msg.erase(0, end);
 	}
-	std::cout << std::endl;
 }
 
 void	print_vector(std::vector<std::string> cmd)
