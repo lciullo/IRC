@@ -15,7 +15,6 @@ bool Server::isRightPassword(std::string msg, int fd)
 	}
 	if (password != this->_password)
 	{
-		std::cout << RED << "[ERROR] wrong password" << RESET << std::endl;
 		const char* quitMessage = " <client> :Password incorrect";
    		send(fd, quitMessage, strlen(quitMessage), 0);
 		close(fd);
