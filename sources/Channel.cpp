@@ -6,7 +6,7 @@
 /*   By: lciullo <lciullo@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/29 10:44:49 by lciullo          ###   ########.fr       */
+/*   Updated: 2024/01/29 14:46:05 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ Channel::Channel(std::string name, User *operators) : _name(name) {
 	operators->addChannel(this->_name);
 	this->_private = false;
 	this->_nbrUser += 1;
+	this->_nbrUserMax = -1;
 }
 
 Channel::Channel(const Channel &channel)
@@ -70,14 +71,37 @@ void	Channel::addUser(User *new_user)
 	//}
 }
 
-void	Channel::addMode(std::string new_mode)
+void	Channel::addChannelMode(char new_mode, std::string param)
 {
-	if (new_mode.size() != 1) {
-		return ;
+	// std::cout << new_mode << std::endl;
+	
+	{
+		std::vector<char>::iterator	it;
+		for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
+			if (*it == new_mode) {
+				std::cout << "ERROR The mode ou are trying to add is already enable" << std::endl;
+				return ;
+			}
+		}
 	}
 	
-	const char *mode = new_mode.c_str();
-	this->_mode.push_back(mode[0]);
+	if (new_mode == 'i')
+		this->_private = true;
+	else if (new_mode == 'k' && param != "no param")
+		this->_password = param;
+	else if (new_mode == 'l' && param != "no param")
+	{
+		unsigned long i;
+		for (i = 0; i < param.size(); i++) {
+			if (!isdigit(param[i]))
+				break ;
+		}
+		this->_nbrUserMax = atoi(param.c_str());
+	}
+	this->_mode.push_back(new_mode);
+	std::vector<char>::iterator itv;
+	for (itv = this->_mode.begin(); itv != this->_mode.end(); itv++)
+		std::cout << *itv << std::endl;
 }
 
 void	Channel::addUserToWaitlist(User *guest)
@@ -85,6 +109,20 @@ void	Channel::addUserToWaitlist(User *guest)
 	this->_waitlist.push_back(guest);
 }
 
+void	Channel::addOperatorMode(std::string user_name)
+{
+	if (user_name == "no param")
+		return ;
+	
+	std::map<User *, int>::iterator	it;
+	for (it = _lstUsers.begin(); it != _lstUsers.end(); it++) {
+		if (it->first->getNickname() == user_name)
+		{
+			it->second = OPERATOR;
+			return ;
+		}
+	}
+}
 /*- - - - - - - - - - - - - - - - - -DELETE - - - - - - - - - - -- - -  - - - */
 
 void	Channel::deleteUser(User &user) 
@@ -107,21 +145,52 @@ void	Channel::deleteUser(User &user)
 	this->_nbrUser -= 1;
 }
 
-void	Channel::deleteMode(std::string mode)
+void	Channel::deleteChannelMode(char mode, std::string param)
 {
-	if (mode.size() != 1) {
-		return ;
+	(void) param;
+
+	{
+		std::vector<char>::iterator	it;
+		for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
+			if (*it == new_mode) {
+				break ;
+			}
+		}
+		
 	}
 	
 	std::vector<char>::iterator	it;
 	for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
-		if (*it == mode[0]) {
+		if (*it == mode) {
 			this->_mode.erase(it);
+			if (mode == 'i')
+				this->_private = false;
+			else if (mode == 'k')
+				this->_password.clear();
+			else if (mode == 'l')
+				this->_nbrUserMax = -1;
+			break;
+		}
+	}
+	std::vector<char>::iterator itv;
+	for (itv = this->_mode.begin(); itv != this->_mode.end(); itv++)
+		std::cout << *itv << std::endl;
+}
+
+void		Channel::deleteOperatorMode(std::string user_name)
+{
+	if (user_name == "no param")
+		return ;
+	
+	std::map<User *, int>::iterator	it;
+	for (it = _lstUsers.begin(); it != _lstUsers.end(); it++) {
+		if (it->first->getNickname() == user_name)
+		{
+			it->second = VOICE;
 			return ;
 		}
 	}
 }
-
 /*- - - - - - - - - - - - - - - - -  FIND - - - - - - - - - - - - -- - -  - - */
 bool	Channel::findUser(User *user) const {
 	

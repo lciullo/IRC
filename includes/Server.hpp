@@ -4,6 +4,7 @@
 #include "IRC.hpp"
 #include "User.hpp"
 #include "Channel.hpp"
+#include "Numerics.hpp"
 #include <map>
 
 
@@ -27,6 +28,7 @@ class Server
 		std::map<std::string, Channel>	_lst_channel;
 		void invite(std::string msg, int fd);
 		void kick(std::string msg, int fd);
+		void mode(std::string msg, int fd);
 		bool isRightPassword(std::string msg, int fd);
 		void join(std::string msg, int fd);
 		void privmsg(std::string msg, int fd);
@@ -54,5 +56,6 @@ class Server
 
 void sendUserList(Channel channel);
 void getcmd(std::string str, std::string &cmd);
+void split_arg(std::vector<std::string> *cmd, std::string arg);
 
 #endif

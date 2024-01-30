@@ -64,12 +64,6 @@ void Server::launch()
 						this->launch_cmd(cmd, this->_lst_fd[i].fd);
 						getcmd(str, cmd);
 					}
-					//this->launch_cmd(str, i, &level, nickname, username);
-					//if (level == 3)
-					//{
-					//	this->add_user(i, nickname, username);
-					//	level = 0;
-					//}
 				}
 				// if regarder l'event deconnection quand on a pas de quit on envoie un quit man poll HR2
 			}
@@ -109,6 +103,8 @@ void Server::launch_cmd(std::string msg, int fd)
 		this->kick(msg, fd);
 	else if (msg.find("QUIT") != std::string::npos)
 		this->quit(msg, fd);
+	else if (msg.find("MODE") != std::string::npos)
+		this->mode(msg, fd);
 }
 
 
@@ -133,23 +129,6 @@ void Server::create_user()
 
 /*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
 
-//void  Server::add_user(int index, std::string nickname, std::string username)
-//{
-//	//User user(nickname, username, this->_lst_fd[index].fd, false);
-//	for (std::vector<User>::const_iterator it = _lst_usr.begin(); it != _lst_usr.end(); ++it) 
-//	{
-//		if (it->getNickname() == nickname && it->getIsCreate() == true)
-//		{
-//			std::cout << RED << "<client> <nick> :Nickname is already in use" << RESET << std::endl;
-//			return ;
-//		}
-//	std::cout << BLUE << *it << RESET;
-//		it->getNickname();
-//	}
-//   	this->_lst_usr.push_back(user);
-//	this->_lst_usr.back().setIsCreate(true);
-//	return ;
-//}
 
 std::vector<struct pollfd> Server::getLstFd() const {return (this->_lst_fd);}
 
