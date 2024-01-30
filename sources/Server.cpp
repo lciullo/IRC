@@ -71,7 +71,7 @@ void Server::launch()
 					//	level = 0;
 					//}
 				}
-				// if regarder l'event deconnection quand on a pas de quit on envoie un quit 
+				// if regarder l'event deconnection quand on a pas de quit on envoie un quit man poll HR2
 			}
 		}
 	}
@@ -108,7 +108,7 @@ void Server::launch_cmd(std::string msg, int fd)
 	else if (msg.find("KICK") != std::string::npos)
 		this->kick(msg, fd);
 	else if (msg.find("QUIT") != std::string::npos)
-		this->quit(fd);
+		this->quit(msg, fd);
 }
 
 

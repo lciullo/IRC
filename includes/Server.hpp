@@ -31,8 +31,12 @@ class Server
 		void join(std::string msg, int fd);
 		void privmsg(std::string msg, int fd);
 		void part(std::string msg, int fd);
-		void quit(int fd);
+		void quit(std::string msg, int fd);
+		//utils to quit 
 		bool searchChannelInServer(std::string target);
+		void closeUserFd(int fd);
+		void deleteUserFromChannel(User user);
+		void deleteUserFromLst(int fd);
 	public : 
 		Server(int port, std::string _password);
 		void launch();
