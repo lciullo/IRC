@@ -39,7 +39,7 @@ class Channel
 		int						_nbrUserMax;
 
 	public :
-		Channel() {}
+		Channel();
 		Channel(std::string name, User *operators);
 		Channel(const Channel &channel);
 		Channel &operator=(const Channel &channel);
@@ -69,10 +69,12 @@ class Channel
 		void			deleteUser(User &user);
 		void			deleteChannelMode(char mode, std::string param);
 		void			deleteOperatorMode(std::string user_name);
+		void			deleteUserToWaitlist(User user);
 		
 		//Find
 		bool			findUser(User *user) const;
 		bool			findOperators(User &user) const;
+		bool			findInWaitList(User user) const;
 };
 
 void	split_cmd(std::vector<std::string> *cmd, std::string msg);
