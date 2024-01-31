@@ -6,11 +6,6 @@ User::User(void){
 
 }
 
-//User::User(const std::string& nickname, const std::string& username, int fd): _nickname(nickname), _username(username), _fd(fd), _isCreate(false)
-//{
-//	return ;
-//}
-
 User::User(int fd) : _nickname("default"), _username("default"), _fd(fd), _isCreate(false), _level(0)
 {
 	return ;
@@ -22,23 +17,28 @@ User::~User(void) {
 
 const std::string& User::getNickname(void) const 
 {
-		return (_nickname);
+		return (this->_nickname);
 }
 
 
 const std::string& User::getUsername(void) const 
 {
-	return (_username);
+	return (this->_username);
 }
 
 const int& User::getFd(void) const
 {
-	return (_fd);
+	return (this->_fd);
 }
 
 const bool& User::getIsCreate(void) const
 {
-	return (_isCreate);
+	return (this->_isCreate);
+}
+
+std::vector<std::string> User::getUserChannels(void)
+{
+	return (this->_userChannels);
 }
 
 void User::setIsCreate(bool isCreate)
@@ -68,4 +68,12 @@ std::ostream &operator<<(std::ostream &out, const User &Object) {
 
 	out << Object.getNickname() << " " << Object.getUsername() << " " << Object.getIsCreate() << std::endl;
 	return (out);
+}
+
+void User::addChannel(std::string name_channel)
+{
+	std::cout << "[TEST] name : " << name_channel << std::endl;
+	this->_userChannels.push_back(name_channel);
+	std::cout << "add channel function" << std::endl;
+	std::cout << "SIZE = " << this->_userChannels.size();
 }

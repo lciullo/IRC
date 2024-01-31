@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: lciullo <lciullo@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
 /*   Updated: 2024/01/30 15:30:48 by cllovio          ###   ########lyon.fr   */
@@ -15,6 +15,7 @@
 Channel::Channel(std::string name, User *operators) : _name(name) {
 	this->_lstUsers[operators] = OPERATOR;
 	this->_vecUsers.push_back(operators);
+	operators->addChannel(this->_name);
 	this->_private = false;
 	this->_nbrUser += 1;
 	this->_nbrUserMax = -1;
@@ -53,6 +54,10 @@ std::vector<User *> Channel::getVecUsers() const {return (this->_vecUsers);}
 bool	Channel::getStatus() const {return (this->_private);}
 
 int		Channel::getNbrUser() const {return (this->_nbrUser);};
+
+int		Channel::getNbrUserMax() const {return (this->_nbrUserMax);};
+
+std::string	Channel::getPassword() const {return (this->_password);}
 /*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void	Channel::setName(std::string name) {this->_name = name;}
 
@@ -66,6 +71,7 @@ void	Channel::addUser(User *new_user)
 		this->_vecUsers.push_back(new_user);
 		this->_lstUsers[new_user] = VOICE;
 		this->_nbrUser += 1;
+		new_user->addChannel(this->_name);
 	//}
 }
 
@@ -120,6 +126,7 @@ void	Channel::addOperatorMode(std::string user_name)
 	}
 }
 /*- - - - - - - - - - - - - - - - - -DELETE - - - - - - - - - - -- - -  - - - */
+
 void	Channel::deleteUser(User &user) 
 {
 	std::map<User *, int>::iterator	it_map;

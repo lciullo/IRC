@@ -40,6 +40,8 @@ SRCS			=	${DIR_SRCS}main.cpp \
 					${DIR_SRCS}commands/topic.cpp \
 					${DIR_SRCS}commands/join.cpp \
 					${DIR_SRCS}commands/part.cpp \
+					${DIR_SRCS}commands/quit.cpp \
+					${DIR_SRCS}commands/utils_quit.cpp \
 					${DIR_SRCS}commands/privmsg.cpp
 					
 				
@@ -105,7 +107,7 @@ debug:
 leaks:
 	clear
 	${MAKE} -j VALGRIND=yes
-	${LEAKS} ./ircserv 6969 test
+	${LEAKS} ./ircserv 7700 test
 
 # ---- Clean ---- #
 
