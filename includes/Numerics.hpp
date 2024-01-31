@@ -21,4 +21,10 @@ send_msg(user, HEADER_CMD(user) + "442 " + user.getNickname() + SPACE + channel_
 # define ERR_NOSUCHCHANNEL(user, channel_name) \
 send_msg(user, HEADER_CMD(user) + "403 " + user.getNickname() + SPACE + channel_name + SPACE + ":No such channel" + RN)
 
+# define ERR_BADCHANMASK(user, channel_name) \
+send_msg(user, HEADER_CMD(user) + "476 " + channel_name + SPACE + ":Bad Channel Mask" + RN)
+
+# define ERR_BADCHANNELKEY(user, channel_name) \
+send_msg(user, HEADER_CMD(user) + "475 " + user.getNickname() + SPACE + channel_name + SPACE + ":Cannot join channel, wrong key" + RN)
+
 #endif
