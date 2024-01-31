@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:44:19 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/29 13:47:48 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/31 14:46:34 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,13 @@ class Channel
 		
 		//Add
 		void			addUser(User *new_user);
-		void			addChannelMode(char new_mode, std::string param); // or a char?
+		void			addMode(char new_mode, std::string param); // or a char?
 		void			addTopic(std::string new_topic);
 		void			addUserToWaitlist(User *guest);
-		void			addOperatorMode(std::string user_name);
 		
 		//Delete
 		void			deleteUser(User &user);
-		void			deleteChannelMode(char mode, std::string param);
-		void			deleteOperatorMode(std::string user_name);
+		void			deleteMode(char mode, std::string param);
 		
 		//Find
 		bool			findUser(User *user) const;

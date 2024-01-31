@@ -1,26 +1,19 @@
-
-// MODE
-	// <target> [<modestring> [<mode arguments>...]]
-// -i
-// -t 
-// -k 
-// -o
-// -l
-
-//on peut ajouter plusier mode d'un coup
-// +oi-i+o
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mode.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/31 14:45:08 by cllovio           #+#    #+#             */
+/*   Updated: 2024/01/31 16:10:17 by cllovio          ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Numerics.hpp"
 
-bool	isMode(char mode) {
-	if (mode == 'i' || mode == 't' || mode == 'k' || mode == 'o' || mode == 'l')
-		return (true);
-	return (false);
-}
 void Server::mode(std::string msg, int fd) {
-	// std::cout << msg << std::endl;
-
 	std::vector<std::string>	cmd;
 	std::string					channel;
 	std::string					protagonist;
@@ -108,7 +101,6 @@ void Server::mode(std::string msg, int fd) {
 			return ;
 		}
 
-		std::cout << "The mode is :" << *it << std::endl;
 		if (*it == 'o' || *it == 'k' || *it == 'l') {
 			if (i < cmd.size()) {
 				param = cmd.at(i);
@@ -118,37 +110,17 @@ void Server::mode(std::string msg, int fd) {
 				std::cout << "ERROR the mode need an argument\n";
 				continue ;
 			}
-			param.clear();
 		}
 
-		switch (sign) {
-			case '+' : {current_channel->addChannelMode(*it, param);}
-			case '-' : {current_channel->deleteChannelMode(*it, param);}
-		}
-
-		// if (*it == 'o')
-		// 	current_channel->addOperatorMode(param);
-		// else
-		// 	current_channel->addChannelMode(*it, param);
+		if (sign == '+')
+			current_channel->addMode(*it, param);
+		else if (sign == '-')
+			current_channel->deleteMode(*it, param);
+			
+		param.clear();
 	}
-
-	// if (cmd[0][0] == '+') {
-	// 	if (cmd.size() > 1)
-	// 		param = cmd[1];
-	// 	else
-	// 		param = "no param";
-	// }
-	// else if (cmd[0][0] == '-') {
-	// 	if (cmd.size() > 1)
-	// 		param = cmd[1];
-	// 	else
-	// 		param = "no param";
-	// 	if (cmd[0][1] == 'o')
-	// 		current_channel->deleteOperatorMode(param);
-	// 	else
-	// 		current_channel->deleteChannelMode(cmd[0][1], param);
-	// }
 }
+
 
 // //<channel/nickanme> <+/-> <mode> [parametre]
 
@@ -159,3 +131,14 @@ void Server::mode(std::string msg, int fd) {
 // 		// ->si c'est un plus on envoie vers addMode
 // 		// ->si c'est un moins on envoie vers deleteMode
 // // 4 - quand c'est pour un user oblige -o donc juste on ajout le mode si possible
+
+// MODE
+	// <target> [<modestring> [<mode arguments>...]]
+// -i
+// -t 
+// -k 
+// -o
+// -l
+
+//on peut ajouter plusier mode d'un coup
+// +oi-i+o

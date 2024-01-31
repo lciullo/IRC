@@ -37,5 +37,5 @@
 //======== FUNCTIONS ==========//
 
 bool isRightPassword(std::string msg);
-
+bool	isMode(char mode);
 #endif 

@@ -1,3 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   topic.cpp                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/31 16:56:17 by cllovio           #+#    #+#             */
+/*   Updated: 2024/01/31 16:57:11 by cllovio          ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "Server.hpp"
+#include "Numerics.hpp"
+
+// void topic(std::string msg, int fd)
+// {
+// 	std::vector<std::string>	cmd;
+// 	std::string					channel_name;
+// 	std::string					guest_username;
+// 	std::string					protagonist;
+
+	
+// }
+
 // TOPIC
 	// <channel> [<topic>]
 	// Commande inferieur a 1 arguments -> ERR_NEEDMOREPARAMS

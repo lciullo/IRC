@@ -1,27 +1,17 @@
-// INVITE
-	// <nickname> <channel>
-	// L'invitation a bien ete envoye -> RPL_INVITING 
-
-	//faire idx - 1 dans lst_user pour avoir le user
-
-	// Launch server
-	//
-
-// /JOIN #nom_server
-//every member of the channel can invite no need to be an operator except if it's an invite only channel
-// in this cse the person who invite must be an operator
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   invite.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/31 14:42:51 by cllovio           #+#    #+#             */
+/*   Updated: 2024/01/31 14:43:03 by cllovio          ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Numerics.hpp"
-
-User &	User::operator=(const User &obj){
-	this->_nickname = obj._nickname;
-	this->_username = obj._username;
-	this->_fd = obj._fd;
-	this->_isCreate = obj._isCreate;
-
-	return (*this);
-}
 
 void Server::invite(std::string msg, int fd)
 {
@@ -107,56 +97,15 @@ void Server::invite(std::string msg, int fd)
 	
 }
 
-// Quand j'essaie d'invite  et que je mets qu'un argument automatiquement un autre argument s'ajoute
+// INVITE
+	// <nickname> <channel>
+	// L'invitation a bien ete envoye -> RPL_INVITING 
 
-void	send_msg(User user, std::string msg)
-{
-	size_t byteSent = 0;
+	//faire idx - 1 dans lst_user pour avoir le user
 
-	while (byteSent < msg.length())
-	{
-		std::cout << msg << std::endl;
-		long len = send(user.getFd(), msg.c_str(), msg.size(), 0);
-		if (len < 0)
-			break ;
-		byteSent += len;
-	}
-}
+	// Launch server
+	//
 
-void	split_cmd(std::vector<std::string> *cmd, std::string msg)
-{
-	size_t	begin;
-	size_t	end;
-	std::string	str;
-	std::string	whitespace = " \t\n\r\f\v";
-	size_t	last_non_space = 0;
-
-	while (msg.size() != 0)
-	{
-		if (msg.find_first_not_of(whitespace) == std::string::npos)
-			break ;
-
-		begin = msg.find_first_not_of(whitespace);
-		end = msg.find(" ", begin);
-
-		str = msg.substr(begin, end);
-		if ((last_non_space = str.find_last_not_of(whitespace)) != std::string::npos)
-		{
-			str = str.substr(0, last_non_space + 1);
-		}
-		if (str == "INVITE" || str == "KICK" || str == "MODE") {
-			msg.erase(0, end);
-			continue ;
-		}
-		cmd->push_back(str.c_str());
-		msg.erase(0, end);
-	}
-}
-
-void	print_vector(std::vector<std::string> cmd)
-{
-	std::vector<std::string>::iterator	it;
-	for (it = cmd.begin(); it != cmd.end(); it++) {
-		std::cout << *it << std::endl;
-	}
-}
+// /JOIN #nom_server
+//every member of the channel can invite no need to be an operator except if it's an invite only channel
+// in this cse the person who invite must be an operator

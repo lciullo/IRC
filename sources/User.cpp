@@ -15,6 +15,15 @@ User::~User(void) {
 	return;
 }
 
+User &	User::operator=(const User &obj){
+	this->_nickname = obj._nickname;
+	this->_username = obj._username;
+	this->_fd = obj._fd;
+	this->_isCreate = obj._isCreate;
+
+	return (*this);
+}
+
 const std::string& User::getNickname(void) const 
 {
 		return (this->_nickname);

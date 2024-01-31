@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lciullo <lciullo@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/30 15:30:48 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/01/31 16:09:31 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,9 @@ std::string	Channel::getName() const {return (this->_name);}
 
 std::string	Channel::getTopic() const {return (this->_topic);}
 
-std::map<User *, int>  Channel::getLstUsers() const {return (this->_lstUsers);}
+std::map<User *, int>	Channel::getLstUsers() const {return (this->_lstUsers);}
 
-std::vector<User *> Channel::getVecUsers() const {return (this->_vecUsers);}
+std::vector<User *>	Channel::getVecUsers() const {return (this->_vecUsers);}
 
 bool	Channel::getStatus() const {return (this->_private);}
 
@@ -58,6 +58,7 @@ int		Channel::getNbrUser() const {return (this->_nbrUser);};
 int		Channel::getNbrUserMax() const {return (this->_nbrUserMax);};
 
 std::string	Channel::getPassword() const {return (this->_password);}
+
 /*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void	Channel::setName(std::string name) {this->_name = name;}
 
@@ -72,10 +73,9 @@ void	Channel::addUser(User *new_user)
 		this->_lstUsers[new_user] = VOICE;
 		this->_nbrUser += 1;
 		new_user->addChannel(this->_name);
-	//}
 }
 
-void	Channel::addChannelMode(char new_mode, std::string param)
+void	Channel::addMode(char new_mode, std::string param)
 {
 	{
 		std::vector<char>::iterator	it;
@@ -87,23 +87,49 @@ void	Channel::addChannelMode(char new_mode, std::string param)
 		}
 	}
 	
-	if (new_mode == 'i')
-		this->_private = true;
-	else if (new_mode == 'k' && param != "no param")
-		this->_password = param;
-	else if (new_mode == 'l' && param != "no param")
-	{
-		unsigned long i;
-		for (i = 0; i < param.size(); i++) {
-			if (!isdigit(param[i]))
-				break ;
+	switch (new_mode) {
+		case 'i' : {this->_private = true;
+			// std::cout << this->_private << std::endl;
+			break ;
 		}
-		this->_nbrUserMax = atoi(param.c_str());
+		case 'k' : {this->_password = param;
+			// if (!this->_password.empty())
+				// std::cout << this->_password << std::endl;
+			// else
+				// std::cout << "Password is empty\n";
+			break ;
+		}
+		case 'l' : {
+			unsigned long i;
+			for (i = 0; i < param.size(); i++) {
+				if (!isdigit(param[i])) {
+					std::cout << "The parameters must only be numbers\n";
+					return ;
+				}
+			}
+			this->_nbrUserMax = atoi(param.c_str());
+			// std::cout << this->_nbrUserMax << std::endl;
+			break ;
+		}
+		case 'o' : {
+			std::map<User *, int>::iterator	it;
+			for (it = _lstUsers.begin(); it != _lstUsers.end(); it++) {
+				if (it->first->getNickname() == param) {
+					it->second = OPERATOR;
+					break ;
+				}
+			}
+			return ;
+		}
 	}
+	
 	this->_mode.push_back(new_mode);
-	std::vector<char>::iterator itv;
-	for (itv = this->_mode.begin(); itv != this->_mode.end(); itv++)
-		std::cout << *itv << std::endl;
+
+	// std::vector<char>::iterator it2;
+	// for (it2 = this->_mode.begin(); it2 != this->_mode.end(); it2++) {
+		// std::cout << *it2 << " ";
+	// }
+	// std::cout << std::endl;
 }
 
 void	Channel::addUserToWaitlist(User *guest)
@@ -111,20 +137,6 @@ void	Channel::addUserToWaitlist(User *guest)
 	this->_waitlist.push_back(guest);
 }
 
-void	Channel::addOperatorMode(std::string user_name)
-{
-	if (user_name == "no param")
-		return ;
-	
-	std::map<User *, int>::iterator	it;
-	for (it = _lstUsers.begin(); it != _lstUsers.end(); it++) {
-		if (it->first->getNickname() == user_name)
-		{
-			it->second = OPERATOR;
-			return ;
-		}
-	}
-}
 /*- - - - - - - - - - - - - - - - - -DELETE - - - - - - - - - - -- - -  - - - */
 
 void	Channel::deleteUser(User &user) 
@@ -147,10 +159,8 @@ void	Channel::deleteUser(User &user)
 	this->_nbrUser -= 1;
 }
 
-void	Channel::deleteChannelMode(char mode, std::string param)
+void	Channel::deleteMode(char mode, std::string param)
 {
-	(void) param;
-
 	{
 		std::vector<char>::iterator	it;
 		for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
@@ -165,34 +175,40 @@ void	Channel::deleteChannelMode(char mode, std::string param)
 	for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
 		if (*it == mode) {
 			this->_mode.erase(it);
-			if (mode == 'i')
-				this->_private = false;
-			else if (mode == 'k')
-				this->_password.clear();
-			else if (mode == 'l')
-				this->_nbrUserMax = -1;
+			switch (mode) {
+				case 'i' : {this->_private = false;
+					// std::cout << this->_private << std::endl;
+				}
+				case 'k' : {this->_password.clear();
+					// if (!this->_password.empty())
+						// std::cout << this->_password << std::endl;
+					// else
+						// std::cout << "Password is empty\n";
+				}
+				case 'l' : {this->_nbrUserMax = -1;
+					// std::cout << this->_nbrUserMax << std::endl;
+				}
+				case 'o' : {
+					std::map<User *, int>::iterator	it;
+					for (it = _lstUsers.begin(); it != _lstUsers.end(); it++) {
+						if (it->first->getNickname() == param) {
+							it->second = VOICE;
+							break ;
+						}
+					}
+				}
+			}
 			break;
 		}
 	}
-	std::vector<char>::iterator itv;
-	for (itv = this->_mode.begin(); itv != this->_mode.end(); itv++)
-		std::cout << *itv << std::endl;
+
+	// std::vector<char>::iterator it2;
+	// for (it2 = this->_mode.begin(); it2 != this->_mode.end(); it2++) {
+		// std::cout << *it2 << " ";
+	// }
+	// std::cout << std::endl;
 }
 
-void		Channel::deleteOperatorMode(std::string user_name)
-{
-	if (user_name == "no param")
-		return ;
-	
-	std::map<User *, int>::iterator	it;
-	for (it = _lstUsers.begin(); it != _lstUsers.end(); it++) {
-		if (it->first->getNickname() == user_name)
-		{
-			it->second = VOICE;
-			return ;
-		}
-	}
-}
 /*- - - - - - - - - - - - - - - - -  FIND - - - - - - - - - - - - -- - -  - - */
 bool	Channel::findUser(User *user) const {
 	
