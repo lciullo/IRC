@@ -51,6 +51,8 @@ class Channel
 		std::vector<User *>		getVecUsers() const;
 		bool					getStatus() const;
 		int						getNbrUser() const;
+		int						getNbrUserMax() const;
+		std::string				getPassword() const;
 		
 		//Setters
 		void			setName(std::string name);

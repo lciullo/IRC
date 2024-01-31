@@ -54,6 +54,10 @@ std::vector<User *> Channel::getVecUsers() const {return (this->_vecUsers);}
 bool	Channel::getStatus() const {return (this->_private);}
 
 int		Channel::getNbrUser() const {return (this->_nbrUser);};
+
+int		Channel::getNbrUserMax() const {return (this->_nbrUserMax);};
+
+std::string	Channel::getPassword() const {return (this->_password);}
 /*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void	Channel::setName(std::string name) {this->_name = name;}
 
@@ -152,7 +156,7 @@ void	Channel::deleteChannelMode(char mode, std::string param)
 	{
 		std::vector<char>::iterator	it;
 		for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
-			if (*it == new_mode) {
+			if (*it == mode) {
 				break ;
 			}
 		}
