@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 14:44:36 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/31 14:44:39 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/01 10:40:54 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void Server::kick(std::string msg, int fd) {
 		ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "INVITE");
 		return ;
 	}
-
+	cmd.erase(cmd.begin());
 
 	// Le nom du channle fourni n'exite pas -> ERR_NOSUCHCHANNEL
 	Channel						*current_channel;

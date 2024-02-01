@@ -76,15 +76,20 @@ void	split_cmd(std::vector<std::string> *cmd, std::string msg)
 			break ;
 
 		begin = msg.find_first_not_of(whitespace);
-		end = msg.find(" ", begin);
+		if (msg[begin] == ':') {
+			end = msg.size();
+			begin = begin + 1;
+		}
+		else 
+			end = msg.find(" ", begin);
 
 		str = msg.substr(begin, end);
 		if ((last_non_space = str.find_last_not_of(whitespace)) != std::string::npos)
 			str = str.substr(0, last_non_space + 1);
-		if (str == "INVITE" || str == "KICK" || str == "MODE") {
-			msg.erase(0, end);
-			continue ;
-		}
+		// if (str == "INVITE" || str == "KICK" || str == "MODE" || str == "TOPIC") {
+		// 	msg.erase(0, end);
+		// 	continue ;
+		// }
 		
 		cmd->push_back(str.c_str());
 		msg.erase(0, end);

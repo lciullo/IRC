@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 14:45:08 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/31 16:10:17 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/01 10:41:12 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void Server::mode(std::string msg, int fd) {
 	char						sign;
 
 	split_cmd(&cmd, msg);
+	cmd.erase(cmd.begin());
 	protagonist = this->GetUserByFd(fd).getUsername();
 	// checker que la commnade est de la bonne taille -> ERR_NEEDMOREPARAMS
 	// if (cmd.size() <= 1) {

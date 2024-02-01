@@ -101,6 +101,8 @@ void Server::launch_cmd(std::string msg, int fd)
 		this->invite(msg, fd);
 	else if (msg.find("KICK") != std::string::npos)
 		this->kick(msg, fd);
+	else if (msg.find("TOPIC") != std::string::npos)
+		this->topic(msg, fd);
 	else if (msg.find("QUIT") != std::string::npos)
 		this->quit(msg, fd);
 	else if (msg.find("MODE") != std::string::npos)
