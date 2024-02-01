@@ -20,7 +20,7 @@ class User
 				User &	operator=(const User &obj);
 				const std::string& getNickname(void) const;
 				const std::string& getUsername(void) const;
-				std::vector<std::string> getUserChannels(void);
+				std::vector<std::string> &getUserChannels(void);
 				void addChannel(std::string name_channel);
 				const int& getFd(void) const;
 				const bool& getIsCreate(void) const;
@@ -28,12 +28,11 @@ class User
 				void setNickname(std::string nickname);
 				void setUsername(std::string username);
 				void addLevel();
+				void deleteChannel(std::string name_channel);
 				
-				// void deleteChannel(std::string name_Channel);
 				bool operator<(const User& other) const {
         			return this->getNickname() < other.getNickname();
-   				 }
-
+   				}
 };
 
 std::ostream &operator<<(std::ostream &out, const User &Object);

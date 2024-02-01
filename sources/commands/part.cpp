@@ -23,13 +23,13 @@ void Server::part(std::string msg, int fd)
 		if (it == this->_lst_channel.end())
 		{
 			ERR_NOSUCHCHANNEL(user, channels_name[i]);
-			return ;
+			break ;
 		}
 		Channel &channel = this->_lst_channel[channels_name[i]];
 		if (!channel.findUser(&user))
 		{
 			ERR_NOTONCHANNEL(user, channels_name[i]);
-			return ;
+			break ;
 		}
 		channel.deleteUser(user);
 		std::string message = HEADER_CMD(user) + "PART " + channels_name[i];
@@ -41,6 +41,7 @@ void Server::part(std::string msg, int fd)
 		message.append("\r\n");
 		std::cout << "[PART] channel : " << channels_name[i] << " | reason : " << reason << " | who : " << user.getNickname() << std::endl;
 		send(user.getFd(), message.c_str(), message.size(), 0);
+		user.deleteChannel(channel.getName());
 		sendUserList(channel);
 		//if last user left channel rm channel of list
 	}
