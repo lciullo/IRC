@@ -21,6 +21,8 @@ send_msg(user, HEADER_CMD(user) + "442 " + user.getNickname() + SPACE + channel_
 # define ERR_NOSUCHCHANNEL(user, channel_name) \
 send_msg(user, HEADER_CMD(user) + "403 " + user.getNickname() + SPACE + channel_name + SPACE + ":No such channel" + RN)
 
+# define ERR_NOTEXTTOSEND(user) \
+send_msg(user, HEADER_CMD(user) + "412 " + user.getNickname() + SPACE + ":No text to send (put ':' before text)" + RN)
 //======= NICK =======//
 
 //Empty Nickname : 431
