@@ -17,7 +17,6 @@ void Server::quit(std::string msg, int fd)
 	std::string message = HEADER_CMD(user) + "QUIT " + channel_name + " " + reason + "\r\n";
 	send(user.getFd(), message.c_str(), message.size(), 0);
 	sendUserList(channel);
-	
 	deleteUserFromChannel(user);
 	deleteUserFromLst(fd);
 	closeUserFd(fd); 

@@ -2,7 +2,8 @@
 #include "User.hpp"
 
 
-User::User(void){
+User::User(void):  _level(0)
+{
 
 }
 
@@ -39,6 +40,11 @@ const bool& User::getIsCreate(void) const
 std::vector<std::string> &User::getUserChannels(void)
 {
 	return (this->_userChannels);
+}
+
+int User::getLevel(void) const
+{
+	return (this->_level);
 }
 
 void User::setIsCreate(bool isCreate)

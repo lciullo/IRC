@@ -20,6 +20,8 @@ class User
 				User &	operator=(const User &obj);
 				const std::string& getNickname(void) const;
 				const std::string& getUsername(void) const;
+				int getLevel(void) const; 
+				std::vector<std::string> getUserChannels(void);
 				std::vector<std::string> &getUserChannels(void);
 				void addChannel(std::string name_channel);
 				const int& getFd(void) const;
