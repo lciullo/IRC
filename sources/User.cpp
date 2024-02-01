@@ -2,7 +2,8 @@
 #include "User.hpp"
 
 
-User::User(void){
+User::User(void):  _level(0)
+{
 
 }
 
@@ -45,9 +46,14 @@ const bool& User::getIsCreate(void) const
 	return (this->_isCreate);
 }
 
-std::vector<std::string> User::getUserChannels(void)
+std::vector<std::string> &User::getUserChannels(void)
 {
 	return (this->_userChannels);
+}
+
+int User::getLevel(void) const
+{
+	return (this->_level);
 }
 
 void User::setIsCreate(bool isCreate)
@@ -85,4 +91,17 @@ void User::addChannel(std::string name_channel)
 	this->_userChannels.push_back(name_channel);
 	std::cout << "add channel function" << std::endl;
 	std::cout << "SIZE = " << this->_userChannels.size();
+}
+
+void User::deleteChannel(std::string name_channel)
+{
+	std::vector<std::string>::iterator ite = this->_userChannels.end();
+	for (std::vector<std::string>::iterator it = this->_userChannels.begin(); it != ite; ++it)
+	{
+		if (*it == name_channel)
+		{
+			this->_userChannels.erase(it);
+			return ;
+		}
+	}
 }

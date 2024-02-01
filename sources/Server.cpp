@@ -83,8 +83,19 @@ void Server::launch_cmd(std::string msg, int fd)
 	} 
 	else if (msg.find("NICK") != std::string::npos)
 	{
-		user.setNickname(getNickname(msg));
-		user.addLevel();
+		if (nick(getNickname(msg), fd) == false)
+		{
+			if (user.getLevel() == 1)
+				closeUserFd(fd);
+			if (user.getLevel() > 1)
+				return ;
+		}
+		else
+		{
+			user.setNickname(getNickname(msg));
+			user.addLevel();
+		}
+
 	}
 	else if (msg.find("USER") != std::string::npos)
 	{

@@ -63,7 +63,7 @@ DEP				=	${patsubst %.cpp, ${DIR_DEP}%.d, ${SRCS}}
 
 # ---- Cpp ---- #
 
-FLAGS			=	-Wall -Wextra -Werror -I ${DIR_INC}
+FLAGS			=	-Wall -Wextra -Werror -g3 -I ${DIR_INC}
 
 CPP				=	c++ -std=c++98
 
@@ -96,7 +96,7 @@ ${NAME}:		${OBJ}
 -include ${DEP}
 
 ${DIR_DEP}%.o: %.cpp
-				mkdir -p $(shell dirname $@)
+				@mkdir -p $(shell dirname $@)
 				${CPP} ${FLAGS} ${DEP_FLAGS} -c $< -o $@
 
 # ---- Debug ---- #

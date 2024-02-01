@@ -6,18 +6,25 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/31 16:09:31 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/01 13:43:08 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
+
+Channel::Channel() : _name("default") {
+	this->_private = false;
+	this->_nbrUser = 0;
+	this->_nbrUserMax = -1;
+}
+
 
 Channel::Channel(std::string name, User *operators) : _name(name) {
 	this->_lstUsers[operators] = OPERATOR;
 	this->_vecUsers.push_back(operators);
 	operators->addChannel(this->_name);
 	this->_private = false;
-	this->_nbrUser += 1;
+	this->_nbrUser = 1;
 	this->_nbrUserMax = -1;
 }
 
@@ -25,20 +32,28 @@ Channel::Channel(const Channel &channel)
 {
 	this->_name = channel._name;
 	this->_topic = channel._topic;
+	this->_password = channel._password;
 	this->_mode = channel._mode;
 	this->_waitlist = channel._waitlist;
 	this->_lstUsers = channel._lstUsers;
 	this->_vecUsers = channel._vecUsers;
+	this->_nbrUser = channel._nbrUser;
+	this->_nbrUserMax = channel._nbrUserMax;
+	this->_private = channel._private;
 }
 
 Channel &Channel::operator=(const Channel &channel)
 {
 	this->_name = channel._name;
 	this->_topic = channel._topic;
+	this->_password = channel._password;
 	this->_mode = channel._mode;
 	this->_waitlist = channel._waitlist;
 	this->_lstUsers = channel._lstUsers;
 	this->_vecUsers = channel._vecUsers;
+	this->_nbrUser = channel._nbrUser;
+	this->_nbrUserMax = channel._nbrUserMax;
+	this->_private = channel._private;
 	return (*this);
 }
 
@@ -209,6 +224,18 @@ void	Channel::deleteMode(char mode, std::string param)
 	// std::cout << std::endl;
 }
 
+void	Channel::deleteUserToWaitlist(User user) 
+{	
+	std::vector<User *>::iterator	it;
+	for (it = this->_waitlist.begin(); it != this->_waitlist.end(); it++) {
+		if (user.getNickname() == (*it)->getNickname())
+		{
+			this->_waitlist.erase(it);
+			break ;
+		}
+	}
+}
+
 /*- - - - - - - - - - - - - - - - -  FIND - - - - - - - - - - - - -- - -  - - */
 bool	Channel::findUser(User *user) const {
 	
@@ -227,6 +254,17 @@ bool	Channel::findOperators(User &user) const {
 	
 	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
 		if ((user.getNickname() == it->first->getNickname()) && it->second == OPERATOR)
+			return (true);
+	}
+	return (false);
+}
+
+bool	Channel::findInWaitList(User user) const
+{
+	std::vector<User *>::const_iterator	it;
+	
+	for (it = this->_waitlist.begin(); it != this->_waitlist.end(); it++) {
+		if (user.getNickname() == (*it)->getNickname())
 			return (true);
 	}
 	return (false);

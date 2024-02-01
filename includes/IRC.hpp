@@ -37,5 +37,7 @@
 //======== FUNCTIONS ==========//
 
 bool isRightPassword(std::string msg);
+void sendStringSocket(int socket, const std::string& str);
 bool	isMode(char mode);
+
 #endif 

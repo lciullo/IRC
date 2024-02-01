@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:44:19 by cllovio           #+#    #+#             */
-/*   Updated: 2024/01/31 14:46:34 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/01 13:38:13 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Channel
 		int						_nbrUserMax;
 
 	public :
-		Channel() {}
+		Channel();
 		Channel(std::string name, User *operators);
 		Channel(const Channel &channel);
 		Channel &operator=(const Channel &channel);
@@ -67,10 +67,12 @@ class Channel
 		//Delete
 		void			deleteUser(User &user);
 		void			deleteMode(char mode, std::string param);
+		void			deleteUserToWaitlist(User user);
 		
 		//Find
 		bool			findUser(User *user) const;
 		bool			findOperators(User &user) const;
+		bool			findInWaitList(User user) const;
 };
 
 void	split_cmd(std::vector<std::string> *cmd, std::string msg);

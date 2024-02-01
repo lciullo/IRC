@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 14:45:08 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/01 10:41:12 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/01 13:49:45 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void Server::mode(std::string msg, int fd) {
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
 		if (it_channel->first->getUsername() == protagonist) {
-			if (it_channel->second != OPERATOR) {
+			if (it_channel->second == VOICE) {
 				std::cout << "ERROR User is in the channel but does not have the right role\n";
 				return ;
 			}

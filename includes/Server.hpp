@@ -35,6 +35,8 @@ class Server
 		void privmsg(std::string msg, int fd);
 		void part(std::string msg, int fd);
 		void quit(std::string msg, int fd);
+		bool nick(std::string nickname, int fd);
+		std::vector<std::string> getCmdLst(void);
 		//utils to quit 
 		bool searchChannelInServer(std::string target);
 		void closeUserFd(int fd);
@@ -50,7 +52,6 @@ class Server
 		std::string getUsername(std::string msg);
 		std::vector<struct pollfd> getLstFd() const;
 		std::map<int, User> getLstUsr(void);
-		//time_t*							getTime();
 		User &GetUserByFd(int fd);
 		User &GetUserByNickname(std::string nickname);
 };
