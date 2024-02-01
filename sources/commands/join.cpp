@@ -51,9 +51,9 @@ void Server::join(std::string msg, int fd)
 	split_arg(&channels_name, arg_channel);
 
 	std::vector<std::string> channels_key;
-	split_arg(&channels_name, arg_channel);
 	if (cmd.size() > 2)
 	{
+		std::cout << "[TEST] bonjour" << std::endl;
 		std::string arg_key = cmd[2];
 		split_arg(&channels_key, arg_key);
 	}
@@ -62,7 +62,7 @@ void Server::join(std::string msg, int fd)
 		if (channels_name[i][0] != '#' && channels_name[i][0] != '&')
 		{
 			ERR_BADCHANMASK(user, channels_name[i]);
-			break ;
+			continue ;
 		}
 		std::map<std::string , Channel>::iterator it;
 		it = this->_lst_channel.find(channels_name[i]);
@@ -78,11 +78,11 @@ void Server::join(std::string msg, int fd)
 		{
 			Channel &channel = this->_lst_channel[channels_name[i]];
 			if (channel.findUser(&user))
-				break ;
+				continue ;
 			if (channel.getStatus() && !channel.findInWaitList(user))
 			{
 				ERR_INVITEONLYCHAN(user, channels_name[i]);
-				break ;
+				continue ;
 			}
 			if (!channel.getPassword().empty())
 			{
@@ -92,19 +92,19 @@ void Server::join(std::string msg, int fd)
 				else
 				{
 					ERR_BADCHANNELKEY(user, channels_name[i]);
-					break ;
+					continue ;
 				}
 				if (key != channel.getPassword())
 				{
 					ERR_BADCHANNELKEY(user, channels_name[i]);
-					break ;
+					continue ;
 				}
 			}
 			std::cout << "[TEST] " << channel.getNbrUser() << " " << channel.getNbrUserMax() << std::endl;
 			if (channel.getNbrUser() == channel.getNbrUserMax())
 			{
 				ERR_CHANNELISFULL(user, channels_name[i]);
-				break ;
+				continue ;
 			}
 			if (channel.getStatus())
 				channel.deleteUserToWaitlist(user);
