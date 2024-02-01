@@ -28,17 +28,17 @@ std::string Server::getNickname(std::string msg)
 }
 
 
-bool Server::nick(std::string nickname, int fd)
+bool Server::nick(std::string msg, std::string nickname, int fd)
 {
 	User &user = GetUserByFd(fd);
-	/*std::vector<std::string> cmd;
+	std::vector<std::string> cmd;
 
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 2)
 	{
 		ERR_NEEDMOREPARAMS(user, "PART");
 		return (false);
-	}*/
+	}
 	std::string toUpdate;
 	std::string secondChoice = user.getSecondChoice();
 	if (nickname.empty())
@@ -72,6 +72,9 @@ bool Server::nick(std::string nickname, int fd)
 		toUpdate = secondChoice;
 	user.setNickname(toUpdate);
 	sendStringSocket(fd, RPL_NICK(toUpdate, user.getUsername(), nickname));
+	user.setSecondChoice(nickname);
+	std::cout << BLUE << "second choice = " << secondChoice << std::endl;
+	std::cout << BLUE << "toUpdate = " << toUpdate << std::endl;
 	return (true);
 }
 

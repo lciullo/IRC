@@ -34,7 +34,7 @@ class Server
 		void privmsg(std::string msg, int fd);
 		void part(std::string msg, int fd);
 		void quit(std::string msg, int fd);
-		bool nick(std::string nickname, int fd);
+		bool nick(std::string msg, std::string nickname, int fd);
 		std::vector<std::string> getCmdLst(void);
 		//utils to quit 
 		bool searchChannelInServer(std::string target);
