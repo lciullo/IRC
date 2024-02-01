@@ -64,9 +64,11 @@ send_msg(user, HEADER_CMD(user) + "482 " + user.getNickname() + SPACE + channel_
 send_msg(user, HEADER_CMD(user) + "443 " + user.getNickname() + SPACE + nick + SPACE + channel_name + SPACE + ":is already on channel" + RN);
 
 # define RPL_INVITING(user, channel_name, nick) \
-send_msg(user, HEADER_CMD(user) + "341 " + user.getNickname() + SPACE + nick + SPACE + channel_name + RN);
+send_msg(user, HEADER_CMD(user) + "341 " + user.getNickname() SPACE + nick SPACE + channel_name RN);
 
-# define INVITE_MESSAGE(user, channel_name) \
-send_msg(*user, ":" + user->getNickname() + "!" + user->getUsername() + " " + "INVITE" + user->getNickname() + SPACE + channel_name + RN);
+# define INVITE_MESSAGE(user, channel_name, nick) \
+send_msg(*user, ":" + user->getNickname() + "!" + user->getUsername() SPACE + "INVITE " + nick SPACE + channel_name RN);
 
+# define RPL_INVITELIST(user, channel_name) \
+send_msg(user, HEADER_CMD(user) + "336 " + user.getNickname() SPACE + channel_name + RN)
 #endif

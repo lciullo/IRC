@@ -9,6 +9,7 @@ class User
 				std::string	_nickname;
 				std::string	_username;
 				std::vector<std::string>	_userChannels;
+				std::vector<std::string>	_invite;
 				int 		_fd;
 				bool		_isCreate;
 				int			_level;
@@ -22,6 +23,7 @@ class User
 				const std::string& getUsername(void) const;
 				int getLevel(void) const; 
 				std::vector<std::string> &getUserChannels(void);
+				std::vector<std::string> getInvite(void) const;
 				void addChannel(std::string name_channel);
 				const int& getFd(void) const;
 				const bool& getIsCreate(void) const;
@@ -29,7 +31,9 @@ class User
 				void setNickname(std::string nickname);
 				void setUsername(std::string username);
 				void addLevel();
+				void addInvite(std::string channel_name);
 				void deleteChannel(std::string name_channel);
+				void deleteInvite(std::string channel_name);
 				
 				bool operator<(const User& other) const {
         			return this->getNickname() < other.getNickname();

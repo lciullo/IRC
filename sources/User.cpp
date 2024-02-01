@@ -1,6 +1,6 @@
 
 #include "User.hpp"
-
+#include <algorithm>
 
 User::User(void):  _level(0)
 {
@@ -51,6 +51,11 @@ std::vector<std::string> &User::getUserChannels(void)
 	return (this->_userChannels);
 }
 
+std::vector<std::string> User::getInvite(void) const
+{
+	return (this->_invite);
+}
+
 int User::getLevel(void) const
 {
 	return (this->_level);
@@ -79,6 +84,11 @@ void User::addLevel()
 	this->_level += 1;
 }
 
+void	User::addInvite(std::string channel_name) 
+{
+	this->_invite.push_back(channel_name);
+}
+
 std::ostream &operator<<(std::ostream &out, const User &Object) {
 
 	out << Object.getNickname() << " " << Object.getUsername() << " " << Object.getIsCreate() << std::endl;
@@ -104,4 +114,12 @@ void User::deleteChannel(std::string name_channel)
 			return ;
 		}
 	}
+}
+
+void	User::deleteInvite(std::string channel_name)
+{
+	std::vector<std::string>::iterator	it;
+	it = std::find(this->_invite.begin(), this->_invite.end(), channel_name);
+	if (it != this->_invite.end())
+		this->_invite.erase(it);
 }
