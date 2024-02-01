@@ -42,4 +42,19 @@ send_msg(user, HEADER_CMD(user) + "433 " + user.getNickname() + SPACE + nickname
 
 # define RPL_NICK(nickname, username, newNickname) (":" + nickname + "!" + username + "@localhost NICK " +  newNickname + "\r\n")
 
+# define ERR_BADCHANMASK(user, channel_name) \
+send_msg(user, HEADER_CMD(user) + "476 " + channel_name + SPACE + ":Bad Channel Mask" + RN)
+
+# define ERR_BADCHANNELKEY(user, channel_name) \
+send_msg(user, HEADER_CMD(user) + "475 " + user.getNickname() + SPACE + channel_name + SPACE + ":Cannot join channel, wrong key" + RN)
+
+# define ERR_INVITEONLYCHAN(user, channel_name) \
+send_msg(user, HEADER_CMD(user) + "473 " + user.getNickname() + SPACE + channel_name + SPACE + ":Cannot join channel, invite only" + RN)
+
+# define ERR_CHANNELISFULL(user, channel_name) \
+send_msg(user, HEADER_CMD(user) + "471 " + user.getNickname() + SPACE + channel_name + SPACE + ":Cannot join channel, channel is full" + RN)
+
+# define RPL_TOPIC(user, channel) \
+send_msg(user, HEADER_CMD(user) + "332 " + user.getNickname() + SPACE + channel.getName() + SPACE + ":" + channel.getTopic() + RN)
+
 #endif

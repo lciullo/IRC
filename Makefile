@@ -96,7 +96,7 @@ ${NAME}:		${OBJ}
 -include ${DEP}
 
 ${DIR_DEP}%.o: %.cpp
-				mkdir -p $(shell dirname $@)
+				@mkdir -p $(shell dirname $@)
 				${CPP} ${FLAGS} ${DEP_FLAGS} -c $< -o $@
 
 # ---- Debug ---- #
