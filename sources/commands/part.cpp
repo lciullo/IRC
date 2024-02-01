@@ -23,13 +23,13 @@ void Server::part(std::string msg, int fd)
 		if (it == this->_lst_channel.end())
 		{
 			ERR_NOSUCHCHANNEL(user, channels_name[i]);
-			break ;
+			continue ;
 		}
 		Channel &channel = this->_lst_channel[channels_name[i]];
 		if (!channel.findUser(&user))
 		{
 			ERR_NOTONCHANNEL(user, channels_name[i]);
-			break ;
+			continue ;
 		}
 		channel.deleteUser(user);
 		std::string message = HEADER_CMD(user) + "PART " + channels_name[i];
