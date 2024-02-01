@@ -6,12 +6,13 @@
 class User
 {
 	private :
-				std::string	_nickname;
-				std::string	_username;
+				std::string					_nickname;
+				std::string					_username;
 				std::vector<std::string>	_userChannels;
-				int 		_fd;
-				bool		_isCreate;
-				int			_level;
+				int 						_fd;
+				bool						_isCreate;
+				int							_level;
+				std::string					_secondChoice;
 
 	public :
 				User(void);
@@ -20,15 +21,16 @@ class User
 				User &	operator=(const User &obj);
 				const std::string& getNickname(void) const;
 				const std::string& getUsername(void) const;
-				int getLevel(void) const; 
-				std::vector<std::string> getUserChannels(void);
+				int getLevel(void) const;
 				std::vector<std::string> &getUserChannels(void);
 				void addChannel(std::string name_channel);
 				const int& getFd(void) const;
 				const bool& getIsCreate(void) const;
+				std::string getSecondChoice(void);
 				void setIsCreate(bool isCreate);
 				void setNickname(std::string nickname);
 				void setUsername(std::string username);
+				void setSecondChoice(std::string SecondChoice);
 				void addLevel();
 				void deleteChannel(std::string name_channel);
 				

@@ -6,6 +6,15 @@ std::string Server::getNickname(std::string msg)
 	std::string			line;
 	std::string			nickname;
 
+	/*User &user = GetUserByFd(fd);
+	std::vector<std::string> cmd;
+
+	split_cmd(&cmd, msg);
+	if (cmd.size() < 2)
+	{
+		ERR_NEEDMOREPARAMS(user, "PART");
+		return ;
+	}*/
 	while (std::getline(iss, line)) 
 	{
 		size_t pos = line.find("NICK");
@@ -22,7 +31,16 @@ std::string Server::getNickname(std::string msg)
 bool Server::nick(std::string nickname, int fd)
 {
 	User &user = GetUserByFd(fd);
+	/*std::vector<std::string> cmd;
 
+	split_cmd(&cmd, msg);
+	if (cmd.size() < 2)
+	{
+		ERR_NEEDMOREPARAMS(user, "PART");
+		return (false);
+	}*/
+	std::string toUpdate;
+	std::string secondChoice = user.getSecondChoice();
 	if (nickname.empty())
 	{
 		ERR_NONICKNAMEGIVEN(this->GetUserByFd(fd), nickname);
@@ -43,12 +61,17 @@ bool Server::nick(std::string nickname, int fd)
 		if (it->second.getNickname() == nickname)
 		{
 			ERR_NICKNAMEINUSE(this->GetUserByFd(fd), nickname);
+			if (secondChoice.empty())
+				user.setSecondChoice(nickname);
 			return (false);
 		}
 	}
-	sendStringSocket(fd, RPL_NICK(user.getNickname(), user.getUsername(), nickname));
-	RPL_NICK(user.getNickname(), user.getUsername(), nickname);
-	user.setNickname(nickname);
+	if (secondChoice.empty())
+		toUpdate = nickname;
+	else
+		toUpdate = secondChoice;
+	user.setNickname(toUpdate);
+	sendStringSocket(fd, RPL_NICK(toUpdate, user.getUsername(), nickname));
 	return (true);
 }
 

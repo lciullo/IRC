@@ -40,7 +40,7 @@ send_msg(user, HEADER_CMD(user) + "433 " + user.getNickname() + SPACE + nickname
 
 //Send to server new nickname 
 
-# define RPL_NICK(nickname, username, newNickname) (":" + nickname + "!" + username + "@localhost NICK " +  newNickname + "\r\n")
+# define RPL_NICK(nickname, username, newNickname) (":" + nickname + "!" + username + "@localhost NICK " +  newNickname + RN)
 
 # define ERR_BADCHANMASK(user, channel_name) \
 send_msg(user, HEADER_CMD(user) + "476 " + channel_name + SPACE + ":Bad Channel Mask" + RN)
