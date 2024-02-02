@@ -54,6 +54,7 @@ class Server
 		std::map<int, User> getLstUsr(void);
 		User &GetUserByFd(int fd);
 		User &GetUserByNickname(std::string nickname);
+		bool searchUserInServer(std::string nickname);
 };
 
 void sendUserList(Channel channel);

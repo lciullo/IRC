@@ -171,3 +171,14 @@ User &Server::GetUserByNickname(std::string nickname)
 	}
 	return (ite->second);
 }
+
+bool Server::searchUserInServer(std::string nickname)
+{
+	std::map<int, User>::iterator ite = this->_lst_usr.end();
+	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
+	{
+		if (it->second.getNickname() == nickname)
+			return (true);
+	}
+	return (false);
+}

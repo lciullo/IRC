@@ -23,6 +23,13 @@ send_msg(user, HEADER_CMD(user) + "403 " + user.getNickname() + SPACE + channel_
 
 # define ERR_NOTEXTTOSEND(user) \
 send_msg(user, HEADER_CMD(user) + "412 " + user.getNickname() + SPACE + ":No text to send (put ':' before text)" + RN)
+
+# define ERR_CANNOTSENDTOCHAN(user, channel_name) \
+send_msg(user, HEADER_CMD(user) + "404 " + user.getNickname() + SPACE + channel_name + SPACE + ":Cannot send to channel" + RN)
+
+# define ERR_NOSUCHNICK(user, nickname) \
+send_msg(user, HEADER_CMD(user) + "401 " + user.getNickname() + SPACE + nickname + SPACE + ":No such nick" + RN)
+
 //======= NICK =======//
 
 //Empty Nickname : 431
