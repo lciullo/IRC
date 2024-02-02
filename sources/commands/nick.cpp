@@ -7,7 +7,7 @@ bool Server::switchNickCase(std::string msg, int fd)
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 2)
 	{
-		ERR_NEEDMOREPARAMS(user, "PART");
+		ERR_NEEDMOREPARAMS(user, "NICK");
 		return (false);
 	}
 	if (nick(getNickname(msg), fd) == false)
