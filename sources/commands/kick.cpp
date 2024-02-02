@@ -16,24 +16,31 @@
 void Server::kick(std::string msg, int fd) {
 	std::vector<std::string>	cmd;
 	std::string					channel_name;
-	std::string					username;
+	std::string					nick;
 	std::string					reason;
 	std::string					protagonist;
 
 	split_cmd(&cmd, msg);
-	protagonist = this->GetUserByFd(fd).getUsername();
+	protagonist = this->GetUserByFd(fd).getNickname();
+	
+	// Check that the command have enough parameters
 	if (cmd.size() == 4)
 		reason = cmd.at(3);
 	
-	if (cmd.size() <= 1) {
+	if (cmd.size() < 3) {
 		ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "KICK");
 		return ;
 	}
 	cmd.erase(cmd.begin());
 	channel_name = cmd.at(0);
-	username = cmd.at(1);
+	nick = cmd.at(1);
 	
 	// Check that the channel exist
+	if (channel_name[0] != '#' && channel_name[0] != '&') {
+		ERR_BADCHANMASK(this->GetUserByFd(fd), channel_name);
+		return ;
+	}
+
 	Channel						*current_channel;
 	std::map<std::string, Channel>::iterator	it_serv;
 	if ((it_serv = this->_lst_channel.find(channel_name)) == this->_lst_channel.end()) {
@@ -43,46 +50,39 @@ void Server::kick(std::string msg, int fd) {
 	else
 		current_channel = &it_serv->second;
 
-	// La persoone qui essaye de faire l'action ne fait pas parti du channel -> ERR_NOTONCHANNEL
-	// La personne qui vuet executer la commande n'a pas les bon privilege -> ERR_CHANOPRIVSNEEDED
-	//Si cette personne est dans le channel checker quelle a les bon priviliege -> ERR_CHANOPRIVSNEEDED
+	//Check that the user who want to invite is on the channel and have the good privilege
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		if (it_channel->first->getUsername() == protagonist) {
+		if (it_channel->first->getNickname() == protagonist) {
 			if (it_channel->second != OPERATOR) {
-				std::cout << "ERROR User is in the channel but does not have the right role\n";
+				ERR_CHANOPRIVSNEEDED(this->GetUserByFd(fd), channel_name);
 				return ;
 			}
 			break ;
 		}
 	}
 	if (it_channel == lstUsrChannel.end()) {
-		std::cout << "ERROR User not in the channel\n";
+		ERR_NOTONCHANNEL(this->GetUserByFd(fd), channel_name);
 		return ;
 	}
 
-	// La personne qu'on essaye de kick ne fait pas parti du channel -> ERR_USERONCHANNEL
-	User	*guest;
+	//Check that the person we are trying to kick is on the channel
+	User	*banned;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		if (it_channel->first->getUsername() == username) { 
-			guest = it_channel->first;
+		if (it_channel->first->getNickname() == nick) { 
+			banned = it_channel->first;
 			break ;
 		}
 	}
 	if (it_channel == lstUsrChannel.end()) {
-		std::cout << "ERROR User not in the channel\n";
+		ERR_USERNOTINCHANNEL(this->GetUserByFd(fd), channel_name, nick);
 		return ;
 	}
 
-	current_channel->deleteUser(*guest);
+	current_channel->deleteUser(*banned);
+	banned->deleteChannel(channel_name);
 }
 
-// KICK
-	// <channel> <user> *( "," <user> ) [<comment>]
-	// Si commande inferieur a 2 argument -> ERR_NEEDMOREPARAMS
-		// commande : 2 ou 3 arguments
-	// Le nom du channle fourni n'exite pas -> ERR_NOSUCHCHANNEL 
-	// La personne qui vuet executer la commande n'a pas les bon privilege -> ERR_CHANOPRIVSNEEDED
-	// La personne qu'on essaye de kick ne fait pas parti du channel -> ERR_USERONCHANNEL
-	// La persoone qui essaye de faire l'action ne fait pas parti du channel -> ERR_NOTONCHANNEL
+//ATTENTION RAJOUTER LES VIRGULE PLUSIEURS USER PEUVENT ETRE KCIK D'UN COUP
+//ENVOYER UN MESSAGE A TOUT LES MEMBRES DU SERVEUR COMME QUOI QUELQU'UN A ETE KICK
