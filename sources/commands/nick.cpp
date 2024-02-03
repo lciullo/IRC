@@ -27,7 +27,7 @@ bool Server::nick(std::string nickname, int fd)
 {
 	User &user = GetUserByFd(fd);
 	std::string toUpdate;
-	std::string secondChoice = user.getSecondChoice();
+	std::string oldNickname = user.getoldNickname();
 	
 	if (nickname.empty())
 	{
@@ -45,23 +45,19 @@ bool Server::nick(std::string nickname, int fd)
 		if (it->second.getNickname() == nickname)
 		{
 			ERR_NICKNAMEINUSE(this->GetUserByFd(fd), nickname);
-			if (secondChoice.empty())
-				user.setSecondChoice(nickname);
+			if (oldNickname.empty())
+				user.setoldNickname(nickname);
 			return (false);
 		}
 	}
-	if (secondChoice.empty())
+	if (oldNickname.empty())
 		toUpdate = nickname;
 	else
-		toUpdate = secondChoice;
- 	user.setSecondChoice(nickname);
+		toUpdate = oldNickname;
+ 	user.setoldNickname(nickname);
 	user.setNickname(toUpdate);
-	//sendNewNickname(user, toUpdate, nickname);
-	std::map<int, User>::iterator start = this->_lst_usr.end();
-	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); start != it; ++it)
-	{
-		sendStringSocket(it->second.getFd(), RPL_NICK(toUpdate, user.getUsername(), nickname));
-	}
+	sendStringSocket(fd, RPL_NICK(toUpdate, user.getUsername(), nickname));
+	sendNewNickname(user, toUpdate, nickname); 
 	return (true);
 }
 
@@ -94,16 +90,8 @@ std::string Server::getNickname(std::string msg)
 	return (nickname);
 }
 
-/*void Server::sendNewNickname(User &user, std::string toUpdate, std::string nickname)
+void Server::sendNewNickname(User &user, std::string toUpdate, std::string nickname)
 {
-	std::map<int, User>::iterator start = this->_lst_usr.end();
-	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); start != it; ++it)
-	{
-		sendStringSocket(it->second.getFd(), RPL_NICK(toUpdate, user.getUsername(), nickname));
-	} 
-
-	//====================
-	//1- Voir dans quels channels l'utilisateur est 
 	std::vector<std::string> userChannelLst = user.getUserChannels();
 	std::vector<std::string>::iterator	it;
 	for (it = userChannelLst.begin(); it != userChannelLst.end(); it++) 
@@ -111,9 +99,23 @@ std::string Server::getNickname(std::string msg)
 		if (searchChannelInServer(*it))
 		{	
 			Channel &channel = this->_lst_channel[*it];
-			
+			sendInEachChannel(channel, user, toUpdate, nickname);
 		}
 
 	}
 	return ;
-}*/
+}
+
+void Server::sendInEachChannel(Channel &channel, User &user, std::string toUpdate,std::string nickname)
+{
+	for (size_t i = 0; i < channel.getVecUsers().size(); i++)
+	{
+		
+		User userToSend = *channel.getVecUsers()[i];
+		if (toUpdate!= userToSend.getNickname())
+		{
+			sendStringSocket(channel.getVecUsers()[i]->getFd(), RPL_NICK(toUpdate, user.getUsername(), nickname));
+		}
+	}
+	return ;
+}
