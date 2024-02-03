@@ -66,6 +66,11 @@ int User::getLevel(void) const
 	return (this->_level);
 }
 
+std::string User::getLine(void) const
+{
+	return (this->_line);
+}
+
 void User::setIsCreate(bool isCreate)
 {
 	this->_isCreate = isCreate;
@@ -81,6 +86,12 @@ void User::setNickname(std::string nickname)
 void User::setUsername(std::string username)
 {
 	this->_username = username;
+	return ;
+}
+
+void User::setLine(std::string line)
+{
+	this->_line = line;
 	return ;
 }
 

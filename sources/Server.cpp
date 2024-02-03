@@ -17,7 +17,7 @@ Server::Server(int port, std::string password)
 void Server::launch()
 {
 	char 			buffer[256];
-	int 			n;
+	ssize_t 		n;
 	int 			opt = 1;
 
 	this->_socketfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -47,20 +47,30 @@ void Server::launch()
 				std::cout << "NEW USER" << std::endl;
 				this->create_user();
 			}
-			for (int i=1; i < (int)this->_lst_fd.size(); i++)
+			for (size_t i=1; i < this->_lst_fd.size(); i++)
 			{
 				if (this->_lst_fd[i].revents & POLLIN){
 					bzero(buffer,256);
-					n = read(this->_lst_fd[i].fd,buffer,255);
+					n = recv(this->_lst_fd[i].fd,buffer,255,0);
 					if (n < 0)
 						std::cout << "ERROR writing to socket" << std::endl;
-					std::string str(buffer);
+					if (n == 0)
+					{
+						this->quit("QUIT :test", this->_lst_fd[i].fd);
+						continue ;
+						//close(this->_lst_fd[i].fd);
+						//this->_lst_fd.erase(this->_lst_fd.begin() + i);
+					}
+					User &user = GetUserByFd(this->_lst_fd[i].fd);
+					user.setLine(user.getLine().append(buffer));
+					//std::string str(buffer);
 					std::string cmd = "";
-					getcmd(str, cmd);
+					getcmd(user.getLine(), cmd);
 					while (cmd.size() != 0)
 					{
 						std::cout << "[LOG] " << i << " " << cmd << "|" << std::endl;
-						str = str.substr(cmd.size() + 2);
+						user.setLine(user.getLine().substr(cmd.size() + 2));
+						std::string str = user.getLine();
 						this->launch_cmd(cmd, this->_lst_fd[i].fd);
 						getcmd(str, cmd);
 					}
@@ -103,6 +113,8 @@ void Server::launch_cmd(std::string msg, int fd)
 		user.addLevel();
 		//ERR_ALREADYREGISTERED (462)
 	}
+	else if (user.getLevel() < 3)
+		return ;
 	else if (msg.find("JOIN") != std::string::npos)
 		this->join(msg, fd);
 	else if (msg.find("PART") != std::string::npos)

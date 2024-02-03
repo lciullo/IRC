@@ -9,6 +9,7 @@ class User
 		//Attributes
 		std::string					_nickname;
 		std::string					_username;
+		std::string					_line;
 		std::vector<std::string>	_userChannels;
 		std::vector<std::string>	_invite;
 		int 						_fd;
@@ -32,12 +33,14 @@ class User
 		const int& getFd(void) const;
 		const bool& getIsCreate(void) const;
 		std::string getSecondChoice(void);
+		std::string getLine(void) const;
 				
 		//Setters
 		void setIsCreate(bool isCreate);
 		void setNickname(std::string nickname);
 		void setUsername(std::string username);
 		void setSecondChoice(std::string SecondChoice);
+		void setLine(std::string line);
 		void addLevel();
 				
 		//Channel
