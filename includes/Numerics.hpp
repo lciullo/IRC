@@ -21,6 +21,15 @@ send_msg(user, HEADER_CMD(user) + "442 " + user.getNickname() + SPACE + channel_
 # define ERR_NOSUCHCHANNEL(user, channel_name) \
 send_msg(user, HEADER_CMD(user) + "403 " + user.getNickname() + SPACE + channel_name + SPACE + ":No such channel" + RN)
 
+# define ERR_NOTEXTTOSEND(user) \
+send_msg(user, HEADER_CMD(user) + "412 " + user.getNickname() + SPACE + ":No text to send (put ':' before text)" + RN)
+
+# define ERR_CANNOTSENDTOCHAN(user, channel_name) \
+send_msg(user, HEADER_CMD(user) + "404 " + user.getNickname() + SPACE + channel_name + SPACE + ":Cannot send to channel" + RN)
+
+# define ERR_NOSUCHNICK(user, nickname) \
+send_msg(user, HEADER_CMD(user) + "401 " + user.getNickname() + SPACE + nickname + SPACE + ":No such nick" + RN)
+
 //======= NICK =======//
 
 //Empty Nickname : 431
@@ -56,5 +65,17 @@ send_msg(user, HEADER_CMD(user) + "471 " + user.getNickname() + SPACE + channel_
 
 # define RPL_TOPIC(user, channel) \
 send_msg(user, HEADER_CMD(user) + "332 " + user.getNickname() + SPACE + channel.getName() + SPACE + ":" + channel.getTopic() + RN)
+
+# define ERR_CHANOPRIVSNEEDED(user, channel_name) \
+send_msg(user, HEADER_CMD(user) + "482 " + user.getNickname() + SPACE + channel_name + SPACE + ":You're not channel operator" + RN);
+
+# define ERR_USERONCHANNEL(user, channel_name, nick) \
+send_msg(user, HEADER_CMD(user) + "443 " + user.getNickname() + SPACE + nick + SPACE + channel_name + SPACE + ":is already on channel" + RN);
+
+# define RPL_INVITING(user, channel_name, nick) \
+send_msg(user, HEADER_CMD(user) + "341 " + user.getNickname() + SPACE + nick + SPACE + channel_name + RN);
+
+# define INVITE_MESSAGE(user, channel_name) \
+send_msg(*user, ":" + user->getNickname() + "!" + user->getUsername() + " " + "INVITE" + user->getNickname() + SPACE + channel_name + RN);
 
 #endif
