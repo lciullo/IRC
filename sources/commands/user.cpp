@@ -6,7 +6,6 @@ std::string Server::getUsername(std::string msg)
 	std::istringstream	iss(msg);
 	std::string			line;
 	std::string			username;
-
 	while (std::getline(iss, line)) 
 	{
 		size_t index = line.find("USER");

@@ -18,6 +18,8 @@ class User;
 class Server
 {
 	private :
+		
+		//Attributes
 		int 				_socketfd;
 		struct sockaddr_in	_serv_addr;
 		unsigned long		_address;
@@ -26,6 +28,8 @@ class Server
 		std::vector<struct pollfd>		_lst_fd;
 		std::map<int, User>				_lst_usr;
 		std::map<std::string, Channel>	_lst_channel;
+		
+		//Commands
 		void invite(std::string msg, int fd);
 		void kick(std::string msg, int fd);
 		void mode(std::string msg, int fd);
@@ -35,19 +39,32 @@ class Server
 		void privmsg(std::string msg, int fd);
 		void part(std::string msg, int fd);
 		void quit(std::string msg, int fd);
+		
+		//========== NICK ==========
 		bool nick(std::string nickname, int fd);
-		std::vector<std::string> getCmdLst(void);
-		//utils to quit 
+		bool switchNickCase(std::string msg, int fd);
+		bool isValidNickname(std::string nickname);
+		void sendNewNickname(User &user, std::string toUpdate, std::string nickname);
+		//Delete 
 		bool searchChannelInServer(std::string target);
 		void closeUserFd(int fd);
 		void deleteUserFromChannel(User user);
 		void deleteUserFromLst(int fd);
+		
 	public : 
+		//Constructor 
 		Server(int port, std::string _password);
+		
+		//Commands
 		void launch();
+		void launch_cmd(std::string msg, int index);
+		
+		//User
 		void add_user(int index, std::string nickname, std::string username);
 		void create_user();
-		void launch_cmd(std::string msg, int index);
+		
+		//Getters
+		
 		std::string getNickname(std::string msg);
 		std::string getUsername(std::string msg);
 		std::vector<struct pollfd> getLstFd() const;

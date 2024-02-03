@@ -46,6 +46,11 @@ const bool& User::getIsCreate(void) const
 	return (this->_isCreate);
 }
 
+std::string User::getSecondChoice(void)
+{
+	return (this->_secondChoice);
+}
+
 std::vector<std::string> &User::getUserChannels(void)
 {
 	return (this->_userChannels);
@@ -78,6 +83,13 @@ void User::addLevel()
 {
 	this->_level += 1;
 }
+
+void User::setSecondChoice(std::string secondChoice)
+{
+	this->_secondChoice = secondChoice;
+	return ;
+}
+
 
 std::ostream &operator<<(std::ostream &out, const User &Object) {
 

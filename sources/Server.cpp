@@ -75,32 +75,33 @@ void Server::launch()
 
 void Server::launch_cmd(std::string msg, int fd)
 {
+	
+	/*ERR_NOTREGISTERED (451) "<client> :You have not registered"*/
 	User &user = GetUserByFd(fd);
+	std::cout << "LEVEL = " << user.getLevel() << std::endl;
 	if (msg.find("PASS") != std::string::npos)
 	{
 		if (isRightPassword(msg, fd) == true)
 			user.addLevel();
+		//ERR_ALREADYREGISTERED (462)
 	} 
 	else if (msg.find("NICK") != std::string::npos)
 	{
-		if (nick(getNickname(msg), fd) == false)
-		{
-			if (user.getLevel() == 1)
-				closeUserFd(fd);
-			if (user.getLevel() > 1)
-				return ;
-		}
-		else
-		{
-			user.setNickname(getNickname(msg));
-			user.addLevel();
-		}
-
+		if (switchNickCase(msg,fd) == false)
+			return ;
 	}
 	else if (msg.find("USER") != std::string::npos)
 	{
+		std::vector<std::string> cmd;
+		split_cmd(&cmd, msg);
+		if (cmd.size() < 2)
+		{
+			ERR_NEEDMOREPARAMS(user, "PASS");
+			return ;
+		}
 		user.setUsername(getUsername(msg));	
 		user.addLevel();
+		//ERR_ALREADYREGISTERED (462)
 	}
 	else if (msg.find("JOIN") != std::string::npos)
 		this->join(msg, fd);
