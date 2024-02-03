@@ -23,10 +23,11 @@ void Server::mode(std::string msg, int fd) {
 	std::string					modestring;
 	char						sign;
 
+	std::cout << msg << std::endl;
 	split_cmd(&cmd, msg);
 	protagonist = this->GetUserByFd(fd).getUsername();
 	
-	if (cmd[0] == "INITE")
+	if (cmd[0] == "MODE")
 		cmd.erase(cmd.begin());
 	
 	// Check that the channel exist
@@ -38,9 +39,8 @@ void Server::mode(std::string msg, int fd) {
 		ERR_NOSUCHCHANNEL(this->GetUserByFd(fd), channel_name);
 		return ;
 	}
-	else {
+	else
 		current_channel = &it_serv->second;
-	}
 	cmd.erase(cmd.begin());
 
 	if (!cmd.empty() && cmd[0].size()!= 0) {
