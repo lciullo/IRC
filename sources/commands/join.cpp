@@ -70,7 +70,7 @@ void Server::join(std::string msg, int fd)
 		{
 			Channel new_channel(channels_name[i], &user);
 			if (channels_name[i][0] == '#')
-				new_channel.addChannelMode('t', "no param");
+				new_channel.addMode('t', "");
 			std::cout << "create channel " << new_channel.getName() << " by " << user.getNickname() << std::endl;
 			this->_lst_channel[channels_name[i]] = new_channel;
 		}

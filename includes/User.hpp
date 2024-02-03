@@ -16,12 +16,13 @@ class User
 		std::string					_secondChoice;
 
 	public :
+
 		//Constructor / destructors
 		User(void);
 		User(int fd);
 		~User(void);
 		User &	operator=(const User &obj);
-				
+  
 		//Getters
 		const std::string& getNickname(void) const;
 		const std::string& getUsername(void) const;

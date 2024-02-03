@@ -33,6 +33,7 @@ class Server
 		void invite(std::string msg, int fd);
 		void kick(std::string msg, int fd);
 		void mode(std::string msg, int fd);
+		void topic(std::string msg, int fd);
 		bool isRightPassword(std::string msg, int fd);
 		void join(std::string msg, int fd);
 		void privmsg(std::string msg, int fd);
@@ -70,6 +71,7 @@ class Server
 		std::map<int, User> getLstUsr(void);
 		User &GetUserByFd(int fd);
 		User &GetUserByNickname(std::string nickname);
+		bool searchUserInServer(std::string nickname);
 };
 
 void sendUserList(Channel channel);
