@@ -5,20 +5,33 @@
 
 void Server::quit(std::string msg, int fd)
 {
-	User &user = GetUserByFd(fd); 
+	std::vector<std::string>	cmd;
+	std::string 				reason;
+	std::string message;
+
+	split_cmd(&cmd, msg);
+	User &user = this->GetUserByFd(fd);
 	
-	int i = msg.find("QUIT");
-	std::string channel_name = msg.substr(i + 5);
-	i = channel_name.find(" ");
-	std::string reason = msg.substr(msg.find(":"));
-	reason = reason.substr(1, reason.size());
+	if (cmd.size() == 2)
+		reason = cmd[1];
+	std::vector<std::string> userChannel = user.getUserChannels();
+	std::vector<std::string>::iterator	it;
+	for (it = userChannel.begin(); it != userChannel.end(); it++) 
+	{
+		Channel &channel = this->_lst_channel[*it];
+		message = "PART " + channel.getName();
+		if (cmd.size() == 2)
+			message.append(" " + reason);
+		message.append("\r\n");
+		this->part(message, fd);
+	}
 	std::cout << "[QUIT] :" << reason << std::endl;
-	Channel &channel = this->_lst_channel[channel_name];
-	std::string message = HEADER_CMD(user) + "QUIT " + channel_name + " " + reason + "\r\n";
-	send(user.getFd(), message.c_str(), message.size(), 0);
-	sendUserList(channel);
-	deleteUserFromChannel(user);
+	message = HEADER_CMD(user) + "QUIT";;
+	if (cmd.size() == 2)
+		message.append(" " + reason);
+	message.append("\r\n");
+	send(user.getFd(), message.c_str(), message.size(), MSG_NOSIGNAL);
 	deleteUserFromLst(fd);
-	closeUserFd(fd); 
+	closeUserFd(fd);
 	return ;
 }
