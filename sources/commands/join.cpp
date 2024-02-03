@@ -1,4 +1,6 @@
 #include "Server.hpp"
+#include <iostream>
+#include <ctime>
 
 void sendUserList(Channel channel)
 {
@@ -68,7 +70,10 @@ void Server::join(std::string msg, int fd)
 		it = this->_lst_channel.find(channels_name[i]);
 		if (it == this->_lst_channel.end())
 		{
-			Channel new_channel(channels_name[i], &user);
+			std::time_t	now = time(0);
+			std::string	date_time = ctime(&now);
+			std::cout << RED << date_time << RESET << std::endl;
+			Channel new_channel(channels_name[i], &user, date_time);
 			if (channels_name[i][0] == '#')
 				new_channel.addMode('t', "");
 			std::cout << "create channel " << new_channel.getName() << " by " << user.getNickname() << std::endl;
@@ -114,7 +119,7 @@ void Server::join(std::string msg, int fd)
 		std::string message = HEADER_CMD(user) + "JOIN " + channels_name[i] + "\r\n";
 		send(fd, message.c_str(), message.size(), 0);
 		if (!channel.getTopic().empty())
-			RPL_TOPIC(user, channel);
+			RPL_TOPIC(user, channel.getName(), channel.getTopic());
 		sendUserList(channel);
 	}
 }

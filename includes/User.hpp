@@ -10,6 +10,7 @@ class User
 		std::string					_nickname;
 		std::string					_username;
 		std::vector<std::string>	_userChannels;
+		std::vector<std::string>	_invite;
 		int 						_fd;
 		bool						_isCreate;
 		int							_level;
@@ -45,6 +46,10 @@ class User
 		bool operator<(const User& other) const {
         	return this->getNickname() < other.getNickname();
    		}
+
+		void addInvite(std::string channel_name);
+		void deleteInvite(std::string channel_name);
+		std::vector<std::string> getInvite(void) const;
 };
 
 std::ostream &operator<<(std::ostream &out, const User &Object);

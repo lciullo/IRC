@@ -37,10 +37,13 @@ class Channel
 		bool					_private;
 		int						_nbrUser;
 		int						_nbrUserMax;
+		std::string				_creationTimeChannel;
+		std::string				_creationTimeTopic;
+		std::string				_nickSetterTopic;
 
 	public :
 		Channel();
-		Channel(std::string name, User *operators);
+		Channel(std::string name, User *operators, std::string creation_time);
 		Channel(const Channel &channel);
 		Channel &operator=(const Channel &channel);
 		
@@ -53,6 +56,8 @@ class Channel
 		int						getNbrUser() const;
 		int						getNbrUserMax() const;
 		std::string				getPassword() const;
+		std::string				getModestring() const;
+		std::string				getCreationTimeChannel() const;
 		
 		//Setters
 		void			setName(std::string name);
@@ -60,7 +65,7 @@ class Channel
 		
 		//Add
 		void			addUser(User *new_user);
-		void			addMode(char new_mode, std::string param); // or a char?
+		void			addMode(char new_mode, std::string param);
 		void			addTopic(std::string new_topic);
 		void			addUserToWaitlist(User *guest);
 		
@@ -76,5 +81,6 @@ class Channel
 };
 
 void	split_cmd(std::vector<std::string> *cmd, std::string msg);
-void	print_vector(std::vector<std::string> cmd);;
+void	print_vector(std::vector<std::string> cmd);
+
 #endif

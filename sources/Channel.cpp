@@ -18,8 +18,7 @@ Channel::Channel() : _name("default") {
 	this->_nbrUserMax = -1;
 }
 
-
-Channel::Channel(std::string name, User *operators) : _name(name) {
+Channel::Channel(std::string name, User *operators, std::string creation_time) : _name(name), _creationTimeChannel(creation_time) {
 	this->_lstUsers[operators] = OPERATOR;
 	this->_vecUsers.push_back(operators);
 	operators->addChannel(this->_name);
@@ -28,9 +27,8 @@ Channel::Channel(std::string name, User *operators) : _name(name) {
 	this->_nbrUserMax = -1;
 }
 
-Channel::Channel(const Channel &channel)
+Channel::Channel(const Channel &channel) : _name(channel._name),_creationTimeChannel(channel._creationTimeChannel) 
 {
-	this->_name = channel._name;
 	this->_topic = channel._topic;
 	this->_password = channel._password;
 	this->_mode = channel._mode;
@@ -40,6 +38,9 @@ Channel::Channel(const Channel &channel)
 	this->_nbrUser = channel._nbrUser;
 	this->_nbrUserMax = channel._nbrUserMax;
 	this->_private = channel._private;
+	this->_creationTimeChannel = channel._creationTimeChannel;
+	this->_creationTimeTopic = channel._creationTimeTopic;
+	this->_nickSetterTopic = channel._nickSetterTopic;
 }
 
 Channel &Channel::operator=(const Channel &channel)
@@ -54,6 +55,9 @@ Channel &Channel::operator=(const Channel &channel)
 	this->_nbrUser = channel._nbrUser;
 	this->_nbrUserMax = channel._nbrUserMax;
 	this->_private = channel._private;
+	this->_creationTimeChannel = channel._creationTimeChannel;
+	this->_creationTimeTopic = channel._creationTimeTopic;
+	this->_nickSetterTopic = channel._nickSetterTopic;
 	return (*this);
 }
 
@@ -74,11 +78,30 @@ int		Channel::getNbrUserMax() const {return (this->_nbrUserMax);};
 
 std::string	Channel::getPassword() const {return (this->_password);}
 
+std::string	Channel::getModestring() const {
+	std::string					modestring;
+	
+	std::vector<char>::const_iterator	it;
+	for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
+		modestring += *it;
+	}
+	return (modestring);
+}
+
+std::string	Channel::getCreationTimeChannel() const {return (this->_creationTimeChannel);}
+
 /*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void	Channel::setName(std::string name) {this->_name = name;}
 
-void	Channel::setTopic(std::string topic) {this->_topic = topic;}
-
+void	Channel::setTopic(std::string topic) {
+	std::time_t	now = time(0);
+	this->_creationTimeTopic = ctime(&now);
+	if (topic.empty()) {
+		this->_topic.clear();
+		return ;
+	}
+	this->_topic = topic;
+}
 /*- - - - - - - - - - - - - - - - - - ADD - - - - - - - - - - - - -- - -  - -*/
 
 void	Channel::addUser(User *new_user)
@@ -115,13 +138,6 @@ void	Channel::addMode(char new_mode, std::string param)
 			break ;
 		}
 		case 'l' : {
-			unsigned long i;
-			for (i = 0; i < param.size(); i++) {
-				if (!isdigit(param[i])) {
-					std::cout << "The parameters must only be numbers\n";
-					return ;
-				}
-			}
 			this->_nbrUserMax = atoi(param.c_str());
 			// std::cout << this->_nbrUserMax << std::endl;
 			break ;

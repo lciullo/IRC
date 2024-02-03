@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 14:42:51 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/01 13:20:35 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/01 16:05:50 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,19 @@ void Server::invite(std::string msg, int fd)
 	protagonist = this->GetUserByFd(fd).getNickname();
 
 	// Check that the command have enough parameters
-	if (checkNbrParam(cmd.size(), 3, this->GetUserByFd(fd), cmd[0]) == false)
+	if (cmd.size() > 3) {
+		ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "INVITE");
 		return ;
+	}
+	
+	if (cmd.size() == 1) {
+		std::vector<std::string>::iterator	it;
+		User	user = this->GetUserByFd(fd);
+		std::vector<std::string> invite = user.getInvite();
+		for (it = invite.begin(); it != invite.end(); it++) {
+			RPL_INVITELIST(user, *it);
+		}
+	}
 	
 	cmd.erase(cmd.begin());
 	channel_name = cmd.at(1);
@@ -53,7 +64,7 @@ void Server::invite(std::string msg, int fd)
 		}
 	}
 	if (it_serv_usr == this->_lst_usr.end()) {
-		std::cout << "ERROR Guest not in the serve\n"; //trouver la bonne erreur a renvoyer
+		ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "INVITE");
 		return ;
 	}
 
@@ -83,8 +94,9 @@ void Server::invite(std::string msg, int fd)
 	}
 
 	current_channel->addUserToWaitlist(guest);
+	guest->addInvite(channel_name);
 	RPL_INVITING(this->GetUserByFd(fd), channel_name, guest_nickname);
-	INVITE_MESSAGE(guest, channel_name);
+	INVITE_MESSAGE(guest, channel_name, this->GetUserByFd(fd).getNickname());
 }
 
 bool	checkNbrParam(size_t cmd_size, size_t size, User &user, std::string cmd){

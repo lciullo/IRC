@@ -13,83 +13,74 @@
 #include "Server.hpp"
 #include "Numerics.hpp"
 
+bool	checkparam(char mode, std::string param, std::map<User *, int> lstUsers_channel, std::string channel_name, User &user);
+
 void Server::mode(std::string msg, int fd) {
 	std::vector<std::string>	cmd;
-	std::string					channel;
+	std::string					channel_name;
 	std::string					protagonist;
 	std::string					param;
 	std::string					modestring;
 	char						sign;
 
 	split_cmd(&cmd, msg);
-	cmd.erase(cmd.begin());
 	protagonist = this->GetUserByFd(fd).getUsername();
-	// checker que la commnade est de la bonne taille -> ERR_NEEDMOREPARAMS
-	// if (cmd.size() <= 1) {
-	// 	ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "MODE");
-	// 	return ;
-	// }
-
-// 	if the channel we want to add the mode to does not exist -> ERR_NOSUCHCHANNEL
-// 	if the target nickname does not exist on the server -> ERR_NOSUCHNICK
-// 	if the mode string is not given -> RPL_CHANNELMODEIS and RPL_CREATIONTIME following
-
-// 	Ckeck that the user who is doing the mode command have the proper rights
-	print_vector(cmd);
-
-	// checker que le channel existe -> -> ERR_NOSUCHCHANNEL
+	
+	if (cmd[0] == "INITE")
+		cmd.erase(cmd.begin());
+	
+	// Check that the channel exist
+	if (cmd.size() > 0)
+		channel_name = cmd[0];
 	Channel						*current_channel;
 	std::map<std::string, Channel>::iterator	it_serv;
-	if ((it_serv = this->_lst_channel.find(cmd[0])) == this->_lst_channel.end()) {
-		std::cout << "ERROR no such channel\n";
+	if ((it_serv = this->_lst_channel.find(channel_name)) == this->_lst_channel.end()) {
+		ERR_NOSUCHCHANNEL(this->GetUserByFd(fd), channel_name);
 		return ;
 	}
 	else {
 		current_channel = &it_serv->second;
-		// if (current_channel->getStatus() == false) {
-		// 	std::cout << "ERROR Channel is not in private no eed to ivite someoe everybody is free to join\n"; //a tester
-		// }
 	}
 	cmd.erase(cmd.begin());
-
-	//checker que le client a les bon droit pour changer les modes
-	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
-	std::map<User *, int>::iterator	it_channel;
-	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		if (it_channel->first->getUsername() == protagonist) {
-			if (it_channel->second == VOICE) {
-				std::cout << "ERROR User is in the channel but does not have the right role\n";
-				return ;
-			}
-			std::cout << "User is in the channel and have the good right" << std::endl;
-			break ;
-		}
-	}
-	if (it_channel == lstUsrChannel.end()) {
-		std::cout << "ERROR User not in the channel\n";
-		return ;
-	}
 
 	if (!cmd.empty() && cmd[0].size()!= 0) {
 		modestring = cmd[0];
 		cmd.erase(cmd.begin());
 	}
 	else {
-		std::cout << "ERROR no mode string\n";
+		RPL_CHANNELMODEIS(this->GetUserByFd(fd), channel_name, current_channel->getModestring());
+		RPL_CREATIONTIME(this->GetUserByFd(fd), channel_name, current_channel->getCreationTimeChannel());
 		return ;
 	}
 
+	//Check that the user who want to invite is on the channel and have the good privilege
+	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
+	std::map<User *, int>::iterator	it_channel;
+	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
+		if (it_channel->first->getUsername() == protagonist) {
+			if (it_channel->second == VOICE) {
+				ERR_CHANOPRIVSNEEDED(this->GetUserByFd(fd), channel_name);;
+				return ;
+			}
+			break ;
+		}
+	}
+	if (it_channel == lstUsrChannel.end()) {
+		ERR_NOTONCHANNEL(this->GetUserByFd(fd), channel_name);
+		return ;
+	}
+
+	//Check the format of the mode string
 	if (modestring[0] == '+' || modestring[0] == '-') {
 		sign = modestring[0];
 		modestring.erase(modestring.begin());
 	}
 	else {
-		std::cout << "ERROR Modestring wrong format\n";
+		ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "MODE");
 		return ;
 	}
 
-	std::cout << modestring << std::endl;
-	print_vector(cmd);
+	//Check the mode the param and add/delte the mode
 	std::string::iterator	it;
 	unsigned long	i = 0;
 	for (it = modestring.begin(); it != modestring.end(); it++) {
@@ -98,17 +89,19 @@ void Server::mode(std::string msg, int fd) {
 			continue ;
 		}
 		else if (isMode(*it) == false) {
-			std::cout << "Error wrong format of modestring\n";
+			ERR_UNKNOWNMODE(this->GetUserByFd(fd), *it);
 			return ;
 		}
 
-		if (*it == 'o' || *it == 'k' || *it == 'l') {
+		if (*it == 'o' || (sign == '+' && (*it == 'k' || *it == 'l'))) {
 			if (i < cmd.size()) {
 				param = cmd.at(i);
 				i++;
+				if (checkparam(*it, param, current_channel->getLstUsers(), channel_name, this->GetUserByFd(fd)) == false)
+					continue ;
 			}
 			else {
-				std::cout << "ERROR the mode need an argument\n";
+				ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "MODE");
 				continue ;
 			}
 		}
@@ -122,24 +115,34 @@ void Server::mode(std::string msg, int fd) {
 	}
 }
 
+bool	checkparam(char mode, std::string param, std::map<User *, int> lstUsers_channel, std::string channel_name, User &user) {
+	if (mode == 'l') {
+		unsigned long i;
+		for (i = 0; i < param.size(); i++) {
+			if (!isdigit(param[i])) {
+				ERR_INVALIDMODEPARAM(user, channel_name, mode, param, "only numbers are accepted");
+				return (false);
+			}
+		}
+	}
 
-// //<channel/nickanme> <+/-> <mode> [parametre]
+	if (mode == 'o') {
+		std::map<User *, int>::iterator	it_lstUsers;
+		for (it_lstUsers = lstUsers_channel.begin(); it_lstUsers != lstUsers_channel.end(); it_lstUsers++) {
+			if (it_lstUsers->first->getNickname() == param)
+				break ;
+		}
+		if (it_lstUsers == lstUsers_channel.end()) {
+			ERR_INVALIDMODEPARAM(user, channel_name, mode, param, "User not in the channel");
+			return (false);
+		}
+	}
 
-// // 1- premier arg == nom de channel ou nom de user
-// // 2- peut importe checker qu'ils existe (pour user 
-// //    checker qu'il fait bien parti du channel et qui a les bon droit)
-// // 3- vector en checkant si c'est un plus ou un moins
-// 		// ->si c'est un plus on envoie vers addMode
-// 		// ->si c'est un moins on envoie vers deleteMode
-// // 4 - quand c'est pour un user oblige -o donc juste on ajout le mode si possible
-
-// MODE
-	// <target> [<modestring> [<mode arguments>...]]
-// -i
-// -t 
-// -k 
-// -o
-// -l
-
-//on peut ajouter plusier mode d'un coup
-// +oi-i+o
+	if (mode == 'k') {
+		if (param.find_first_of(" \t\n\r\f\v", 0) != std::string::npos) {
+			ERR_INVALIDMODEPARAM(user, channel_name, mode, param, "Password should not have spacces");
+			return (false);
+		}
+	}
+	return (true);
+}

@@ -23,7 +23,7 @@ void Server::launch()
 	this->_socketfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (setsockopt(this->_socketfd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt))<0)
 		exit(EXIT_FAILURE);
-	if (this->_socketfd < 0)
+	if (this->_socketfd < 0) // coucou la zone c'est leon le bg je vous aimes
 	{
 		std::cout << "[ERROR] Creation of socket failed";
 		return;
