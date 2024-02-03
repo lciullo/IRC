@@ -14,7 +14,7 @@ class User
 		int 						_fd;
 		bool						_isCreate;
 		int							_level;
-		std::string					_secondChoice;
+		std::string					_oldNickname;
 
 	public :
 
@@ -31,13 +31,13 @@ class User
 		std::vector<std::string> &getUserChannels(void);
 		const int& getFd(void) const;
 		const bool& getIsCreate(void) const;
-		std::string getSecondChoice(void);
+		std::string getoldNickname(void);
 				
 		//Setters
 		void setIsCreate(bool isCreate);
 		void setNickname(std::string nickname);
 		void setUsername(std::string username);
-		void setSecondChoice(std::string SecondChoice);
+		void setoldNickname(std::string oldNickname);
 		void addLevel();
 				
 		//Channel
