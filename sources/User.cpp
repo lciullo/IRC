@@ -89,21 +89,18 @@ void User::addLevel()
 	this->_level += 1;
 }
 
-<<<<<<< HEAD
 void	User::addInvite(std::string channel_name) 
 {
 	this->_invite.push_back(channel_name);
 }
 
-=======
+
 void User::setSecondChoice(std::string secondChoice)
 {
 	this->_secondChoice = secondChoice;
 	return ;
 }
 
-
->>>>>>> 25bc14a35f87c91d9a4cfd13f920251e42668c0b
 std::ostream &operator<<(std::ostream &out, const User &Object) {
 
 	out << Object.getNickname() << " " << Object.getUsername() << " " << Object.getIsCreate() << std::endl;

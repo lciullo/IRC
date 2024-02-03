@@ -28,7 +28,7 @@ send_msg(user, HEADER_CMD(user) + "412 " + user.getNickname() + SPACE + ":No tex
 send_msg(user, HEADER_CMD(user) + "404 " + user.getNickname() + SPACE + channel_name + SPACE + ":Cannot send to channel" + RN)
 
 # define ERR_NOSUCHNICK(user, nickname) \
-send_msg(user, HEADER_CMD(user) + "401 " + user.getNickname() + SPACE + nickname + SPACE + ":No such nick" + RN)
+send_msg(user, HEADER_CMD(user) + "401 " + user.getNickname() + SPACE + nickname + SPACE + ":No such nick/channel" + RN)
 
 //======= NICK =======//
 
@@ -86,9 +86,6 @@ send_msg(user, HEADER_CMD(user) + "331 " + user.getNickname() + SPACE + channel_
 
 # define RPL_INVITELIST(user, channel_name) \
 send_msg(user, HEADER_CMD(user) + "336 " + user.getNickname() SPACE + channel_name + RN)
-
-# define ERR_NOSUCHNICK(user, nick) \
-send_msg(user, HEADER_CMD(user) + "401 " + user.getNickname() + SPACE + nick + SPACE + ":No such nick/channel" + RN)
 
 # define ERR_USERNOTINCHANNEL(user, channel_name, nick) \
 send_msg(user, HEADER_CMD(user) + "441 " + user.getNickname() + SPACE + nick + SPACE + channel_name + SPACE + ":They aren't on that channel" + RN)
