@@ -56,11 +56,12 @@ bool Server::nick(std::string nickname, int fd)
 		toUpdate = secondChoice;
  	user.setSecondChoice(nickname);
 	user.setNickname(toUpdate);
+	//sendNewNickname(user, toUpdate, nickname);
 	std::map<int, User>::iterator start = this->_lst_usr.end();
 	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); start != it; ++it)
 	{
 		sendStringSocket(it->second.getFd(), RPL_NICK(toUpdate, user.getUsername(), nickname));
-	} 
+	}
 	return (true);
 }
 
@@ -92,3 +93,27 @@ std::string Server::getNickname(std::string msg)
 	}
 	return (nickname);
 }
+
+/*void Server::sendNewNickname(User &user, std::string toUpdate, std::string nickname)
+{
+	/*std::map<int, User>::iterator start = this->_lst_usr.end();
+	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); start != it; ++it)
+	{
+		sendStringSocket(it->second.getFd(), RPL_NICK(toUpdate, user.getUsername(), nickname));
+	} */
+
+	//====================
+	//1- Voir dans quels channels l'utilisateur est 
+	std::vector<std::string> userChannelLst = user.getUserChannels();
+	std::vector<std::string>::iterator	it;
+	for (it = userChannelLst.begin(); it != userChannelLst.end(); it++) 
+	{
+		if (searchChannelInServer(*it))
+		{	
+			Channel &channel = this->_lst_channel[*it];
+			
+		}
+
+	}
+	return ;
+}*/

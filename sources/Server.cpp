@@ -97,7 +97,7 @@ void Server::launch_cmd(std::string msg, int fd)
 		if (cmd.size() < 2)
 		{
 			ERR_NEEDMOREPARAMS(user, "PASS");
-			return (false);
+			return ;
 		}
 		user.setUsername(getUsername(msg));	
 		user.addLevel();

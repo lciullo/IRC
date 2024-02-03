@@ -43,7 +43,7 @@ class Server
 		bool nick(std::string nickname, int fd);
 		bool switchNickCase(std::string msg, int fd);
 		bool isValidNickname(std::string nickname);
-
+		void sendNewNickname(User &user, std::string toUpdate, std::string nickname);
 		//Delete 
 		bool searchChannelInServer(std::string target);
 		void closeUserFd(int fd);
