@@ -96,11 +96,11 @@ std::string Server::getNickname(std::string msg)
 
 /*void Server::sendNewNickname(User &user, std::string toUpdate, std::string nickname)
 {
-	/*std::map<int, User>::iterator start = this->_lst_usr.end();
+	std::map<int, User>::iterator start = this->_lst_usr.end();
 	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); start != it; ++it)
 	{
 		sendStringSocket(it->second.getFd(), RPL_NICK(toUpdate, user.getUsername(), nickname));
-	} */
+	} 
 
 	//====================
 	//1- Voir dans quels channels l'utilisateur est 
