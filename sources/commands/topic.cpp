@@ -68,6 +68,7 @@ void Server::topic(std::string msg, int fd)
 		ERR_NOTONCHANNEL(this->GetUserByFd(fd), channel_name);
 		return ;
 	}
+	//pense a enlever les 2 petit points
 	//envoyer un message a tout le monde avec send TOPIC command
 }
 

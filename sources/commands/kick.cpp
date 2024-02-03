@@ -16,11 +16,11 @@
 void Server::kick(std::string msg, int fd) {
 	std::vector<std::string>	cmd;
 	std::string					channel_name;
-	std::string					nick;
 	std::string					reason;
 	std::string					protagonist;
 
 	split_cmd(&cmd, msg);
+	print_vector(cmd);
 	protagonist = this->GetUserByFd(fd).getNickname();
 	
 	// Check that the command have enough parameters
@@ -33,7 +33,6 @@ void Server::kick(std::string msg, int fd) {
 	}
 	cmd.erase(cmd.begin());
 	channel_name = cmd.at(0);
-	nick = cmd.at(1);
 	
 	// Check that the channel exist
 	if (channel_name[0] != '#' && channel_name[0] != '&') {
@@ -49,6 +48,7 @@ void Server::kick(std::string msg, int fd) {
 	}
 	else
 		current_channel = &it_serv->second;
+	cmd.erase(cmd.begin());
 
 	//Check that the user who want to invite is on the channel and have the good privilege
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
@@ -67,22 +67,28 @@ void Server::kick(std::string msg, int fd) {
 		return ;
 	}
 
-	//Check that the person we are trying to kick is on the channel
-	User	*banned;
-	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		if (it_channel->first->getNickname() == nick) { 
-			banned = it_channel->first;
-			break ;
+	if (cmd.at(cmd.size() - 1)[0] == ':') {
+		reason = cmd.at(cmd.size() - 1);
+		cmd.erase(cmd.end());
+		reason.erase(reason.begin());
+	}
+	
+	std::vector<std::string>::iterator	it_cmd;
+	for (it_cmd = cmd.begin(), it_cmd != cmd.end(), it_cmd++) {
+		//Check that the person we are trying to kick is on the channel
+		User	*banned;
+		for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
+			if (it_channel->first->getNickname() == *it_cmd) { 
+				banned = it_channel->first;
+				break ;
+			}
 		}
+		if (it_channel == lstUsrChannel.end()) {
+			ERR_USERNOTINCHANNEL(this->GetUserByFd(fd), channel_name, *it_cmd);
+			return ;
+		}
+		current_channel->deleteUser(*banned);
+		banned->deleteChannel(channel_name);
+		//ENVOYER UN MESSAGE A TOUT LES MEMBRES DU SERVEUR COMME QUOI QUELQU'UN A ETE KICK
 	}
-	if (it_channel == lstUsrChannel.end()) {
-		ERR_USERNOTINCHANNEL(this->GetUserByFd(fd), channel_name, nick);
-		return ;
-	}
-
-	current_channel->deleteUser(*banned);
-	banned->deleteChannel(channel_name);
 }
-
-//ATTENTION RAJOUTER LES VIRGULE PLUSIEURS USER PEUVENT ETRE KCIK D'UN COUP
-//ENVOYER UN MESSAGE A TOUT LES MEMBRES DU SERVEUR COMME QUOI QUELQU'UN A ETE KICK
