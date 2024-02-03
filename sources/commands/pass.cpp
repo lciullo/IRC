@@ -5,6 +5,15 @@ bool Server::isRightPassword(std::string msg, int fd)
 	std::istringstream	iss(msg);
 	std::string			line;
 	std::string			password;
+	User &user = GetUserByFd(fd);
+	std::vector<std::string> cmd;
+	split_cmd(&cmd, msg);
+	if (cmd.size() < 2)
+	{
+		ERR_NEEDMOREPARAMS(user, "PASS");
+		//fd le fd 
+		return (false);
+	}
 	while (std::getline(iss, line)) 
 	{
 		size_t pos = line.find("PASS");

@@ -31,7 +31,6 @@ void Server::part(std::string msg, int fd)
 			ERR_NOTONCHANNEL(user, channels_name[i]);
 			continue ;
 		}
-		channel.deleteUser(user);
 		std::string message = HEADER_CMD(user) + "PART " + channels_name[i];
 		if (cmd.size() > 2)
 		{
@@ -40,9 +39,20 @@ void Server::part(std::string msg, int fd)
 		}
 		message.append("\r\n");
 		std::cout << "[PART] channel : " << channels_name[i] << " | reason : " << reason << " | who : " << user.getNickname() << std::endl;
-		send(user.getFd(), message.c_str(), message.size(), 0);
+		std::vector<User *> vecUser = channel.getVecUsers();
+		std::vector<User *>::iterator ite = vecUser.end();
+		for (std::vector<User *>::iterator it = vecUser.begin(); it != ite; ++it)
+		{
+			std::cout << "[TEST] void" << std::endl;
+			send((*it)->getFd(), message.c_str(), message.size(), 0);
+		}
+		channel.deleteUser(user);
 		user.deleteChannel(channel.getName());
 		sendUserList(channel);
-		//if last user left channel rm channel of list
+		if (channel.getVecUsers().size() == 0)
+		{
+			std::map<std::string, Channel>::iterator it = this->_lst_channel.find(channel.getName());
+			this->_lst_channel.erase(it);
+		}
 	}
 }
