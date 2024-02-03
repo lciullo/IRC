@@ -46,9 +46,9 @@ const bool& User::getIsCreate(void) const
 	return (this->_isCreate);
 }
 
-std::string User::getSecondChoice(void)
+std::string User::getoldNickname(void)
 {
-	return (this->_secondChoice);
+	return (this->_oldNickname);
 }
 
 std::vector<std::string> &User::getUserChannels(void)
@@ -106,9 +106,9 @@ void	User::addInvite(std::string channel_name)
 }
 
 
-void User::setSecondChoice(std::string secondChoice)
+void User::setoldNickname(std::string oldNickname)
 {
-	this->_secondChoice = secondChoice;
+	this->_oldNickname = oldNickname;
 	return ;
 }
 
