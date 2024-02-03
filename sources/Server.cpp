@@ -104,7 +104,7 @@ void Server::launch_cmd(std::string msg, int fd)
 	{
 		std::vector<std::string> cmd;
 		split_cmd(&cmd, msg);
-		if (cmd.size() < 2)
+		if (cmd.size() < 4)
 		{
 			ERR_NEEDMOREPARAMS(user, "PASS");
 			return ;

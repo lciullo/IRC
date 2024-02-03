@@ -118,4 +118,4 @@ void Server::sendInEachChannel(Channel &channel, User &user, std::string toUpdat
 		}
 	}
 	return ;
-}
+}g
