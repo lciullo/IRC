@@ -46,11 +46,14 @@ void Server::topic(std::string msg, int fd)
 		}
 		else {
 			RPL_TOPIC(this->GetUserByFd(fd), channel_name, current_channel->getTopic());
-			//RPL_TOPICWHOTIME
+			RPL_TOPICWHOTIME(this->GetUserByFd(fd), channel_name, current_channel->getTopicInfo());
 			return ;
 		}
 	}
 	cmd.erase(cmd.begin());
+
+	if (current_channel->getModestring().find('t') == std::string::npos)
+		return ;
 
 	//Check that the user who want to invite is on the channel and have the good privilege
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
@@ -68,13 +71,10 @@ void Server::topic(std::string msg, int fd)
 		ERR_NOTONCHANNEL(this->GetUserByFd(fd), channel_name);
 		return ;
 	}
-	//pense a enlever les 2 petit points
-	//envoyer un message a tout le monde avec send TOPIC command
-}
 
-// TOPIC
-	// <channel> [<topic>]
-	// Commande inferieur a 1 arguments -> ERR_NEEDMOREPARAMS
-		// commande : 1 ou 2 arguments
-	// Informe qui et qund le topic a ete set -> RPL_TOPICWHOTIME
-		// Envoye apres RPL_TOPIC
+	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
+		User user = *it_channel->first;
+		RPL_TOPIC(user, channel_name, current_channel->getTopic());
+		RPL_TOPICWHOTIME(user, channel_name, current_channel->getTopicInfo());
+	}
+}

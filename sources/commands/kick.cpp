@@ -70,11 +70,11 @@ void Server::kick(std::string msg, int fd) {
 	if (cmd.at(cmd.size() - 1)[0] == ':') {
 		reason = cmd.at(cmd.size() - 1);
 		cmd.erase(cmd.end());
-		reason.erase(reason.begin());
+		// reason.erase(reason.begin());
 	}
 	
 	std::vector<std::string>::iterator	it_cmd;
-	for (it_cmd = cmd.begin(), it_cmd != cmd.end(), it_cmd++) {
+	for (it_cmd = cmd.begin(); it_cmd != cmd.end(); it_cmd++) {
 		//Check that the person we are trying to kick is on the channel
 		User	*banned;
 		for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
@@ -89,6 +89,13 @@ void Server::kick(std::string msg, int fd) {
 		}
 		current_channel->deleteUser(*banned);
 		banned->deleteChannel(channel_name);
-		//ENVOYER UN MESSAGE A TOUT LES MEMBRES DU SERVEUR COMME QUOI QUELQU'UN A ETE KICK
+		
+		for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
+			User user = *it_channel->first;
+			if (reason.empty())
+				KICK_WITHOUT_REASON(user, channel_name, *it_cmd);
+			else
+				KICK_WITH_REASON(user, channel_name, *it_cmd, reason);
+		}
 	}
 }
