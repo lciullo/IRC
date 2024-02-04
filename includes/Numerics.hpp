@@ -102,10 +102,10 @@ send_msg(user, HEADER_CMD(user) + "696 " + user.getNickname() + channel_name + S
 # define INVITE_MESSAGE(user, channel_name, nick) \
 send_msg(*user, ":" + user->getNickname() + "!" + user->getUsername() SPACE + "INVITE " + nick SPACE + channel_name RN)
 
-# define KICK_WITHOUT_REASON(user, channel_name, nick) \
-send_msg(user, HEADER_CMD(user) + user.getNickname() + SPACE + "KICK" + SPACE + channel_name + SPACE + nick + RN)
+# define KICK_WITHOUT_REASON(user, kicker, channel_name, nick) \
+send_msg(user, HEADER_CMD(kicker) + "KICK " +  channel_name + SPACE + nick + RN)
 
-# define KICK_WITH_REASON(user, channel_name, nick, reason) \
-send_msg(user, HEADER_CMD(user) + user.getNickname() + SPACE + "KICK" + SPACE + channel_name + SPACE + nick + SPACE + reason + RN)
+# define KICK_WITH_REASON(user, kicker, channel_name, nick, reason) \
+send_msg(user, HEADER_CMD(kicker) + "KICK " +  channel_name + SPACE + nick + SPACE + reason + RN)
 
 #endif

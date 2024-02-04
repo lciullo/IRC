@@ -94,8 +94,9 @@ std::string	Channel::getTopicInfo() const {return (this->_topicInfo);}
 void	Channel::setName(std::string name) {this->_name = name;}
 
 void	Channel::setTopic(std::string topic, std::string nickSetter) {
-	std::time_t	now = time(0);
-	this->_topicInfo = nickSetter + " " + ctime(&now);
+
+	this->_topicInfo = nickSetter;
+	std::cout << BLUE << _topicInfo << RESET << std::endl;
 	if (topic.empty()) {
 		this->_topic.clear();
 		return ;

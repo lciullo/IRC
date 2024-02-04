@@ -18,7 +18,10 @@ void Server::topic(std::string msg, int fd)
 	std::vector<std::string>	cmd;
 	std::string					channel_name;
 	std::string					protagonist;
-
+	std::string					topic;
+	std::time_t	now = time(0);
+	char *	time = ctime(&now);
+	// std::cout << BLUE << time << RESET << std::endl;
 	split_cmd(&cmd, msg);
 	channel_name = cmd[1];
 	protagonist = this->GetUserByFd(fd).getUsername();
@@ -28,6 +31,8 @@ void Server::topic(std::string msg, int fd)
 		return ;
 	}
 
+	
+	std::cout << RED << msg << RESET << std::endl;
 	// Check that the channel exist
 	Channel						*current_channel;
 	std::map<std::string, Channel>::iterator	it_serv;
@@ -72,9 +77,17 @@ void Server::topic(std::string msg, int fd)
 		return ;
 	}
 
+	if (cmd.at(cmd.size() - 1)[0] == ':') {
+		topic = cmd.at(cmd.size() - 1);
+		topic.erase(topic.begin());
+	}
+	current_channel->setTopic(topic, this->GetUserByFd(fd).getNickname() + " " + time);
+
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
 		User user = *it_channel->first;
 		RPL_TOPIC(user, channel_name, current_channel->getTopic());
 		RPL_TOPICWHOTIME(user, channel_name, current_channel->getTopicInfo());
 	}
 }
+
+//si topic a jamais ete set avnt et qu'on fait /topic

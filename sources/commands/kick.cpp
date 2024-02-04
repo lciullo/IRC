@@ -18,15 +18,12 @@ void Server::kick(std::string msg, int fd) {
 	std::string					channel_name;
 	std::string					reason;
 	std::string					protagonist;
+	int							kick_count = 0;
 
 	split_cmd(&cmd, msg);
-	print_vector(cmd);
 	protagonist = this->GetUserByFd(fd).getNickname();
 	
 	// Check that the command have enough parameters
-	if (cmd.size() == 4)
-		reason = cmd.at(3);
-	
 	if (cmd.size() < 3) {
 		ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "KICK");
 		return ;
@@ -85,17 +82,26 @@ void Server::kick(std::string msg, int fd) {
 		}
 		if (it_channel == lstUsrChannel.end()) {
 			ERR_USERNOTINCHANNEL(this->GetUserByFd(fd), channel_name, *it_cmd);
-			return ;
+			continue ;
 		}
-		current_channel->deleteUser(*banned);
-		banned->deleteChannel(channel_name);
-		
+
 		for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
 			User user = *it_channel->first;
 			if (reason.empty())
-				KICK_WITHOUT_REASON(user, channel_name, *it_cmd);
+				KICK_WITHOUT_REASON(user, this->GetUserByFd(fd), channel_name, *it_cmd);
 			else
-				KICK_WITH_REASON(user, channel_name, *it_cmd, reason);
+				KICK_WITH_REASON(user, this->GetUserByFd(fd), channel_name, *it_cmd, reason);
 		}
+
+		current_channel->deleteUser(*banned);
+		banned->deleteChannel(channel_name);
+		kick_count++;
+		
 	}
+	if (kick_count != 0)
+		sendUserList(*current_channel);
 }
+
+//quand je kick quelqu'un du channel vois pas les nouveau message et peut pas en envoye maistoujours acces
+//une fois que la personne  ete kick quand elle essaie de join elle ne peut plus envoye de message sur le channel
+//GARBAGE s'affiche avant mes message ?
