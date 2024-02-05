@@ -88,7 +88,8 @@ void Server::launch_cmd(std::string msg, int fd)
 	
 	/*ERR_NOTREGISTERED (451) "<client> :You have not registered"*/
 	User &user = GetUserByFd(fd);
-	std::cout << "LEVEL = " << user.getLevel() << std::endl;
+	std::cout << BLUE << "============================" << RESET << std::endl;
+	std::cout << BLUE << "LEVEL = " << user.getLevel() << RESET << std::endl;
 	if (msg.find("PASS") != std::string::npos)
 	{
 		if (isRightPassword(msg, fd) == true)
@@ -106,31 +107,31 @@ void Server::launch_cmd(std::string msg, int fd)
 		split_cmd(&cmd, msg);
 		if (cmd.size() < 4)
 		{
-			ERR_NEEDMOREPARAMS(user, "PASS");
+			ERR_NEEDMOREPARAMS(user, "USER");
 			return ;
 		}
 		user.setUsername(getUsername(msg));	
 		user.addLevel();
 		//ERR_ALREADYREGISTERED (462)
 	}
-	else if (user.getLevel() < 3)
-		return ;
-	else if (msg.find("JOIN") != std::string::npos)
+	else if (msg.find("JOIN") != std::string::npos && user.getLevel() > 3)
 		this->join(msg, fd);
-	else if (msg.find("PART") != std::string::npos)
+	else if (msg.find("PART") != std::string::npos && user.getLevel() > 3)
 		this->part(msg, fd);
-	else if (msg.find("PRIVMSG") != std::string::npos)
+	else if (msg.find("PRIVMSG") != std::string::npos && user.getLevel() > 3)
 		this->privmsg(msg, fd);
-	else if (msg.find("INVITE") != std::string::npos)
+	else if (msg.find("INVITE") != std::string::npos && user.getLevel() > 3)
 		this->invite(msg, fd);
-	else if (msg.find("KICK") != std::string::npos)
+	else if (msg.find("KICK") != std::string::npos && user.getLevel() > 3)
 		this->kick(msg, fd);
-	else if (msg.find("TOPIC") != std::string::npos)
+	else if (msg.find("TOPIC") != std::string::npos && user.getLevel() > 3)
 		this->topic(msg, fd);
 	else if (msg.find("QUIT") != std::string::npos)
 		this->quit(msg, fd);
 	else if (msg.find("MODE") != std::string::npos)
 		this->mode(msg, fd);
+	std::cout << RED << "============================" << RESET << std::endl;
+	std::cout << RED << "LEVEL = " << user.getLevel() << RESET << std::endl;
 }
 
 
