@@ -15,6 +15,7 @@
 
 void Server::kick(std::string msg, int fd) {
 	std::vector<std::string>	cmd;
+	std::vector<std::string>	all_ban;
 	std::string					channel_name;
 	std::string					reason;
 	std::string					protagonist;
@@ -28,6 +29,27 @@ void Server::kick(std::string msg, int fd) {
 		ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "KICK");
 		return ;
 	}
+
+	if (cmd.size() > 4) {
+		for (std::vector<std::string>::iterator i = cmd.end(); cmd.size() > 4; i--) {
+			cmd.erase(i);
+		}
+	}
+	if (cmd.size() == 4) {
+		if (cmd.at(cmd.size() - 1)[0] == ':')
+			reason = cmd.at(cmd.size() - 1);
+		cmd.erase(cmd.end());
+	}
+	std::cout << cmd.size() << std::endl;
+	if (cmd.size() == 3) {
+		std::cout << "coucou2\n";
+		split_arg(&all_ban, cmd[2]);
+		std::cout << "coucou1\n";
+		cmd.erase(cmd.end());
+		std::cout << "coucou\n";
+	}
+
+	print_vector(all_ban);
 	cmd.erase(cmd.begin());
 	channel_name = cmd.at(0);
 	
@@ -47,9 +69,15 @@ void Server::kick(std::string msg, int fd) {
 		current_channel = &it_serv->second;
 	cmd.erase(cmd.begin());
 
+
+	
 	//Check that the user who want to invite is on the channel and have the good privilege
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
 	std::map<User *, int>::iterator	it_channel;
+	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
+		std::cout << it_channel->first->getNickname() << " ";
+	}
+	std::cout << std::endl;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
 		if (it_channel->first->getNickname() == protagonist) {
 			if (it_channel->second != OPERATOR) {
@@ -64,14 +92,8 @@ void Server::kick(std::string msg, int fd) {
 		return ;
 	}
 
-	if (cmd.at(cmd.size() - 1)[0] == ':') {
-		reason = cmd.at(cmd.size() - 1);
-		cmd.erase(cmd.end());
-		// reason.erase(reason.begin());
-	}
-	
 	std::vector<std::string>::iterator	it_cmd;
-	for (it_cmd = cmd.begin(); it_cmd != cmd.end(); it_cmd++) {
+	for (it_cmd = all_ban.begin(); it_cmd != all_ban.end(); it_cmd++) {
 		//Check that the person we are trying to kick is on the channel
 		User	*banned;
 		for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
@@ -96,10 +118,14 @@ void Server::kick(std::string msg, int fd) {
 		current_channel->deleteUser(*banned);
 		banned->deleteChannel(channel_name);
 		kick_count++;
-		
 	}
+
 	if (kick_count != 0)
 		sendUserList(*current_channel);
+	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
+		std::cout << it_channel->first->getNickname() << " ";
+	}
+	std::cout << std::endl;
 }
 
 //quand je kick quelqu'un du channel vois pas les nouveau message et peut pas en envoye maistoujours acces
