@@ -74,7 +74,7 @@ void Server::kick(std::string msg, int fd) {
 	}
 	
 	std::vector<std::string>::iterator	it_cmd;
-	for (it_cmd = cmd.begin(), it_cmd != cmd.end(), it_cmd++) {
+	for (it_cmd = cmd.begin(); it_cmd != cmd.end(); it_cmd++) {
 		//Check that the person we are trying to kick is on the channel
 		User	*banned;
 		for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {

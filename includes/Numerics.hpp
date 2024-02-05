@@ -51,6 +51,13 @@ send_msg(user, HEADER_CMD(user) + "433 " + user.getNickname() + SPACE + nickname
 
 # define RPL_NICK(nickname, username, newNickname) (":" + nickname + "!" + username + "@localhost NICK " +  newNickname + RN)
 
+//============ REGISTRATION ===========
+
+//# define ERR_ALREADYREGISTERED() "<client> :You have not registered" 451 
+
+
+//# define ERR_ALREADYREGISTERED() ""<client> :You may not reregister" 462
+
 # define ERR_BADCHANMASK(user, channel_name) \
 send_msg(user, HEADER_CMD(user) + "476 " + channel_name + SPACE + ":Bad Channel Mask" + RN)
 
