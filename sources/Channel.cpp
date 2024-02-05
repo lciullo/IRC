@@ -39,8 +39,7 @@ Channel::Channel(const Channel &channel) : _name(channel._name),_creationTimeCha
 	this->_nbrUserMax = channel._nbrUserMax;
 	this->_private = channel._private;
 	this->_creationTimeChannel = channel._creationTimeChannel;
-	this->_creationTimeTopic = channel._creationTimeTopic;
-	this->_nickSetterTopic = channel._nickSetterTopic;
+	this->_topicInfo = channel._topicInfo;
 }
 
 Channel &Channel::operator=(const Channel &channel)
@@ -56,8 +55,7 @@ Channel &Channel::operator=(const Channel &channel)
 	this->_nbrUserMax = channel._nbrUserMax;
 	this->_private = channel._private;
 	this->_creationTimeChannel = channel._creationTimeChannel;
-	this->_creationTimeTopic = channel._creationTimeTopic;
-	this->_nickSetterTopic = channel._nickSetterTopic;
+	this->_topicInfo = channel._topicInfo;
 	return (*this);
 }
 
@@ -90,12 +88,15 @@ std::string	Channel::getModestring() const {
 
 std::string	Channel::getCreationTimeChannel() const {return (this->_creationTimeChannel);}
 
+std::string	Channel::getTopicInfo() const {return (this->_topicInfo);}
+
 /*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void	Channel::setName(std::string name) {this->_name = name;}
 
-void	Channel::setTopic(std::string topic) {
-	std::time_t	now = time(0);
-	this->_creationTimeTopic = ctime(&now);
+void	Channel::setTopic(std::string topic, std::string nickSetter) {
+
+	this->_topicInfo = nickSetter;
+	std::cout << BLUE << _topicInfo << RESET << std::endl;
 	if (topic.empty()) {
 		this->_topic.clear();
 		return ;

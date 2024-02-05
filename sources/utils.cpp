@@ -77,7 +77,6 @@ void	split_cmd(std::vector<std::string> *cmd, std::string msg)
 	std::string	str;
 	std::string	whitespace = " \t\n\r\f\v";
 	size_t	last_non_space = 0;
-	size_t	coma;
 	bool	deux_point;
 
 	while (msg.size() != 0)
@@ -88,7 +87,6 @@ void	split_cmd(std::vector<std::string> *cmd, std::string msg)
 		begin = msg.find_first_not_of(whitespace);
 		if (msg[begin] == ':') {
 			end = msg.size();
-			// begin = begin + 1;
 			deux_point = true;
 		}
 		else {
@@ -96,18 +94,8 @@ void	split_cmd(std::vector<std::string> *cmd, std::string msg)
 		}
 
 		str = msg.substr(begin, end);
-		if (cmd->size() >= 2 && cmd->at(0) == "KICK" && deux_point == false) {
-			coma = str.find(',', begin);
-			if (coma != std::string::npos) {
-				str.erase( str.begin() + coma + 1, str.end());
-				end = begin + coma + 1;
-			}
-		}
 		if ((last_non_space = str.find_last_not_of(whitespace)) != std::string::npos)
 			str = str.substr(0, last_non_space + 1);
-		if (cmd->size() >= 2 && cmd->at(0) == "KICK" && str[str.size() - 1] == ',') {
-			str.erase(str.size() - 1);
-		}
 
 		cmd->push_back(str.c_str());
 		msg.erase(0, end);

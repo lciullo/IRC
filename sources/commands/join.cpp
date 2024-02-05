@@ -76,7 +76,7 @@ void Server::join(std::string msg, int fd)
 			}
 			std::time_t	now = time(0);
 			std::string	date_time = ctime(&now);
-			std::cout << RED << date_time << RESET << std::endl;
+			// std::cout << RED << date_time << RESET << std::endl;
 			Channel new_channel(channels_name[i], &user, date_time);
 			if (channels_name[i][0] == '#')
 				new_channel.addMode('t', "");

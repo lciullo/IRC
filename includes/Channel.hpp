@@ -38,8 +38,7 @@ class Channel
 		int						_nbrUser;
 		int						_nbrUserMax;
 		std::string				_creationTimeChannel;
-		std::string				_creationTimeTopic;
-		std::string				_nickSetterTopic;
+		std::string				_topicInfo;
 
 	public :
 		Channel();
@@ -58,10 +57,11 @@ class Channel
 		std::string				getPassword() const;
 		std::string				getModestring() const;
 		std::string				getCreationTimeChannel() const;
-		
+		std::string				getTopicInfo() const;
+
 		//Setters
 		void			setName(std::string name);
-		void			setTopic(std::string topic);
+		void			setTopic(std::string topic, std::string nickSetter);
 		
 		//Add
 		void			addUser(User *new_user);
