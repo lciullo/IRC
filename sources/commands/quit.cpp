@@ -26,7 +26,7 @@ void Server::quit(std::string msg, int fd)
 		this->part(message, fd);
 	}
 	std::cout << "[QUIT] :" << reason << std::endl;
-	message = HEADER_CMD(user) + "QUIT";;
+	message = HEADER_CMD(user) + "QUIT";
 	if (cmd.size() == 2)
 		message.append(" " + reason);
 	message.append("\r\n");
