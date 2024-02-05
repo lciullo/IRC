@@ -85,22 +85,25 @@ void Server::launch()
 
 void Server::launch_cmd(std::string msg, int fd)
 {
-	
-	/*ERR_NOTREGISTERED (451) "<client> :You have not registered"*/
 	User &user = GetUserByFd(fd);
-	std::cout << BLUE << "============================" << RESET << std::endl;
-	std::cout << BLUE << "LEVEL = " << user.getLevel() << RESET << std::endl;
-	if (msg.find("PASS") != std::string::npos)
 	std::vector<std::string> cmd;
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 1)
 		return ;
-	std::cout << "LEVEL = " << user.getLevel() << std::endl;
 	if (cmd[0] == "PASS")
 	{
+		if (user.getLevel() == 1)
+			return ;
 		if (isRightPassword(msg, fd) == true)
-			user.addLevel();
-		//ERR_ALREADYREGISTERED (462)
+		{
+			if (getPassword().empty() && user.getLevel() == 0)
+				user.addLevel();
+		}
+		if (user.getLevel() > 2)
+		{
+			ERR_ALREADYREGISTERED(user);
+			return ;
+		}
 	} 
 	else if (cmd[0] == "NICK")
 	{
@@ -116,12 +119,15 @@ void Server::launch_cmd(std::string msg, int fd)
 			ERR_NEEDMOREPARAMS(user, "USER");
 			return ;
 		}
-		user.setUsername(getUsername(msg));	
-		user.addLevel();
-		//ERR_ALREADYREGISTERED (462)
+		user.setUsername(findUsername(msg));	
+		if (user.getUsername().empty() && user.getLevel() > 1)
+				user.addLevel();
 	}
 	else if (user.getLevel() < 3)
+	{
+		ERR_NOTREGISTERED(user);
 		return ;
+	}
 	else if (cmd[0] == "JOIN")
 		this->join(msg, fd);
 	else if (cmd[0] == "PART")
@@ -186,7 +192,7 @@ User &Server::GetUserByNickname(std::string nickname)
 	std::map<int, User>::iterator ite = this->_lst_usr.end();
 	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
 	{
-		if (it->second.getNickname() == nickname)
+		if (it->second.findNickname() == nickname)
 			return (it->second);
 	}
 	return (ite->second);
@@ -197,8 +203,13 @@ bool Server::searchUserInServer(std::string nickname)
 	std::map<int, User>::iterator ite = this->_lst_usr.end();
 	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
 	{
-		if (it->second.getNickname() == nickname)
+		if (it->second.findNickname() == nickname)
 			return (true);
 	}
 	return (false);
+}
+
+std::string Server::getPassword(void)
+{
+	return (this->_password);
 }

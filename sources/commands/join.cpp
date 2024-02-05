@@ -12,19 +12,19 @@ void sendUserList(Channel channel)
 		for (size_t j = 0; j < channel.getVecUsers().size(); j++)
 		{
 			User userToSend = *channel.getVecUsers()[j];
-			message = HEADER_CMD(userToSend) + "353 " + userToSend.getNickname() + " = " + channel.getName() + " :";
+			message = HEADER_CMD(userToSend) + "353 " + userToSend.findNickname() + " = " + channel.getName() + " :";
 			if (channel.getLstUsers()[&user2] == OPERATOR)
 				message.append("@");
 			else if (channel.getLstUsers()[&user2] == VOICE)
 				message.append("+");
-			message.append(user2.getNickname() + "\r\n");
+			message.append(user2.findNickname() + "\r\n");
 			send(userToSend.getFd(), message.c_str(), message.size(), 0);
 		}
 	}
 	for (size_t j = 0; j < channel.getVecUsers().size(); j++)
 	{
 		User userToSend = *channel.getVecUsers()[j];
-		message = HEADER_CMD(userToSend) + "366 " + userToSend.getNickname() + " " + channel.getName() + " :End of /NAMES list\r\n";
+		message = HEADER_CMD(userToSend) + "366 " + userToSend.findNickname() + " " + channel.getName() + " :End of /NAMES list\r\n";
 		send(channel.getVecUsers()[j]->getFd(), message.c_str(), message.size(), 0);
 	}
 }
@@ -76,7 +76,7 @@ void Server::join(std::string msg, int fd)
 			Channel new_channel(channels_name[i], &user, date_time);
 			if (channels_name[i][0] == '#')
 				new_channel.addMode('t', "");
-			std::cout << "create channel " << new_channel.getName() << " by " << user.getNickname() << std::endl;
+			std::cout << "create channel " << new_channel.getName() << " by " << user.findNickname() << std::endl;
 			this->_lst_channel[channels_name[i]] = new_channel;
 		}
 		else

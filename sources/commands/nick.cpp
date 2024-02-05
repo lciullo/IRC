@@ -10,7 +10,7 @@ bool Server::switchNickCase(std::string msg, int fd)
 		ERR_NEEDMOREPARAMS(user, "NICK");
 		return (false);
 	}
-	if (nick(getNickname(msg), fd) == false)
+	if (nick(findNickname(msg), fd) == false)
 	{
 		if (user.getLevel() > 1)
 			return (false);
@@ -18,7 +18,9 @@ bool Server::switchNickCase(std::string msg, int fd)
 	else
 	{
 			user.setNickname(cmd[1]);
-			user.addLevel();		
+			std::cout << "true add level NICK" << std::endl;
+			if (user.getNickname().empty() && user.getLevel() > 0)
+				user.addLevel();		
 	}
 	return (true);
 }
@@ -42,7 +44,7 @@ bool Server::nick(std::string nickname, int fd)
 	std::map<int, User>::iterator ite = this->_lst_usr.end();
 	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
 	{
-		if (it->second.getNickname() == nickname)
+		if (it->second.findNickname() == nickname)
 		{
 			ERR_NICKNAMEINUSE(this->GetUserByFd(fd), nickname);
 			if (oldNickname.empty())
@@ -56,7 +58,7 @@ bool Server::nick(std::string nickname, int fd)
 		toUpdate = oldNickname;
  	user.setoldNickname(nickname);
 	user.setNickname(toUpdate);
-	sendStringSocket(fd, RPL_NICK(toUpdate, user.getUsername(), nickname));
+	sendStringSocket(fd, RPL_NICK(toUpdate, user.findUsername(), nickname));
 	sendNewNickname(user, toUpdate, nickname); 
 	return (true);
 }
@@ -74,7 +76,7 @@ bool Server::isValidNickname(std::string nickname)
 	return (true);
 }
 
-std::string Server::getNickname(std::string msg)
+std::string Server::findNickname(std::string msg)
 {
 	std::istringstream	iss(msg);
 	std::string			line;
@@ -112,9 +114,9 @@ void Server::sendInEachChannel(Channel &channel, User &user, std::string toUpdat
 	{
 		
 		User userToSend = *channel.getVecUsers()[i];
-		if (toUpdate!= userToSend.getNickname())
+		if (toUpdate!= userToSend.findNickname())
 		{
-			sendStringSocket(channel.getVecUsers()[i]->getFd(), RPL_NICK(toUpdate, user.getUsername(), nickname));
+			sendStringSocket(channel.getVecUsers()[i]->getFd(), RPL_NICK(toUpdate, user.findUsername(), nickname));
 		}
 	}
 	return ;

@@ -21,7 +21,7 @@ void Server::topic(std::string msg, int fd)
 
 	split_cmd(&cmd, msg);
 	channel_name = cmd[1];
-	protagonist = this->GetUserByFd(fd).getUsername();
+	protagonist = this->GetUserByFd(fd).findUsername();
 	
 	if (cmd.size() < 1) {
 		ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "TOPIC");
@@ -56,7 +56,7 @@ void Server::topic(std::string msg, int fd)
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		if (it_channel->first->getUsername() == protagonist) {
+		if (it_channel->first->findUsername() == protagonist) {
 			if (it_channel->second != OPERATOR) {
 				ERR_CHANOPRIVSNEEDED(this->GetUserByFd(fd), channel_name);
 				return ;

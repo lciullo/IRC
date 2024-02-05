@@ -38,7 +38,7 @@ void Server::part(std::string msg, int fd)
 			message.append(" " + reason);
 		}
 		message.append("\r\n");
-		std::cout << "[PART] channel : " << channels_name[i] << " | reason : " << reason << " | who : " << user.getNickname() << std::endl;
+		std::cout << "[PART] channel : " << channels_name[i] << " | reason : " << reason << " | who : " << user.findNickname() << std::endl;
 		std::vector<User *> vecUser = channel.getVecUsers();
 		std::vector<User *>::iterator ite = vecUser.end();
 		for (std::vector<User *>::iterator it = vecUser.begin(); it != ite; ++it)

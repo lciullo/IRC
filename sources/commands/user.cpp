@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-std::string Server::getUsername(std::string msg)
+std::string Server::findUsername(std::string msg)
 {
 	size_t				end = 0;
 	std::istringstream	iss(msg);

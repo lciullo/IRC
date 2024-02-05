@@ -25,13 +25,13 @@ User &	User::operator=(const User &obj){
 	return (*this);
 }
 
-const std::string& User::getNickname(void) const 
+const std::string& User::findNickname(void) const 
 {
 		return (this->_nickname);
 }
 
 
-const std::string& User::getUsername(void) const 
+const std::string& User::findUsername(void) const 
 {
 	return (this->_username);
 }
@@ -69,6 +69,17 @@ int User::getLevel(void) const
 std::string User::getLine(void) const
 {
 	return (this->_line);
+}
+
+
+std::string User::getNickname(void)
+{
+	return (this->_nickname);
+}
+
+std::string User::getUsername(void)
+{
+	return (this->_username);
 }
 
 void User::setIsCreate(bool isCreate)
@@ -114,7 +125,7 @@ void User::setoldNickname(std::string oldNickname)
 
 std::ostream &operator<<(std::ostream &out, const User &Object) {
 
-	out << Object.getNickname() << " " << Object.getUsername() << " " << Object.getIsCreate() << std::endl;
+	out << Object.findNickname() << " " << Object.findUsername() << " " << Object.getIsCreate() << std::endl;
 	return (out);
 }
 

@@ -21,7 +21,7 @@ void Server::kick(std::string msg, int fd) {
 
 	split_cmd(&cmd, msg);
 	print_vector(cmd);
-	protagonist = this->GetUserByFd(fd).getNickname();
+	protagonist = this->GetUserByFd(fd).findNickname();
 	
 	// Check that the command have enough parameters
 	if (cmd.size() == 4)
@@ -54,7 +54,7 @@ void Server::kick(std::string msg, int fd) {
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		if (it_channel->first->getNickname() == protagonist) {
+		if (it_channel->first->findNickname() == protagonist) {
 			if (it_channel->second != OPERATOR) {
 				ERR_CHANOPRIVSNEEDED(this->GetUserByFd(fd), channel_name);
 				return ;
@@ -78,7 +78,7 @@ void Server::kick(std::string msg, int fd) {
 		//Check that the person we are trying to kick is on the channel
 		User	*banned;
 		for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-			if (it_channel->first->getNickname() == *it_cmd) { 
+			if (it_channel->first->findNickname() == *it_cmd) { 
 				banned = it_channel->first;
 				break ;
 			}
