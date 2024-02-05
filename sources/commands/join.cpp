@@ -112,7 +112,10 @@ void Server::join(std::string msg, int fd)
 				continue ;
 			}
 			if (channel.getStatus())
+			{
 				channel.deleteUserToWaitlist(user);
+				user.deleteInvite(channel.getName());
+			}
 			channel.addUser(&user);
 		}
 		Channel &channel = this->_lst_channel[channels_name[i]];
