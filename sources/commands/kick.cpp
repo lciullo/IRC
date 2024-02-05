@@ -40,16 +40,10 @@ void Server::kick(std::string msg, int fd) {
 			reason = cmd.at(cmd.size() - 1);
 		cmd.erase(cmd.end());
 	}
-	std::cout << cmd.size() << std::endl;
 	if (cmd.size() == 3) {
-		std::cout << "coucou2\n";
 		split_arg(&all_ban, cmd[2]);
-		std::cout << "coucou1\n";
 		cmd.erase(cmd.end());
-		std::cout << "coucou\n";
 	}
-
-	print_vector(all_ban);
 	cmd.erase(cmd.begin());
 	channel_name = cmd.at(0);
 	
