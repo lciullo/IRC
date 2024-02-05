@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   kick.cpp                                           :+:      :+:    :+:   */
+/*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 14:44:36 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/01 16:33:37 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/05 21:05:02 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ void Server::kick(std::string msg, int fd) {
 		split_arg(&all_ban, cmd[2]);
 		cmd.erase(cmd.end());
 	}
-	cmd.erase(cmd.begin());
+	if (cmd[0] == "KICK")
+		cmd.erase(cmd.begin());
 	channel_name = cmd.at(0);
 	
 	// Check that the channel exist

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/01 13:43:08 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/05 21:21:39 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,66 +18,68 @@ Channel::Channel() : _name("default") {
 	this->_nbrUserMax = -1;
 }
 
-Channel::Channel(std::string name, User *operators, std::string creation_time) : _name(name), _creationTimeChannel(creation_time) {
-	this->_lstUsers[operators] = OPERATOR;
-	this->_vecUsers.push_back(operators);
-	operators->addChannel(this->_name);
-	this->_private = false;
+Channel::Channel(std::string name, User *operators, std::string creation_time) {
 	this->_nbrUser = 1;
 	this->_nbrUserMax = -1;
+	this->_private = false;
+	this->_name = name; 
+	this->_creationTimeChannel = creation_time;
+	this->_vecUsers.push_back(operators);
+	this->_lstUsers[operators] = OPERATOR;
+	operators->addChannel(this->_name);
 }
 
-Channel::Channel(const Channel &channel) : _name(channel._name),_creationTimeChannel(channel._creationTimeChannel) 
+Channel::Channel(const Channel &channel)
 {
-	this->_topic = channel._topic;
-	this->_password = channel._password;
-	this->_mode = channel._mode;
-	this->_waitlist = channel._waitlist;
-	this->_lstUsers = channel._lstUsers;
-	this->_vecUsers = channel._vecUsers;
 	this->_nbrUser = channel._nbrUser;
 	this->_nbrUserMax = channel._nbrUserMax;
 	this->_private = channel._private;
+	this->_name = channel._name;
+	this->_topic = channel._topic;
+	this->_password = channel._password;
 	this->_creationTimeChannel = channel._creationTimeChannel;
 	this->_topicInfo = channel._topicInfo;
+	this->_mode = channel._mode;
+	this->_waitlist = channel._waitlist;
+	this->_vecUsers = channel._vecUsers;
+	this->_lstUsers = channel._lstUsers;
 }
 
 Channel &Channel::operator=(const Channel &channel)
 {
-	this->_name = channel._name;
-	this->_topic = channel._topic;
-	this->_password = channel._password;
-	this->_mode = channel._mode;
-	this->_waitlist = channel._waitlist;
-	this->_lstUsers = channel._lstUsers;
-	this->_vecUsers = channel._vecUsers;
 	this->_nbrUser = channel._nbrUser;
 	this->_nbrUserMax = channel._nbrUserMax;
 	this->_private = channel._private;
+	this->_topic = channel._topic;
+	this->_password = channel._password;
 	this->_creationTimeChannel = channel._creationTimeChannel;
 	this->_topicInfo = channel._topicInfo;
+	this->_mode = channel._mode;
+	this->_waitlist = channel._waitlist;
+	this->_vecUsers = channel._vecUsers;
+	this->_lstUsers = channel._lstUsers;
 	return (*this);
 }
 
 /*- - - - - - - - - - - - - - - - - GETTERS - - - - - - - - - - - -- - -  - - */
+int			Channel::getNbrUser() const {return (this->_nbrUser);}
+
+int			Channel::getNbrUserMax() const {return (this->_nbrUserMax);}
+
+bool		Channel::getStatus() const {return (this->_private);}
+
 std::string	Channel::getName() const {return (this->_name);}
 
 std::string	Channel::getTopic() const {return (this->_topic);}
 
-std::map<User *, int>	Channel::getLstUsers() const {return (this->_lstUsers);}
-
-std::vector<User *>	Channel::getVecUsers() const {return (this->_vecUsers);}
-
-bool	Channel::getStatus() const {return (this->_private);}
-
-int		Channel::getNbrUser() const {return (this->_nbrUser);};
-
-int		Channel::getNbrUserMax() const {return (this->_nbrUserMax);};
-
 std::string	Channel::getPassword() const {return (this->_password);}
 
+std::string	Channel::getCreationTimeChannel() const {return (this->_creationTimeChannel);}
+
+std::string	Channel::getTopicInfo() const {return (this->_topicInfo);}
+
 std::string	Channel::getModestring() const {
-	std::string					modestring;
+	std::string	modestring;
 	
 	std::vector<char>::const_iterator	it;
 	for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
@@ -86,9 +88,9 @@ std::string	Channel::getModestring() const {
 	return (modestring);
 }
 
-std::string	Channel::getCreationTimeChannel() const {return (this->_creationTimeChannel);}
+std::vector<User *>		Channel::getVecUsers() const {return (this->_vecUsers);}
 
-std::string	Channel::getTopicInfo() const {return (this->_topicInfo);}
+std::map<User *, int>	Channel::getLstUsers() const {return (this->_lstUsers);}
 
 /*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void	Channel::setName(std::string name) {this->_name = name;}
@@ -103,11 +105,10 @@ void	Channel::setTopic(std::string topic, std::string nickSetter) {
 	}
 	this->_topic = topic;
 }
-/*- - - - - - - - - - - - - - - - - - ADD - - - - - - - - - - - - -- - -  - -*/
 
+/*- - - - - - - - - - - - - - - - - - ADD - - - - - - - - - - - - -- - -  - -*/
 void	Channel::addUser(User *new_user)
 {
-	//if (findUser(new_user) == false) {
 		this->_vecUsers.push_back(new_user);
 		this->_lstUsers[new_user] = VOICE;
 		this->_nbrUser += 1;
@@ -128,19 +129,13 @@ void	Channel::addMode(char new_mode, std::string param)
 	
 	switch (new_mode) {
 		case 'i' : {this->_private = true;
-			// std::cout << this->_private << std::endl;
 			break ;
 		}
 		case 'k' : {this->_password = param;
-			// if (!this->_password.empty())
-				// std::cout << this->_password << std::endl;
-			// else
-				// std::cout << "Password is empty\n";
 			break ;
 		}
 		case 'l' : {
 			this->_nbrUserMax = atoi(param.c_str());
-			// std::cout << this->_nbrUserMax << std::endl;
 			break ;
 		}
 		case 'o' : {
@@ -156,12 +151,6 @@ void	Channel::addMode(char new_mode, std::string param)
 	}
 	
 	this->_mode.push_back(new_mode);
-
-	// std::vector<char>::iterator it2;
-	// for (it2 = this->_mode.begin(); it2 != this->_mode.end(); it2++) {
-		// std::cout << *it2 << " ";
-	// }
-	// std::cout << std::endl;
 }
 
 void	Channel::addUserToWaitlist(User *guest)
@@ -208,17 +197,17 @@ void	Channel::deleteMode(char mode, std::string param)
 		if (*it == mode) {
 			this->_mode.erase(it);
 			switch (mode) {
-				case 'i' : {this->_private = false;
-					// std::cout << this->_private << std::endl;
+				case 'i' : {
+					this->_private = false;
+					break ;
 				}
-				case 'k' : {this->_password.clear();
-					// if (!this->_password.empty())
-						// std::cout << this->_password << std::endl;
-					// else
-						// std::cout << "Password is empty\n";
+				case 'k' : {
+					this->_password.clear();
+					break;
 				}
-				case 'l' : {this->_nbrUserMax = -1;
-					// std::cout << this->_nbrUserMax << std::endl;
+				case 'l' : {
+					this->_nbrUserMax = -1;
+					break;
 				}
 				case 'o' : {
 					std::map<User *, int>::iterator	it;
@@ -233,12 +222,6 @@ void	Channel::deleteMode(char mode, std::string param)
 			break;
 		}
 	}
-
-	// std::vector<char>::iterator it2;
-	// for (it2 = this->_mode.begin(); it2 != this->_mode.end(); it2++) {
-		// std::cout << *it2 << " ";
-	// }
-	// std::cout << std::endl;
 }
 
 void	Channel::deleteUserToWaitlist(User user) 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   topic.cpp                                          :+:      :+:    :+:   */
+/*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:56:17 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/01 10:47:18 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/05 21:06:00 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ void Server::topic(std::string msg, int fd)
 	}
 
 	if (cmd.size() == 1) {
-		cmd.erase(cmd.begin());
+		if (cmd[0] == "TOPIC")
+			cmd.erase(cmd.begin());
 		if (current_channel->getTopic().empty()) {
 			RPL_NOTOPIC(this->GetUserByFd(fd), channel_name);
 			return ;
