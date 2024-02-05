@@ -48,7 +48,6 @@ void	split_arg(std::vector<std::string> *cmd, std::string arg)
 		}
 		cmd->push_back(str);
 	}
-	std::cout << std::endl;
 }
 
 bool	isMode(char mode) {

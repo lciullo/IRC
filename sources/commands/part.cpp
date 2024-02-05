@@ -44,7 +44,7 @@ void Server::part(std::string msg, int fd)
 		for (std::vector<User *>::iterator it = vecUser.begin(); it != ite; ++it)
 		{
 			std::cout << "[TEST] void" << std::endl;
-			send((*it)->getFd(), message.c_str(), message.size(), 0);
+			send_msg(*(*it), message);
 		}
 		channel.deleteUser(user);
 		user.deleteChannel(channel.getName());

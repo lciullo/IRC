@@ -17,7 +17,6 @@ void Server::privmsg(std::string msg, int fd)
 	split_arg(&lst_dest, dest);
 	std::string msg_to_send = msg.substr(ind);
 	msg_to_send = msg_to_send.substr(0, msg_to_send.size());
-	std::cout << "dest : " << dest << " | message to send : " << msg_to_send << std::endl;
 	for (size_t i = 0; i < lst_dest.size(); i++)
 	{
 		if (lst_dest[i][0] == '#' || lst_dest[i][0] == '&')
@@ -39,7 +38,7 @@ void Server::privmsg(std::string msg, int fd)
 				std::string message = ":" + this->GetUserByFd(fd).getNickname() + " PRIVMSG " + lst_dest[i] + " " + msg_to_send + "\r\n";
 				if (user->getNickname() == this->GetUserByFd(fd).getNickname())
 					continue ;
-				send(user->getFd(), message.c_str(), message.size(), 0);
+				send_msg(*user, message);
 			}
 		}
 		else
@@ -51,7 +50,7 @@ void Server::privmsg(std::string msg, int fd)
 			}
 			User &userToSend = this->GetUserByNickname(lst_dest[i]);
 			std::string message = HEADER_CMD(sender) + "PRIVMSG " + lst_dest[i] + " " + msg_to_send + "\r\n";
-			send(userToSend.getFd(), message.c_str(), message.size(), 0);
+			send_msg(userToSend, message);
 		}
 	}
 }
