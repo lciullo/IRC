@@ -18,14 +18,14 @@ void sendUserList(Channel channel)
 			else if (channel.getLstUsers()[&user2] == VOICE)
 				message.append("+");
 			message.append(user2.getNickname() + "\r\n");
-			send(userToSend.getFd(), message.c_str(), message.size(), 0);
+			send_msg(userToSend, message);
 		}
 	}
 	for (size_t j = 0; j < channel.getVecUsers().size(); j++)
 	{
 		User userToSend = *channel.getVecUsers()[j];
 		message = HEADER_CMD(userToSend) + "366 " + userToSend.getNickname() + " " + channel.getName() + " :End of /NAMES list\r\n";
-		send(channel.getVecUsers()[j]->getFd(), message.c_str(), message.size(), 0);
+		send_msg(userToSend, message);
 	}
 }
 
@@ -55,7 +55,6 @@ void Server::join(std::string msg, int fd)
 	std::vector<std::string> channels_key;
 	if (cmd.size() > 2)
 	{
-		std::cout << "[TEST] bonjour" << std::endl;
 		std::string arg_key = cmd[2];
 		split_arg(&channels_key, arg_key);
 	}
@@ -70,6 +69,11 @@ void Server::join(std::string msg, int fd)
 		it = this->_lst_channel.find(channels_name[i]);
 		if (it == this->_lst_channel.end())
 		{
+  			if (channels_name[i].find(7) != std::string::npos) //for find ctrl-g in a channel name
+			{
+				SIMPLE_MSG(user , "Not good channel name : " + channels_name[i] + " (there is a ctrl-g in)");
+				continue ;
+			}
 			std::time_t	now = time(0);
 			std::string	date_time = ctime(&now);
 			// std::cout << RED << date_time << RESET << std::endl;
@@ -105,7 +109,6 @@ void Server::join(std::string msg, int fd)
 					continue ;
 				}
 			}
-			std::cout << "[TEST] " << channel.getNbrUser() << " " << channel.getNbrUserMax() << std::endl;
 			if (channel.getNbrUser() == channel.getNbrUserMax())
 			{
 				ERR_CHANNELISFULL(user, channels_name[i]);
@@ -120,7 +123,7 @@ void Server::join(std::string msg, int fd)
 		}
 		Channel &channel = this->_lst_channel[channels_name[i]];
 		std::string message = HEADER_CMD(user) + "JOIN " + channels_name[i] + "\r\n";
-		send(fd, message.c_str(), message.size(), 0);
+		send_msg(user, message);
 		if (!channel.getTopic().empty())
 			RPL_TOPIC(user, channel.getName(), channel.getTopic());
 		sendUserList(channel);
