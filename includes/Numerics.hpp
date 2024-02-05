@@ -12,6 +12,9 @@ void	send_msg(User user, std::string msg);
 # define HEADER_CMD(User) \
 ":" + User.getNickname() + "!" + User.getUsername() + " "
 
+# define SIMPLE_MSG(user, msg) \
+send_msg(user, HEADER_CMD(user) + "001 " + user.getNickname() + SPACE + ":" + msg + RN)
+
 # define ERR_NEEDMOREPARAMS(user, cmd) \
 send_msg(user, HEADER_CMD(user) + "461 " + user.getNickname() + SPACE + cmd + SPACE + ":Not enough parameters" + RN)
 
