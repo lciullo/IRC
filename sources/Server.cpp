@@ -90,7 +90,6 @@ void Server::launch_cmd(std::string msg, int fd)
 	User &user = GetUserByFd(fd);
 	std::cout << BLUE << "============================" << RESET << std::endl;
 	std::cout << BLUE << "LEVEL = " << user.getLevel() << RESET << std::endl;
-	if (msg.find("PASS") != std::string::npos)
 	std::vector<std::string> cmd;
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 1)
