@@ -12,6 +12,9 @@ void	send_msg(User user, std::string msg);
 # define HEADER_CMD(User) \
 ":" + User.findNickname() + "!" + User.findUsername() + " "
 
+# define SIMPLE_MSG(user, msg) \
+send_msg(user, HEADER_CMD(user) + "001 " + user.getNickname() + SPACE + ":" + msg + RN)
+
 # define ERR_NEEDMOREPARAMS(user, cmd) \
 send_msg(user, HEADER_CMD(user) + "461 " + user.findNickname() + SPACE + cmd + SPACE + ":Not enough parameters" + RN)
 
@@ -92,6 +95,9 @@ send_msg(user, HEADER_CMD(user) + "329 " + user.findNickname() + SPACE + channel
 # define RPL_NOTOPIC(user, channel_name) \
 send_msg(user, HEADER_CMD(user) + "331 " + user.findNickname() + SPACE + channel_name + SPACE + ":No topic is set" + RN)
 
+# define RPL_TOPICWHOTIME(user, channel_name, topic_info) \
+send_msg(user, HEADER_CMD(user) + "333 " + user.getNickname() + SPACE + channel_name + SPACE + topic_info + RN)
+
 # define RPL_INVITELIST(user, channel_name) \
 send_msg(user, HEADER_CMD(user) + "336 " + user.findNickname() SPACE + channel_name + RN)
 
@@ -106,5 +112,11 @@ send_msg(user, HEADER_CMD(user) + "696 " + user.findNickname() + channel_name + 
 
 # define INVITE_MESSAGE(user, channel_name, nick) \
 send_msg(*user, ":" + user->findNickname() + "!" + user->findUsername() SPACE + "INVITE " + nick SPACE + channel_name RN)
+
+# define KICK_WITHOUT_REASON(user, kicker, channel_name, nick) \
+send_msg(user, HEADER_CMD(kicker) + "KICK " +  channel_name + SPACE + nick + RN)
+
+# define KICK_WITH_REASON(user, kicker, channel_name, nick, reason) \
+send_msg(user, HEADER_CMD(kicker) + "KICK " +  channel_name + SPACE + nick + SPACE + reason + RN)
 
 #endif

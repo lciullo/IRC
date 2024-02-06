@@ -3,21 +3,23 @@
 void Server::privmsg(std::string msg, int fd)
 {
 	User &sender = this->GetUserByFd(fd);
-	size_t ind = msg.find("PRIVMSG");
-	std::string dest = msg.substr(ind + 8);
-	ind = dest.find(" ");
-	dest = dest.substr(0, ind);
-	ind = msg.find(":");
-	if (ind == std::string::npos)
+	std::vector<std::string> cmd;
+
+	split_cmd(&cmd, msg);
+	if (cmd.size() < 3)
+	{
+		ERR_NEEDMOREPARAMS(sender, "PRIVMSG");
+		return;
+	}
+	if (cmd[2][0] != ':')
 	{
 		ERR_NOTEXTTOSEND(this->_lst_usr[fd]);
 		return ;
 	}
+	std::string dest = cmd[1];
 	std::vector<std::string> lst_dest;
 	split_arg(&lst_dest, dest);
-	std::string msg_to_send = msg.substr(ind);
-	msg_to_send = msg_to_send.substr(0, msg_to_send.size());
-	std::cout << "dest : " << dest << " | message to send : " << msg_to_send << std::endl;
+	std::string msg_to_send = cmd[2];
 	for (size_t i = 0; i < lst_dest.size(); i++)
 	{
 		if (lst_dest[i][0] == '#' || lst_dest[i][0] == '&')
@@ -39,7 +41,7 @@ void Server::privmsg(std::string msg, int fd)
 				std::string message = ":" + this->GetUserByFd(fd).findNickname() + " PRIVMSG " + lst_dest[i] + " " + msg_to_send + "\r\n";
 				if (user->findNickname() == this->GetUserByFd(fd).findNickname())
 					continue ;
-				send(user->getFd(), message.c_str(), message.size(), 0);
+				send_msg(*user, message);
 			}
 		}
 		else
@@ -51,7 +53,7 @@ void Server::privmsg(std::string msg, int fd)
 			}
 			User &userToSend = this->GetUserByNickname(lst_dest[i]);
 			std::string message = HEADER_CMD(sender) + "PRIVMSG " + lst_dest[i] + " " + msg_to_send + "\r\n";
-			send(userToSend.getFd(), message.c_str(), message.size(), 0);
+			send_msg(userToSend, message);
 		}
 	}
 }

@@ -15,21 +15,34 @@
 
 void Server::kick(std::string msg, int fd) {
 	std::vector<std::string>	cmd;
+	std::vector<std::string>	all_ban;
 	std::string					channel_name;
 	std::string					reason;
 	std::string					protagonist;
+	int							kick_count = 0;
 
 	split_cmd(&cmd, msg);
-	print_vector(cmd);
-	protagonist = this->GetUserByFd(fd).findNickname();
+	protagonist = this->GetUserByFd(fd).getNickname();
 	
 	// Check that the command have enough parameters
-	if (cmd.size() == 4)
-		reason = cmd.at(3);
-	
 	if (cmd.size() < 3) {
 		ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "KICK");
 		return ;
+	}
+
+	if (cmd.size() > 4) {
+		for (std::vector<std::string>::iterator i = cmd.end(); cmd.size() > 4; i--) {
+			cmd.erase(i);
+		}
+	}
+	if (cmd.size() == 4) {
+		if (cmd.at(cmd.size() - 1)[0] == ':')
+			reason = cmd.at(cmd.size() - 1);
+		cmd.erase(cmd.end());
+	}
+	if (cmd.size() == 3) {
+		split_arg(&all_ban, cmd[2]);
+		cmd.erase(cmd.end());
 	}
 	cmd.erase(cmd.begin());
 	channel_name = cmd.at(0);
@@ -50,11 +63,17 @@ void Server::kick(std::string msg, int fd) {
 		current_channel = &it_serv->second;
 	cmd.erase(cmd.begin());
 
+
+	
 	//Check that the user who want to invite is on the channel and have the good privilege
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		if (it_channel->first->findNickname() == protagonist) {
+		std::cout << it_channel->first->getNickname() << " ";
+	}
+	std::cout << std::endl;
+	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
+		if (it_channel->first->getNickname() == protagonist) {
 			if (it_channel->second != OPERATOR) {
 				ERR_CHANOPRIVSNEEDED(this->GetUserByFd(fd), channel_name);
 				return ;
@@ -67,14 +86,8 @@ void Server::kick(std::string msg, int fd) {
 		return ;
 	}
 
-	if (cmd.at(cmd.size() - 1)[0] == ':') {
-		reason = cmd.at(cmd.size() - 1);
-		cmd.erase(cmd.end());
-		reason.erase(reason.begin());
-	}
-	
 	std::vector<std::string>::iterator	it_cmd;
-	for (it_cmd = cmd.begin(); it_cmd != cmd.end(); it_cmd++) {
+	for (it_cmd = all_ban.begin(); it_cmd != all_ban.end(); it_cmd++) {
 		//Check that the person we are trying to kick is on the channel
 		User	*banned;
 		for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
@@ -85,10 +98,30 @@ void Server::kick(std::string msg, int fd) {
 		}
 		if (it_channel == lstUsrChannel.end()) {
 			ERR_USERNOTINCHANNEL(this->GetUserByFd(fd), channel_name, *it_cmd);
-			return ;
+			continue ;
 		}
+
+		for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
+			User user = *it_channel->first;
+			if (reason.empty())
+				KICK_WITHOUT_REASON(user, this->GetUserByFd(fd), channel_name, *it_cmd);
+			else
+				KICK_WITH_REASON(user, this->GetUserByFd(fd), channel_name, *it_cmd, reason);
+		}
+
 		current_channel->deleteUser(*banned);
 		banned->deleteChannel(channel_name);
-		//ENVOYER UN MESSAGE A TOUT LES MEMBRES DU SERVEUR COMME QUOI QUELQU'UN A ETE KICK
+		kick_count++;
 	}
+
+	if (kick_count != 0)
+		sendUserList(*current_channel);
+	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
+		std::cout << it_channel->first->getNickname() << " ";
+	}
+	std::cout << std::endl;
 }
+
+//quand je kick quelqu'un du channel vois pas les nouveau message et peut pas en envoye maistoujours acces
+//une fois que la personne  ete kick quand elle essaie de join elle ne peut plus envoye de message sur le channel
+//GARBAGE s'affiche avant mes message ?

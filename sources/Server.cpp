@@ -58,12 +58,9 @@ void Server::launch()
 					{
 						this->quit("QUIT :test", this->_lst_fd[i].fd);
 						continue ;
-						//close(this->_lst_fd[i].fd);
-						//this->_lst_fd.erase(this->_lst_fd.begin() + i);
 					}
 					User &user = GetUserByFd(this->_lst_fd[i].fd);
 					user.setLine(user.getLine().append(buffer));
-					//std::string str(buffer);
 					std::string cmd = "";
 					getcmd(user.getLine(), cmd);
 					while (cmd.size() != 0)
@@ -137,7 +134,6 @@ void Server::create_user()
 	struct sockaddr_in cli_addr;
 	socklen_t clilen;
 
-	std::cout << "Create User : " << std::endl;
 	clilen = sizeof(struct sockaddr_in);
 	int newsockfd = accept(this->_socketfd, (struct sockaddr *) &cli_addr, &clilen);
 	std::cout << "fd : " << newsockfd << std::endl;
