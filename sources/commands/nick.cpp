@@ -6,11 +6,13 @@ bool Server::switchNickCase(User &user, std::string msg, int fd)
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 2)
 	{
+		std::cout << "size < 2 " << RESET << std::endl;
 		ERR_NEEDMOREPARAMS(user, "NICK");
 		return (false);
 	}
 	if (user.getLevel() == 0)
 	{
+		std::cout << "getLevel == 0 " << RESET << std::endl;
 		ERR_NOTREGISTERED(user);
 		return (false);
 	}
@@ -18,15 +20,6 @@ bool Server::switchNickCase(User &user, std::string msg, int fd)
 	{
 		if (user.getLevel() >= 1)
 			return (false);
-	}
-	else
-	{
-			if (user.getNickname().empty() && user.getLevel() >= 1)
-			{
-				user.addLevel();
-				std::cout << BLUE << "LEVEL in nickname = " << user.getLevel() << RESET << std::endl;
-			}
-			user.setNickname(cmd[1]);		
 	}
 	return (true);
 }
@@ -49,7 +42,7 @@ bool Server::nick(User &user, std::string nickname, int fd)
 	std::map<int, User>::iterator ite = this->_lst_usr.end();
 	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
 	{
-		if (it->second.findNickname() == nickname)
+		if (it->second.getNickname() == nickname)
 		{
 			ERR_NICKNAMEINUSE(this->GetUserByFd(fd), nickname);
 			if (oldNickname.empty())
@@ -62,8 +55,12 @@ bool Server::nick(User &user, std::string nickname, int fd)
 	else
 		toUpdate = oldNickname;
  	user.setoldNickname(nickname);
+	if (user.getNickname().empty() && user.getLevel() == 1)
+	{
+		user.addLevel();
+	}
 	user.setNickname(toUpdate);
-	sendStringSocket(fd, RPL_NICK(toUpdate, user.findUsername(), nickname));
+	sendStringSocket(fd, RPL_NICK(toUpdate, user.getUsername(), nickname));
 	sendNewNickname(user, toUpdate, nickname); 
 	return (true);
 }
@@ -119,9 +116,9 @@ void Server::sendInEachChannel(Channel &channel, User &user, std::string toUpdat
 	{
 		
 		User userToSend = *channel.getVecUsers()[i];
-		if (toUpdate!= userToSend.findNickname())
+		if (toUpdate!= userToSend.getNickname())
 		{
-			sendStringSocket(channel.getVecUsers()[i]->getFd(), RPL_NICK(toUpdate, user.findUsername(), nickname));
+			sendStringSocket(channel.getVecUsers()[i]->getFd(), RPL_NICK(toUpdate, user.getUsername(), nickname));
 		}
 	}
 	return ;

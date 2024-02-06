@@ -2,9 +2,10 @@
 #include "User.hpp"
 #include <algorithm>
 
+
+
 User::User(void):  _level(0)
 {
-
 }
 
 User::User(int fd) :_fd(fd), _isCreate(false), _level(0)
@@ -24,17 +25,8 @@ User &	User::operator=(const User &obj){
 	return (*this);
 }
 
-const std::string& User::findNickname(void) const 
-{
-		return (this->_nickname);
-}
 
-
-const std::string& User::findUsername(void) const 
-{
-	return (this->_username);
-}
-
+/*- - - - - - - - - - - - - - - - - GETTERS - - - - - - - - - - - -- - -  - - */
 const int& User::getFd(void) const
 {
 	return (this->_fd);
@@ -45,7 +37,7 @@ const bool& User::getIsCreate(void) const
 	return (this->_isCreate);
 }
 
-std::string User::getoldNickname(void)
+std::string User::getoldNickname(void) const
 {
 	return (this->_oldNickname);
 }
@@ -71,16 +63,17 @@ std::string User::getLine(void) const
 }
 
 
-std::string User::getNickname(void)
+std::string User::getNickname(void) const
 {
 	return (this->_nickname);
 }
 
-std::string User::getUsername(void)
+std::string User::getUsername(void) const
 {
 	return (this->_username);
 }
 
+/*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void User::setIsCreate(bool isCreate)
 {
 	this->_isCreate = isCreate;
@@ -124,7 +117,7 @@ void User::setoldNickname(std::string oldNickname)
 
 std::ostream &operator<<(std::ostream &out, const User &Object) {
 
-	out << Object.findNickname() << " " << Object.findUsername() << " " << Object.getIsCreate() << std::endl;
+	out << Object.getNickname() << " " << Object.getUsername() << " " << Object.getIsCreate() << std::endl;
 	return (out);
 }
 

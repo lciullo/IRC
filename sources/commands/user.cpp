@@ -16,7 +16,6 @@ bool Server::switchUserCase(User &user, std::string msg)
 	}
 	if (user.getUsername().empty() && user.getLevel() >= 1)
 		user.addLevel();
-	std::cout << "user = " << cmd[1] << std::endl;
 	user.setUsername(findUsername(cmd[1]));
 	return (true);
 }

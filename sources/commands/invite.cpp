@@ -23,7 +23,7 @@ void Server::invite(std::string msg, int fd)
 	std::string					protagonist;
 
 	split_cmd(&cmd, msg);
-	protagonist = this->GetUserByFd(fd).findNickname();
+	protagonist = this->GetUserByFd(fd).getNickname();
 
 	// Check that the command have enough parameters
 	if (cmd.size() > 3) {
@@ -58,7 +58,7 @@ void Server::invite(std::string msg, int fd)
 	std::map<int, User>::iterator	it_serv_usr;
 	User	*guest;
 	for (it_serv_usr = this->_lst_usr.begin(); it_serv_usr != this->_lst_usr.end(); it_serv_usr++) {
-		if (it_serv_usr->second.findNickname() == guest_nickname) {
+		if (it_serv_usr->second.getNickname() == guest_nickname) {
 			guest = &(it_serv_usr->second);
 			break ;
 		}
@@ -72,7 +72,7 @@ void Server::invite(std::string msg, int fd)
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		if (it_channel->first->findNickname() == protagonist) {
+		if (it_channel->first->getNickname() == protagonist) {
 			if (it_channel->second != OPERATOR && current_channel->getStatus() == true) {
 				ERR_CHANOPRIVSNEEDED(this->GetUserByFd(fd), channel_name);
 				return ;
@@ -87,7 +87,7 @@ void Server::invite(std::string msg, int fd)
 	
 	//Check that the person we are trying to add is not already on
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		if (it_channel->first->findNickname() == guest_nickname) {
+		if (it_channel->first->getNickname() == guest_nickname) {
 			ERR_USERONCHANNEL(this->GetUserByFd(fd), channel_name, guest_nickname);
 			return ;
 		}
@@ -96,7 +96,7 @@ void Server::invite(std::string msg, int fd)
 	current_channel->addUserToWaitlist(guest);
 	guest->addInvite(channel_name);
 	RPL_INVITING(this->GetUserByFd(fd), channel_name, guest_nickname);
-	INVITE_MESSAGE(guest, channel_name, this->GetUserByFd(fd).findNickname());
+	INVITE_MESSAGE(guest, channel_name, this->GetUserByFd(fd).getNickname());
 }
 
 bool	checkNbrParam(size_t cmd_size, size_t size, User &user, std::string cmd){

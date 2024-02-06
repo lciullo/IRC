@@ -11,7 +11,7 @@
 //======== DEFINE FOR CMD ==========//
 
 # define HEADER_CMD(User) \
-":" + User.findNickname() + "!" + User.findUsername() + " "
+":" + User.getNickname() + "!" + User.getUsername() + " "
 
 class User;
 
@@ -73,13 +73,14 @@ class Server
 		void create_user();
 		
 		//==== Getters ====
-		std::string getNickname(void);
-		std::string getUsername(void);
-		std::string getPassword(void);
+		std::string getNickname(void) const;
+		std::string getUsername(void) const;
+		std::string getPassword(void) const;
 		std::vector<struct pollfd> getLstFd() const;
-		std::map<int, User> getLstUsr(void);
+		std::map<int, User> getLstUsr(void) const;
 		User &GetUserByFd(int fd);
 		User &GetUserByNickname(std::string nickname);
+
 		bool searchUserInServer(std::string nickname);
 };
 

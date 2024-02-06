@@ -38,8 +38,8 @@ void Server::privmsg(std::string msg, int fd)
 			for (size_t j = 0; j < channel.getVecUsers().size(); j++)
 			{
 				User *user = channel.getVecUsers()[j];
-				std::string message = ":" + this->GetUserByFd(fd).findNickname() + " PRIVMSG " + lst_dest[i] + " " + msg_to_send + "\r\n";
-				if (user->findNickname() == this->GetUserByFd(fd).findNickname())
+				std::string message = ":" + this->GetUserByFd(fd).getNickname() + " PRIVMSG " + lst_dest[i] + " " + msg_to_send + "\r\n";
+				if (user->getNickname() == this->GetUserByFd(fd).getNickname())
 					continue ;
 				send_msg(*user, message);
 			}

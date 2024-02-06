@@ -27,16 +27,15 @@ class User
 		User &	operator=(const User &obj);
   
 		//Getters
-		const std::string& findNickname(void) const;
-		const std::string& findUsername(void) const;
 		int getLevel(void) const;
 		std::vector<std::string> &getUserChannels(void);
 		const int& getFd(void) const;
 		const bool& getIsCreate(void) const;
 		std::string getLine(void) const;
-		std::string getoldNickname(void);
-		std::string getNickname(void);
-		std::string getUsername(void);
+		std::string getoldNickname(void) const;
+		std::string getNickname(void) const;
+		std::string getUsername(void) const;
+
 		//Setters
 		void setIsCreate(bool isCreate);
 		void setNickname(std::string nickname);
@@ -49,7 +48,7 @@ class User
 		void addChannel(std::string name_channel);
 		void deleteChannel(std::string name_channel);
 		bool operator<(const User& other) const {
-        	return this->findNickname() < other.findNickname();
+        	return this->getNickname() < other.getNickname();
    		}
 
 		void addInvite(std::string channel_name);

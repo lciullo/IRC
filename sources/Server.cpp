@@ -150,11 +150,19 @@ void Server::create_user()
 /*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
 
 
-std::vector<struct pollfd> Server::getLstFd() const {return (this->_lst_fd);}
+std::vector<struct pollfd> Server::getLstFd() const 
+{
+	return (this->_lst_fd);
+}
 
-std::map<int, User> Server::getLstUsr(void)
+std::map<int, User> Server::getLstUsr(void) const
 {
 	return (this->_lst_usr);
+}
+
+std::string Server::getPassword(void) const
+{
+	return (this->_password);
 }
 
 User &Server::GetUserByFd(int fd)
@@ -173,7 +181,7 @@ User &Server::GetUserByNickname(std::string nickname)
 	std::map<int, User>::iterator ite = this->_lst_usr.end();
 	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
 	{
-		if (it->second.findNickname() == nickname)
+		if (it->second.getNickname() == nickname)
 			return (it->second);
 	}
 	return (ite->second);
@@ -184,13 +192,8 @@ bool Server::searchUserInServer(std::string nickname)
 	std::map<int, User>::iterator ite = this->_lst_usr.end();
 	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
 	{
-		if (it->second.findNickname() == nickname)
+		if (it->second.getNickname() == nickname)
 			return (true);
 	}
 	return (false);
-}
-
-std::string Server::getPassword(void)
-{
-	return (this->_password);
 }

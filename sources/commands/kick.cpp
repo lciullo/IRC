@@ -91,7 +91,7 @@ void Server::kick(std::string msg, int fd) {
 		//Check that the person we are trying to kick is on the channel
 		User	*banned;
 		for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-			if (it_channel->first->findNickname() == *it_cmd) { 
+			if (it_channel->first->getNickname() == *it_cmd) { 
 				banned = it_channel->first;
 				break ;
 			}

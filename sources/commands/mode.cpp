@@ -25,7 +25,7 @@ void Server::mode(std::string msg, int fd) {
 
 	std::cout << msg << std::endl;
 	split_cmd(&cmd, msg);
-	protagonist = this->GetUserByFd(fd).findUsername();
+	protagonist = this->GetUserByFd(fd).getUsername();
 	
 	if (cmd[0] == "MODE")
 		cmd.erase(cmd.begin());
@@ -57,7 +57,7 @@ void Server::mode(std::string msg, int fd) {
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		if (it_channel->first->findUsername() == protagonist) {
+		if (it_channel->first->getUsername() == protagonist) {
 			if (it_channel->second == VOICE) {
 				ERR_CHANOPRIVSNEEDED(this->GetUserByFd(fd), channel_name);;
 				return ;
@@ -129,7 +129,7 @@ bool	checkparam(char mode, std::string param, std::map<User *, int> lstUsers_cha
 	if (mode == 'o') {
 		std::map<User *, int>::iterator	it_lstUsers;
 		for (it_lstUsers = lstUsers_channel.begin(); it_lstUsers != lstUsers_channel.end(); it_lstUsers++) {
-			if (it_lstUsers->first->findNickname() == param)
+			if (it_lstUsers->first->getNickname() == param)
 				break ;
 		}
 		if (it_lstUsers == lstUsers_channel.end()) {
