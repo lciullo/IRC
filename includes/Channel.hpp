@@ -33,7 +33,6 @@ class Channel
 		std::string				_name;
 		std::string				_topic;
 		std::string				_password;
-		std::string				_creationTimeChannel;
 		std::string				_topicInfo;
 		std::vector<char>		_mode;
 		std::vector<User *>		_waitlist;
@@ -42,7 +41,7 @@ class Channel
 
 	public :
 		Channel();
-		Channel(std::string name, User *operators, std::string creation_time);
+		Channel(std::string name, User *operators);
 		Channel(const Channel &channel);
 		Channel &operator=(const Channel &channel);
 		
@@ -53,7 +52,6 @@ class Channel
 		std::string				getName() const;
 		std::string				getTopic() const;
 		std::string				getPassword() const;
-		std::string				getCreationTimeChannel() const;
 		std::string				getTopicInfo() const;
 		std::string				getModestring() const;
 		std::vector<User *>		getVecUsers() const;
