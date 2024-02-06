@@ -62,7 +62,7 @@ void	send_msg(User user, std::string msg)
 
 	while (byteSent < msg.length())
 	{
-		std::cout << msg << std::endl;
+		std::cout << YELLOW << msg << RESET << std::endl;
 		long len = send(user.getFd(), msg.c_str(), msg.size(), 0);
 		if (len < 0)
 			break ;

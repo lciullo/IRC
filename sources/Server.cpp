@@ -83,6 +83,7 @@ void Server::launch()
 void Server::launch_cmd(std::string msg, int fd)
 {
 	
+	std::cout << BLUE << msg << RESET << std::endl;
 	/*ERR_NOTREGISTERED (451) "<client> :You have not registered"*/
 	User &user = GetUserByFd(fd);
 	// std::cout << BLUE << "============================" << RESET << std::endl;

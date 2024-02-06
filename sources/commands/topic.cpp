@@ -18,14 +18,12 @@ void Server::topic(std::string msg, int fd)
 	std::vector<std::string>	cmd;
 	std::string					channel_name;
 	std::string					topic;
-	User						client;
 	std::time_t	now = time(0);
 	bool						operator_needed = false;
 	
 	split_cmd(&cmd, msg);
-	client = this->GetUserByFd(fd);
+	User	client = this->GetUserByFd(fd);
 	
-	std::cout << cmd.size() << std::endl;
 	if (cmd.size() < 2) {
 		ERR_NEEDMOREPARAMS(client, "TOPIC");
 		return ;

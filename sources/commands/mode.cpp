@@ -17,14 +17,13 @@ bool	checkparam(char mode, std::string param, std::map<User *, int> lstUsers_cha
 
 void Server::mode(std::string msg, int fd) {
 	char						sign;
-	User						client;
 	std::string					channel_name;
 	std::string					param;
 	std::string					modestring;
 	std::vector<std::string>	cmd;
 
 	split_cmd(&cmd, msg);
-	client =this->GetUserByFd(fd);;
+	User	client =this->GetUserByFd(fd);;
 	
 	if (cmd.size() < 2) {
 		ERR_NEEDMOREPARAMS(client, "INVITE");
@@ -101,8 +100,9 @@ void Server::mode(std::string msg, int fd) {
 			if (i < cmd.size()) {
 				param = cmd.at(i);
 				i++;
-				if (checkparam(*it, param, current_channel->getLstUsers(), channel_name, client) == false)
+				if (checkparam(*it, param, current_channel->getLstUsers(), channel_name, client) == false) {
 					continue ;
+				}
 			}
 			else {
 				ERR_NEEDMOREPARAMS(client, "MODE");
@@ -133,8 +133,10 @@ bool	checkparam(char mode, std::string param, std::map<User *, int> lstUsers_cha
 	if (mode == 'o') {
 		std::map<User *, int>::iterator	it_lstUsers;
 		for (it_lstUsers = lstUsers_channel.begin(); it_lstUsers != lstUsers_channel.end(); it_lstUsers++) {
-			if (it_lstUsers->first->getNickname() == param)
+			if (it_lstUsers->first->getNickname() == param) {
+
 				break ;
+			}
 		}
 		if (it_lstUsers == lstUsers_channel.end()) {
 			ERR_INVALIDMODEPARAM(user, channel_name, mode, param, "User not in the channel");

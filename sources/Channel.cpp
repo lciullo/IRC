@@ -50,6 +50,7 @@ Channel &Channel::operator=(const Channel &channel)
 	this->_nbrUser = channel._nbrUser;
 	this->_nbrUserMax = channel._nbrUserMax;
 	this->_private = channel._private;
+	this->_name = channel._name;
 	this->_topic = channel._topic;
 	this->_password = channel._password;
 	this->_creationTimeChannel = channel._creationTimeChannel;
@@ -100,7 +101,6 @@ void	Channel::setName(std::string name) {this->_name = name;}
 void	Channel::setTopic(std::string topic, std::string nickSetter) {
 
 	this->_topicInfo = nickSetter;
-	std::cout << BLUE << _topicInfo << RESET << std::endl;
 	if (topic.empty()) {
 		this->_topic.clear();
 		return ;
@@ -119,14 +119,10 @@ void	Channel::addUser(User *new_user)
 
 void	Channel::addMode(char new_mode, std::string param)
 {
-	{
-		std::vector<char>::iterator	it;
-		for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
-			if (*it == new_mode) {
-				std::cout << "ERROR The mode ou are trying to add is already enable" << std::endl;
-				return ;
-			}
-		}
+	std::vector<char>::iterator	it;
+	for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
+		if (*it == new_mode) 
+			return ;
 	}
 	
 	switch (new_mode) {
@@ -183,18 +179,18 @@ void	Channel::deleteUser(User &user)
 }
 
 void	Channel::deleteMode(char mode, std::string param)
-{
-	{
-		std::vector<char>::iterator	it;
-		for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
-			if (*it == mode) {
+{	
+	std::vector<char>::iterator	it;
+	if (mode == 'o') {
+		std::map<User *, int>::iterator	it;
+		for (it = _lstUsers.begin(); it != _lstUsers.end(); it++) {
+			if (it->first->getNickname() == param) {
+				it->second = VOICE;
 				break ;
 			}
 		}
-		
+		return ;
 	}
-	
-	std::vector<char>::iterator	it;
 	for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
 		if (*it == mode) {
 			this->_mode.erase(it);
@@ -210,15 +206,6 @@ void	Channel::deleteMode(char mode, std::string param)
 				case 'l' : {
 					this->_nbrUserMax = -1;
 					break;
-				}
-				case 'o' : {
-					std::map<User *, int>::iterator	it;
-					for (it = _lstUsers.begin(); it != _lstUsers.end(); it++) {
-						if (it->first->getNickname() == param) {
-							it->second = VOICE;
-							break ;
-						}
-					}
 				}
 			}
 			break;

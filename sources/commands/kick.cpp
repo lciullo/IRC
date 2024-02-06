@@ -16,14 +16,13 @@
 void Server::kick(std::string msg, int fd) 
 {
 	int							kick_count = 0;
-	User						client;
 	std::string					channel_name;
 	std::string					reason;
 	std::vector<std::string>	cmd;
 	std::vector<std::string>	all_ban;
 
 	split_cmd(&cmd, msg);
-	client = this->GetUserByFd(fd);
+	User	client = this->GetUserByFd(fd);
 
 	//Check nbr parameters
 	if (cmd.size() < 3) {

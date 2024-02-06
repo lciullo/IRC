@@ -20,21 +20,17 @@ void Server::invite(std::string msg, int fd)
 	std::vector<std::string>	cmd;
 	std::string					channel_name;
 	std::string					guest_nickname;
-	User						client;
 
 	split_cmd(&cmd, msg);
-	client = this->GetUserByFd(fd);
+	User	client = this->GetUserByFd(fd);
 
 	// Check that the command have enough parameters
 	if (cmd.size() == 1) {
-		std::string	invite_list = client.getNickname();
+		std::string	invite_list;
 		std::vector<std::string> invite = client.getInvite();
 		std::vector<std::string>::iterator	it;
-		if (invite.empty())
-			std::cout << "C'est vide\n";
 		for (it = invite.begin(); it != invite.end(); it++)
-			std::cout << *it << " ";
-		std::cout << std::endl;
+			invite_list += *it + " ";
 		RPL_INVITELIST(client, invite_list);
 		return ;
 	}
@@ -61,16 +57,6 @@ void Server::invite(std::string msg, int fd)
 	}
 	else
 		current_channel = &it_serv->second;
-
-	//DEBUG
-	{
-		std::vector<User *>	waitlist = current_channel->getWaitlist();
-		std::vector<User *>::iterator	it;
-		for (it = waitlist.begin(); it != waitlist.end(); it++) {
-			std::cout << (*it)->getNickname() << " ";
-		}
-		std::cout << std::endl;
-	}
 
 	// Check that the guest exist and that is not already on the channel
 	User	*guest;
@@ -112,25 +98,8 @@ void Server::invite(std::string msg, int fd)
 	}
 
 	current_channel->addUserToWaitlist(guest);
-	std::cout << BLUE <<guest->getNickname() << RESET << std::endl;
 	guest->addInvite(channel_name);
-	
-	//DEBUG
-	{
-		std::vector<User *>	waitlist = current_channel->getWaitlist();
-		std::vector<User *>::iterator	it;
-		for (it = waitlist.begin(); it != waitlist.end(); it++) {
-			std::cout << (*it)->getNickname() << " ";
-		}
-		std::cout << std::endl;
-	}
-	// {
-	// 	std::vector<std::string> invite = guest->getInvite();
-	// 	std::vector<std::string>::iterator	it;
-	// 	for (it = invite.begin(); it != invite.end(); it++)
-	// 		std::cout << *it << " ";
-	// 	std::cout << std::endl;
-	// }
+
 	RPL_INVITING(client, channel_name, guest_nickname);
 	INVITE_MESSAGE(guest, channel_name, client.getNickname());
 }
