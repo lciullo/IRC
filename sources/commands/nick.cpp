@@ -21,6 +21,7 @@ bool Server::switchNickCase(User &user, std::string msg, int fd)
 		if (user.getLevel() >= 1)
 			return (false);
 	}
+	user.setNickname(cmd[1]);
 	return (true);
 }
 

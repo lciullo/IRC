@@ -23,7 +23,7 @@ void Server::launch()
 	this->_socketfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (setsockopt(this->_socketfd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt))<0)
 		exit(EXIT_FAILURE);
-	if (this->_socketfd < 0) // coucou la zone c'est leon le bg je vous aimes
+	if (this->_socketfd < 0)
 	{
 		std::cout << "[ERROR] Creation of socket failed";
 		return;
@@ -53,7 +53,10 @@ void Server::launch()
 					bzero(buffer,256);
 					n = recv(this->_lst_fd[i].fd,buffer,255,0);
 					if (n < 0)
+					{
 						std::cout << "ERROR writing to socket" << std::endl;
+						continue ;
+					}
 					if (n == 0)
 					{
 						this->quit("QUIT :test", this->_lst_fd[i].fd);
@@ -65,7 +68,6 @@ void Server::launch()
 					getcmd(user.getLine(), cmd);
 					while (cmd.size() != 0)
 					{
-						// std::cout << "[LOG] " << i << " " << cmd << "|" << std::endl;
 						user.setLine(user.getLine().substr(cmd.size() + 2));
 						std::string str = user.getLine();
 						this->launch_cmd(cmd, this->_lst_fd[i].fd);
@@ -78,19 +80,16 @@ void Server::launch()
 }
 
 /*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
-
 void Server::launch_cmd(std::string msg, int fd)
 {
+	std::cout << BLUE << msg << RESET << std::endl;
 	User &user = GetUserByFd(fd);
 	std::vector<std::string> cmd;
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 1)
 		return ;
 	if (cmd[0] == "QUIT")
-	{
 		this->quit(msg, fd);
-		std::cout << "quit " << std::endl;
-	}
 	else if (cmd[0] == "PASS")
 	{
 		if (switchPassCase(user, msg, fd)== false)
@@ -123,11 +122,9 @@ void Server::launch_cmd(std::string msg, int fd)
 		this->kick(msg, fd);
 	else if (cmd[0] == "TOPIC")
 		this->topic(msg, fd);
-	
 	else if (cmd[0] == "MODE")
 		this->mode(msg, fd);
 }
-
 
 void Server::create_user()
 {
@@ -148,8 +145,6 @@ void Server::create_user()
 
 
 /*- - - - - - - - - - - - - - - - - Instanciate user class - - - - - - - - - - - -- - -  - - */
-
-
 std::vector<struct pollfd> Server::getLstFd() const 
 {
 	return (this->_lst_fd);
