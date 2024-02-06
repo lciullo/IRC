@@ -14,6 +14,11 @@ bool Server::switchUserCase(User &user, std::string msg)
 		ERR_NEEDMOREPARAMS(user, "USER");
 		return (false);
 	}
+	if (cmd[2] != "0" && cmd[3] != "*")
+	{
+		SIMPLE_MSG(user, "Usage :  username 0 * realname");
+		return (false);
+	}
 	if (user.getUsername().empty() && user.getLevel() >= 1)
 		user.addLevel();
 	user.setUsername(findUsername(cmd[1]));

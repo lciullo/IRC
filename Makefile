@@ -81,7 +81,7 @@ endif
 
 # ---- Leaks ---- #
 
-LEAKS			=	valgrind --leak-check=full --show-leak-kinds=all --quiet
+LEAKS			=	valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --quiet
 
 
 # ====================== RULES ====================== #
