@@ -38,17 +38,17 @@ send_msg(user, HEADER_CMD(user) + "401 " + user.getNickname() + SPACE + nickname
 //Empty Nickname : 431
 
 # define ERR_NONICKNAMEGIVEN(user, nickname) \
-send_msg(user, HEADER_CMD(user) + "431 " + user.getNickname() + SPACE + nickname + SPACE + ":No nickname given" + RN)
+send_msg(user, HEADER_CMD(user) + "431 " + user.getNickname() + SPACE + nickname + SPACE + "No nickname given" + RN)
 
 //Characters disallowed by the server : 432
 
 # define ERR_ERRONEUSNICKNAME(user, nickname) \
-send_msg(user, HEADER_CMD(user) + "432 " + user.getNickname() + SPACE + nickname + SPACE + ":Erroneus nickname" + RN)
+send_msg(user, HEADER_CMD(user) + "432 " + user.getNickname() + SPACE + nickname + SPACE + "Erroneus nickname" + RN)
 
 //Nickname already use : 433
 
 # define ERR_NICKNAMEINUSE(user, nickname) \
-send_msg(user, HEADER_CMD(user) + "433 " + user.getNickname() + SPACE + nickname + SPACE + ":Nickname is already in use" + RN)
+send_msg(user, HEADER_CMD(user) + "433 " + user.getNickname() + SPACE + nickname + SPACE + "Nickname is already in use" + RN)
 
 //Send to server new nickname 
 
@@ -56,13 +56,14 @@ send_msg(user, HEADER_CMD(user) + "433 " + user.getNickname() + SPACE + nickname
 
 //============ REGISTRATION ===========
 
-//# define ERR_ALREADYREGISTERED() "<client> :You have not registered" 451 
+# define ERR_NOTREGISTERED(user) \
+send_msg(user, HEADER_CMD(user) + "451 " + user.getNickname() + SPACE + "You have not registered" + RN)
 
-
-//# define ERR_ALREADYREGISTERED() ""<client> :You may not reregister" 462
+# define ERR_ALREADYREGISTERED(user) \
+send_msg(user, HEADER_CMD(user) + "462 " + user.getNickname() + SPACE + "You may not reregister" + RN)
 
 # define ERR_BADCHANMASK(user, channel_name) \
-send_msg(user, HEADER_CMD(user) + "476 " + channel_name + SPACE + ":Bad Channel Mask" + RN)
+send_msg(user, HEADER_CMD(user) + "476 " + channel_name + SPACE + "Bad Channel Mask" + RN)
 
 # define ERR_BADCHANNELKEY(user, channel_name) \
 send_msg(user, HEADER_CMD(user) + "475 " + user.getNickname() + SPACE + channel_name + SPACE + ":Cannot join channel, wrong key" + RN)

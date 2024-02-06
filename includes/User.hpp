@@ -9,14 +9,15 @@ class User
 		//Attributes
 		std::string					_nickname;
 		std::string					_username;
+		std::string					_realname;
 		std::string					_line;
+		std::string					_oldNickname;
 		std::vector<std::string>	_userChannels;
 		std::vector<std::string>	_invite;
 		int 						_fd;
 		bool						_isCreate;
 		int							_level;
-		std::string					_oldNickname;
-
+		
 	public :
 
 		//Constructor / destructors
@@ -26,15 +27,15 @@ class User
 		User &	operator=(const User &obj);
   
 		//Getters
-		const std::string& getNickname(void) const;
-		const std::string& getUsername(void) const;
 		int getLevel(void) const;
 		std::vector<std::string> &getUserChannels(void);
 		const int& getFd(void) const;
 		const bool& getIsCreate(void) const;
 		std::string getLine(void) const;
-		std::string getoldNickname(void);
-				
+		std::string getoldNickname(void) const;
+		std::string getNickname(void) const;
+		std::string getUsername(void) const;
+
 		//Setters
 		void setIsCreate(bool isCreate);
 		void setNickname(std::string nickname);

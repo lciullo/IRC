@@ -2,12 +2,13 @@
 #include "User.hpp"
 #include <algorithm>
 
+
+
 User::User(void):  _level(0)
 {
-
 }
 
-User::User(int fd) : _nickname("default"), _username("default"), _fd(fd), _isCreate(false), _level(0)
+User::User(int fd) :_fd(fd), _isCreate(false), _level(0)
 {
 	return ;
 }
@@ -21,21 +22,11 @@ User &	User::operator=(const User &obj){
 	this->_username = obj._username;
 	this->_fd = obj._fd;
 	this->_isCreate = obj._isCreate;
-
 	return (*this);
 }
 
-const std::string& User::getNickname(void) const 
-{
-		return (this->_nickname);
-}
 
-
-const std::string& User::getUsername(void) const 
-{
-	return (this->_username);
-}
-
+/*- - - - - - - - - - - - - - - - - GETTERS - - - - - - - - - - - -- - -  - - */
 const int& User::getFd(void) const
 {
 	return (this->_fd);
@@ -46,7 +37,7 @@ const bool& User::getIsCreate(void) const
 	return (this->_isCreate);
 }
 
-std::string User::getoldNickname(void)
+std::string User::getoldNickname(void) const
 {
 	return (this->_oldNickname);
 }
@@ -71,6 +62,18 @@ std::string User::getLine(void) const
 	return (this->_line);
 }
 
+
+std::string User::getNickname(void) const
+{
+	return (this->_nickname);
+}
+
+std::string User::getUsername(void) const
+{
+	return (this->_username);
+}
+
+/*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
 void User::setIsCreate(bool isCreate)
 {
 	this->_isCreate = isCreate;

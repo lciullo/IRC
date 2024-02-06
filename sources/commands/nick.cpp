@@ -1,31 +1,31 @@
 #include "Server.hpp"
 
-bool Server::switchNickCase(std::string msg, int fd)
+bool Server::switchNickCase(User &user, std::string msg, int fd)
 {
-	User &user = GetUserByFd(fd);
 	std::vector<std::string> cmd;
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 2)
 	{
+		std::cout << "size < 2 " << RESET << std::endl;
 		ERR_NEEDMOREPARAMS(user, "NICK");
 		return (false);
 	}
-	if (nick(getNickname(msg), fd) == false)
+	if (user.getLevel() == 0)
 	{
-		if (user.getLevel() > 1)
-			return (false);
+		std::cout << "getLevel == 0 " << RESET << std::endl;
+		ERR_NOTREGISTERED(user);
+		return (false);
 	}
-	else
+	if (nick(user, findNickname(msg), fd) == false)
 	{
-			user.setNickname(cmd[1]);
-			user.addLevel();		
+		if (user.getLevel() >= 1)
+			return (false);
 	}
 	return (true);
 }
 
-bool Server::nick(std::string nickname, int fd)
+bool Server::nick(User &user, std::string nickname, int fd)
 {
-	User &user = GetUserByFd(fd);
 	std::string toUpdate;
 	std::string oldNickname = user.getoldNickname();
 	
@@ -55,6 +55,10 @@ bool Server::nick(std::string nickname, int fd)
 	else
 		toUpdate = oldNickname;
  	user.setoldNickname(nickname);
+	if (user.getNickname().empty() && user.getLevel() == 1)
+	{
+		user.addLevel();
+	}
 	user.setNickname(toUpdate);
 	sendStringSocket(fd, RPL_NICK(toUpdate, user.getUsername(), nickname));
 	sendNewNickname(user, toUpdate, nickname); 
@@ -74,7 +78,7 @@ bool Server::isValidNickname(std::string nickname)
 	return (true);
 }
 
-std::string Server::getNickname(std::string msg)
+std::string Server::findNickname(std::string msg)
 {
 	std::istringstream	iss(msg);
 	std::string			line;
