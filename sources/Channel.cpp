@@ -62,7 +62,7 @@ Channel &Channel::operator=(const Channel &channel)
 	return (*this);
 }
 
-/*- - - - - - - - - - - - - - - - - GETTERS - - - - - - - - - - - -- - -  - - */
+/*- - - - - - - - - - - - - - - - - GETTERS  - - - - - - - - - - - -- - - - - */
 int			Channel::getNbrUser() const {return (this->_nbrUser);}
 
 int			Channel::getNbrUserMax() const {return (this->_nbrUserMax);}
@@ -89,14 +89,11 @@ std::string	Channel::getModestring() const {
 	return (modestring);
 }
 
-std::vector<User *>		Channel::getWaitlist() const { return (this->_waitlist);}
-
 std::vector<User *>		Channel::getVecUsers() const {return (this->_vecUsers);}
 
 std::map<User *, int>	Channel::getLstUsers() const {return (this->_lstUsers);}
 
 /*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */
-void	Channel::setName(std::string name) {this->_name = name;}
 
 void	Channel::setTopic(std::string topic, std::string nickSetter) {
 
@@ -108,7 +105,7 @@ void	Channel::setTopic(std::string topic, std::string nickSetter) {
 	this->_topic = topic;
 }
 
-/*- - - - - - - - - - - - - - - - - - ADD - - - - - - - - - - - - -- - -  - -*/
+/*- - - - - - - - - - - - - - - - - - ADD - - - - - - - - - - - - - -- - - - -*/
 void	Channel::addUser(User *new_user)
 {
 	this->_vecUsers.push_back(new_user);
@@ -156,8 +153,7 @@ void	Channel::addUserToWaitlist(User *guest)
 	this->_waitlist.push_back(guest);
 }
 
-/*- - - - - - - - - - - - - - - - - -DELETE - - - - - - - - - - -- - -  - - - */
-
+/*- - - - - - - - - - - - - - - - - -DELETE  - - - - - - - - - - -- - - - - - */
 void	Channel::deleteUser(User &user) 
 {
 	std::map<User *, int>::iterator	it_map;
@@ -225,24 +221,13 @@ void	Channel::deleteUserToWaitlist(User user)
 	}
 }
 
-/*- - - - - - - - - - - - - - - - -  FIND - - - - - - - - - - - - -- - -  - - */
+/*- - - - - - - - - - - - - - - - -  FIND  - - - - - - - - - - - - -- - - - - */
 bool	Channel::findUser(User *user) const {
 	
 	std::map<User *, int>::const_iterator	it;
 	
 	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
 		if (user->getNickname() == it->first->getNickname())
-			return (true);
-	}
-	return (false);
-}
-
-bool	Channel::findOperators(User &user) const {
-	
-	std::map<User *, int>::const_iterator	it;
-	
-	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
-		if ((user.getNickname() == it->first->getNickname()) && it->second == OPERATOR)
 			return (true);
 	}
 	return (false);

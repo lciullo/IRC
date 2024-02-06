@@ -56,12 +56,10 @@ class Channel
 		std::string				getCreationTimeChannel() const;
 		std::string				getTopicInfo() const;
 		std::string				getModestring() const;
-		std::vector<User *>		getWaitlist() const;
 		std::vector<User *>		getVecUsers() const;
 		std::map<User *, int>	getLstUsers() const;
 
 		//Setters
-		void					setName(std::string name);
 		void					setTopic(std::string topic, std::string nickSetter);
 		
 		//Add
@@ -77,7 +75,6 @@ class Channel
 		
 		//Find
 		bool					findUser(User *user) const;
-		bool					findOperators(User &user) const;
 		bool					findInWaitList(User user) const;
 };
 
