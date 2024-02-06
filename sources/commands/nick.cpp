@@ -1,8 +1,7 @@
 #include "Server.hpp"
 
-bool Server::switchNickCase(std::string msg, int fd)
+bool Server::switchNickCase(User &user, std::string msg, int fd)
 {
-	User &user = GetUserByFd(fd);
 	std::vector<std::string> cmd;
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 2)
@@ -10,24 +9,30 @@ bool Server::switchNickCase(std::string msg, int fd)
 		ERR_NEEDMOREPARAMS(user, "NICK");
 		return (false);
 	}
-	if (nick(findNickname(msg), fd) == false)
+	if (user.getLevel() == 0)
 	{
-		if (user.getLevel() > 1)
+		ERR_NOTREGISTERED(user);
+		return (false);
+	}
+	if (nick(user, findNickname(msg), fd) == false)
+	{
+		if (user.getLevel() >= 1)
 			return (false);
 	}
 	else
 	{
-			user.setNickname(cmd[1]);
-			std::cout << "true add level NICK" << std::endl;
-			if (user.getNickname().empty() && user.getLevel() > 0)
-				user.addLevel();		
+			if (user.getNickname().empty() && user.getLevel() >= 1)
+			{
+				user.addLevel();
+				std::cout << BLUE << "LEVEL in nickname = " << user.getLevel() << RESET << std::endl;
+			}
+			user.setNickname(cmd[1]);		
 	}
 	return (true);
 }
 
-bool Server::nick(std::string nickname, int fd)
+bool Server::nick(User &user, std::string nickname, int fd)
 {
-	User &user = GetUserByFd(fd);
 	std::string toUpdate;
 	std::string oldNickname = user.getoldNickname();
 	

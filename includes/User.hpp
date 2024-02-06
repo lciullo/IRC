@@ -10,13 +10,13 @@ class User
 		std::string					_nickname;
 		std::string					_username;
 		std::string					_line;
+		std::string					_oldNickname;
 		std::vector<std::string>	_userChannels;
 		std::vector<std::string>	_invite;
 		int 						_fd;
 		bool						_isCreate;
 		int							_level;
-		std::string					_oldNickname;
-
+		
 	public :
 
 		//Constructor / destructors

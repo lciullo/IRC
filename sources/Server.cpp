@@ -75,7 +75,6 @@ void Server::launch()
 						getcmd(str, cmd);
 					}
 				}
-				// if regarder l'event deconnection quand on a pas de quit on envoie un quit man poll HR2
 			}
 		}
 	}
@@ -90,40 +89,25 @@ void Server::launch_cmd(std::string msg, int fd)
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 1)
 		return ;
-	if (cmd[0] == "PASS")
+	else if (cmd[0] == "QUIT")
+		this->quit(msg, fd);
+	else if (cmd[0] == "PASS")
 	{
-		if (user.getLevel() == 1)
+		if (switchPassCase(user, msg, fd)== false)
 			return ;
-		if (isRightPassword(msg, fd) == true)
-		{
-			if (getPassword().empty() && user.getLevel() == 0)
-				user.addLevel();
-		}
-		if (user.getLevel() > 2)
-		{
-			ERR_ALREADYREGISTERED(user);
-			return ;
-		}
 	} 
 	else if (cmd[0] == "NICK")
 	{
-		if (switchNickCase(msg,fd) == false)
+		if (switchNickCase(user, msg,fd) == false)
 			return ;
 	}
 	else if (cmd[0] == "USER")
 	{
-		std::vector<std::string> cmd;
-		split_cmd(&cmd, msg);
-		if (cmd.size() < 4)
-		{
-			ERR_NEEDMOREPARAMS(user, "USER");
+		if (switchUserCase(user, msg) == false)
 			return ;
-		}
-		user.setUsername(findUsername(msg));	
-		if (user.getUsername().empty() && user.getLevel() > 1)
-				user.addLevel();
 	}
-	else if (user.getLevel() < 3)
+	
+	else if (user.getLevel() < 2)
 	{
 		ERR_NOTREGISTERED(user);
 		return ;
@@ -140,8 +124,7 @@ void Server::launch_cmd(std::string msg, int fd)
 		this->kick(msg, fd);
 	else if (cmd[0] == "TOPIC")
 		this->topic(msg, fd);
-	else if (cmd[0] == "QUIT")
-		this->quit(msg, fd);
+	
 	else if (cmd[0] == "MODE")
 		this->mode(msg, fd);
 }

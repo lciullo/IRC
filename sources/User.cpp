@@ -7,7 +7,7 @@ User::User(void):  _level(0)
 
 }
 
-User::User(int fd) : _nickname("default"), _username("default"), _fd(fd), _isCreate(false), _level(0)
+User::User(int fd) :_fd(fd), _isCreate(false), _level(0)
 {
 	return ;
 }
@@ -21,7 +21,6 @@ User &	User::operator=(const User &obj){
 	this->_username = obj._username;
 	this->_fd = obj._fd;
 	this->_isCreate = obj._isCreate;
-
 	return (*this);
 }
 
