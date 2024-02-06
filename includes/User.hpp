@@ -9,6 +9,7 @@ class User
 		//Attributes
 		std::string					_nickname;
 		std::string					_username;
+		std::string					_realname;
 		std::string					_line;
 		std::string					_oldNickname;
 		std::vector<std::string>	_userChannels;

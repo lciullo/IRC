@@ -89,8 +89,11 @@ void Server::launch_cmd(std::string msg, int fd)
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 1)
 		return ;
-	else if (cmd[0] == "QUIT")
+	if (cmd[0] == "QUIT")
+	{
 		this->quit(msg, fd);
+		std::cout << "quit " << std::endl;
+	}
 	else if (cmd[0] == "PASS")
 	{
 		if (switchPassCase(user, msg, fd)== false)
@@ -106,7 +109,6 @@ void Server::launch_cmd(std::string msg, int fd)
 		if (switchUserCase(user, msg) == false)
 			return ;
 	}
-	
 	else if (user.getLevel() < 2)
 	{
 		ERR_NOTREGISTERED(user);

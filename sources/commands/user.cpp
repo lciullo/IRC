@@ -4,19 +4,20 @@ bool Server::switchUserCase(User &user, std::string msg)
 {
 	std::vector<std::string> cmd;
 	split_cmd(&cmd, msg);
-	if (cmd.size() != 4)
-	{
-		ERR_NEEDMOREPARAMS(user, "USER");
-		return (false);
-	}
 	if (user.getLevel() == 0)
 	{
 		ERR_NOTREGISTERED(user);
 		return (false);
 	}
+	if (cmd.size() != 5)
+	{
+		ERR_NEEDMOREPARAMS(user, "USER");
+		return (false);
+	}
 	if (user.getUsername().empty() && user.getLevel() >= 1)
 		user.addLevel();
-	user.setUsername(findUsername(msg));
+	std::cout << "user = " << cmd[1] << std::endl;
+	user.setUsername(findUsername(cmd[1]));
 	return (true);
 }
 
