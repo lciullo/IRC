@@ -72,7 +72,6 @@ void Server::launch()
 						getcmd(str, cmd);
 					}
 				}
-				// if regarder l'event deconnection quand on a pas de quit on envoie un quit man poll HR2
 			}
 		}
 	}
@@ -82,41 +81,36 @@ void Server::launch()
 
 void Server::launch_cmd(std::string msg, int fd)
 {
-	
-	/*ERR_NOTREGISTERED (451) "<client> :You have not registered"*/
 	User &user = GetUserByFd(fd);
-	std::cout << BLUE << "============================" << RESET << std::endl;
-	std::cout << BLUE << "LEVEL = " << user.getLevel() << RESET << std::endl;
 	std::vector<std::string> cmd;
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 1)
 		return ;
-	if (cmd[0] == "PASS")
+	if (cmd[0] == "QUIT")
 	{
-		if (isRightPassword(msg, fd) == true)
-			user.addLevel();
-		//ERR_ALREADYREGISTERED (462)
+		this->quit(msg, fd);
+		std::cout << "quit " << std::endl;
+	}
+	else if (cmd[0] == "PASS")
+	{
+		if (switchPassCase(user, msg, fd)== false)
+			return ;
 	} 
 	else if (cmd[0] == "NICK")
 	{
-		if (switchNickCase(msg,fd) == false)
+		if (switchNickCase(user, msg,fd) == false)
 			return ;
 	}
 	else if (cmd[0] == "USER")
 	{
-		std::vector<std::string> cmd;
-		split_cmd(&cmd, msg);
-		if (cmd.size() < 4)
-		{
-			ERR_NEEDMOREPARAMS(user, "USER");
+		if (switchUserCase(user, msg) == false)
 			return ;
-		}
-		user.setUsername(getUsername(msg));	
-		user.addLevel();
-		//ERR_ALREADYREGISTERED (462)
 	}
-	else if (user.getLevel() < 3)
+	else if (user.getLevel() < 2)
+	{
+		ERR_NOTREGISTERED(user);
 		return ;
+	}
 	else if (cmd[0] == "JOIN")
 		this->join(msg, fd);
 	else if (cmd[0] == "PART")
@@ -129,8 +123,7 @@ void Server::launch_cmd(std::string msg, int fd)
 		this->kick(msg, fd);
 	else if (cmd[0] == "TOPIC")
 		this->topic(msg, fd);
-	else if (cmd[0] == "QUIT")
-		this->quit(msg, fd);
+	
 	else if (cmd[0] == "MODE")
 		this->mode(msg, fd);
 }
@@ -180,7 +173,7 @@ User &Server::GetUserByNickname(std::string nickname)
 	std::map<int, User>::iterator ite = this->_lst_usr.end();
 	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
 	{
-		if (it->second.getNickname() == nickname)
+		if (it->second.findNickname() == nickname)
 			return (it->second);
 	}
 	return (ite->second);
@@ -191,8 +184,13 @@ bool Server::searchUserInServer(std::string nickname)
 	std::map<int, User>::iterator ite = this->_lst_usr.end();
 	for (std::map<int, User>::iterator it = this->_lst_usr.begin(); ite != it; ++it)
 	{
-		if (it->second.getNickname() == nickname)
+		if (it->second.findNickname() == nickname)
 			return (true);
 	}
 	return (false);
+}
+
+std::string Server::getPassword(void)
+{
+	return (this->_password);
 }

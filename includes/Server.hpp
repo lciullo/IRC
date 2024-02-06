@@ -11,7 +11,7 @@
 //======== DEFINE FOR CMD ==========//
 
 # define HEADER_CMD(User) \
-":" + User.getNickname() + "!" + User.getUsername() + " "
+":" + User.findNickname() + "!" + User.findUsername() + " "
 
 class User;
 
@@ -19,7 +19,7 @@ class Server
 {
 	private :
 		
-		//Attributes
+		//===== Attributes ====
 		int 				_socketfd;
 		struct sockaddr_in	_serv_addr;
 		unsigned long		_address;
@@ -29,23 +29,29 @@ class Server
 		std::map<int, User>				_lst_usr;
 		std::map<std::string, Channel>	_lst_channel;
 		
-		//Commands
+		//==== Commands =====
+		//Pass
+		bool switchPassCase(User &user, std::string msg, int fd);
+		bool isRightPassword(User &user, std::string msg, int fd); 
+		//Nick
+		bool nick(User  &user, std::string nickname, int fd);
+		bool switchNickCase(User &user, std::string msg, int fd);
+		bool isValidNickname(std::string nickname);
+		void sendNewNickname(User &user, std::string toUpdate, std::string nickname);
+		void sendInEachChannel(Channel &channel, User &user, std::string toUpdate, std::string nickname);
+		//User 
+		bool switchUserCase(User &user, std::string msg);
+		//Channel commands
 		void invite(std::string msg, int fd);
 		void kick(std::string msg, int fd);
 		void mode(std::string msg, int fd);
 		void topic(std::string msg, int fd);
-		bool isRightPassword(std::string msg, int fd);
 		void join(std::string msg, int fd);
 		void privmsg(std::string msg, int fd);
 		void part(std::string msg, int fd);
+		//Quit
 		void quit(std::string msg, int fd);
-		
-		//========== NICK ==========
-		bool nick(std::string nickname, int fd);
-		bool switchNickCase(std::string msg, int fd);
-		bool isValidNickname(std::string nickname);
-		void sendNewNickname(User &user, std::string toUpdate, std::string nickname);
-		void sendInEachChannel(Channel &channel, User &user, std::string toUpdate, std::string nickname);
+
 		//Delete 
 		bool searchChannelInServer(std::string target);
 		void closeUserFd(int fd);
@@ -53,21 +59,23 @@ class Server
 		void deleteUserFromLst(int fd);
 		
 	public : 
-		//Constructor 
+		//==== Constructor ==== 
 		Server(int port, std::string _password);
 		
-		//Commands
+		//==== Commands ====
 		void launch();
 		void launch_cmd(std::string msg, int index);
+		std::string findNickname(std::string msg);
+		std::string findUsername(std::string msg);
 		
-		//User
+		//==== User ====
 		void add_user(int index, std::string nickname, std::string username);
 		void create_user();
 		
-		//Getters
-		
-		std::string getNickname(std::string msg);
-		std::string getUsername(std::string msg);
+		//==== Getters ====
+		std::string getNickname(void);
+		std::string getUsername(void);
+		std::string getPassword(void);
 		std::vector<struct pollfd> getLstFd() const;
 		std::map<int, User> getLstUsr(void);
 		User &GetUserByFd(int fd);

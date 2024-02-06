@@ -146,7 +146,7 @@ void	Channel::addMode(char new_mode, std::string param)
 		case 'o' : {
 			std::map<User *, int>::iterator	it;
 			for (it = _lstUsers.begin(); it != _lstUsers.end(); it++) {
-				if (it->first->getNickname() == param) {
+				if (it->first->findNickname() == param) {
 					it->second = OPERATOR;
 					break ;
 				}
@@ -175,7 +175,7 @@ void	Channel::deleteUser(User &user)
 {
 	std::map<User *, int>::iterator	it_map;
 	for (it_map = this->_lstUsers.begin(); it_map != this->_lstUsers.end(); it_map++) {
-		if (user.getNickname() == it_map->first->getNickname()){
+		if (user.findNickname() == it_map->first->findNickname()){
 			this->_lstUsers.erase(it_map);
 			break ;
 		}
@@ -183,7 +183,7 @@ void	Channel::deleteUser(User &user)
 	
 	std::vector<User *>::iterator	it_vec;
 	for (it_vec = this->_vecUsers.begin(); it_vec != this->_vecUsers.end(); it_vec++) {
-		if (user.getNickname() == (*it_vec)->getNickname()) {
+		if (user.findNickname() == (*it_vec)->findNickname()) {
 			this->_vecUsers.erase(it_vec);
 			break ;
 		}
@@ -223,7 +223,7 @@ void	Channel::deleteMode(char mode, std::string param)
 				case 'o' : {
 					std::map<User *, int>::iterator	it;
 					for (it = _lstUsers.begin(); it != _lstUsers.end(); it++) {
-						if (it->first->getNickname() == param) {
+						if (it->first->findNickname() == param) {
 							it->second = VOICE;
 							break ;
 						}
@@ -245,7 +245,7 @@ void	Channel::deleteUserToWaitlist(User user)
 {	
 	std::vector<User *>::iterator	it;
 	for (it = this->_waitlist.begin(); it != this->_waitlist.end(); it++) {
-		if (user.getNickname() == (*it)->getNickname())
+		if (user.findNickname() == (*it)->findNickname())
 		{
 			this->_waitlist.erase(it);
 			break ;
@@ -259,7 +259,7 @@ bool	Channel::findUser(User *user) const {
 	std::map<User *, int>::const_iterator	it;
 	
 	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
-		if (user->getNickname() == it->first->getNickname())
+		if (user->findNickname() == it->first->findNickname())
 			return (true);
 	}
 	return (false);
@@ -270,7 +270,7 @@ bool	Channel::findOperators(User &user) const {
 	std::map<User *, int>::const_iterator	it;
 	
 	for (it = this->_lstUsers.begin(); it != this->_lstUsers.end(); it++) {
-		if ((user.getNickname() == it->first->getNickname()) && it->second == OPERATOR)
+		if ((user.findNickname() == it->first->findNickname()) && it->second == OPERATOR)
 			return (true);
 	}
 	return (false);
@@ -281,7 +281,7 @@ bool	Channel::findInWaitList(User user) const
 	std::vector<User *>::const_iterator	it;
 	
 	for (it = this->_waitlist.begin(); it != this->_waitlist.end(); it++) {
-		if (user.getNickname() == (*it)->getNickname())
+		if (user.findNickname() == (*it)->findNickname())
 			return (true);
 	}
 	return (false);

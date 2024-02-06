@@ -1,17 +1,36 @@
 #include "Server.hpp"
 
-bool Server::isRightPassword(std::string msg, int fd)
+bool Server::switchPassCase(User &user, std::string msg, int fd)
+{
+	if (user.getLevel() == 1)
+			return (false);
+	if (user.getLevel() > 2)
+	{
+		ERR_ALREADYREGISTERED(user);
+		return (false);
+	}
+	if (isRightPassword(user, msg, fd) == true)
+	{
+		if (user.getLevel() == 0)
+		{
+			user.addLevel();
+			return (true);
+		}
+	}
+	return (true);
+}
+
+bool Server::isRightPassword(User &user,std::string msg, int fd)
 {
 	std::istringstream	iss(msg);
+	
+	std::vector<std::string> cmd;
 	std::string			line;
 	std::string			password;
-	User &user = GetUserByFd(fd);
-	std::vector<std::string> cmd;
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 2)
 	{
 		ERR_NEEDMOREPARAMS(user, "PASS");
-		//fd le fd 
 		return (false);
 	}
 	while (std::getline(iss, line)) 
@@ -24,7 +43,7 @@ bool Server::isRightPassword(std::string msg, int fd)
 	}
 	if (password != this->_password)
 	{
-		const char* quitMessage = " <client> :Password incorrect";
+		const char* quitMessage = ":Password incorrect";
    		send(fd, quitMessage, strlen(quitMessage), 0);
 		close(fd);
 		for (size_t i = 0; i < this->_lst_fd.size(); i++)
