@@ -11,6 +11,7 @@ void sendUserList(Channel channel)
 		User &user2 = *channel.getVecUsers()[i];
 		for (size_t j = 0; j < channel.getVecUsers().size(); j++)
 		{
+			std::cout << RED << channel.getName() << RESET << std::endl;
 			User userToSend = *channel.getVecUsers()[j];
 			message = HEADER_CMD(userToSend) + "353 " + userToSend.getNickname() + " = " + channel.getName() + " :";
 			if (channel.getLstUsers()[&user2] == OPERATOR)
@@ -76,11 +77,9 @@ void Server::join(std::string msg, int fd)
 			}
 			std::time_t	now = time(0);
 			std::string	date_time = ctime(&now);
-			// std::cout << RED << date_time << RESET << std::endl;
 			Channel new_channel(channels_name[i], &user, date_time);
 			if (channels_name[i][0] == '#')
 				new_channel.addMode('t', "");
-			std::cout << "create channel " << new_channel.getName() << " by " << user.getNickname() << std::endl;
 			this->_lst_channel[channels_name[i]] = new_channel;
 		}
 		else

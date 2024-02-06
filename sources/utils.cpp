@@ -62,7 +62,7 @@ void	send_msg(User user, std::string msg)
 
 	while (byteSent < msg.length())
 	{
-		std::cout << msg << std::endl;
+		std::cout << YELLOW << msg << RESET << std::endl;
 		long len = send(user.getFd(), msg.c_str(), msg.size(), 0);
 		if (len < 0)
 			break ;
@@ -77,7 +77,6 @@ void	split_cmd(std::vector<std::string> *cmd, std::string msg)
 	std::string	str;
 	std::string	whitespace = " \t\n\r\f\v";
 	size_t	last_non_space = 0;
-	bool	deux_point;
 
 	while (msg.size() != 0)
 	{
@@ -87,7 +86,6 @@ void	split_cmd(std::vector<std::string> *cmd, std::string msg)
 		begin = msg.find_first_not_of(whitespace);
 		if (msg[begin] == ':') {
 			end = msg.size();
-			deux_point = true;
 		}
 		else {
 			end = msg.find(" ", begin);
@@ -99,7 +97,6 @@ void	split_cmd(std::vector<std::string> *cmd, std::string msg)
 
 		cmd->push_back(str.c_str());
 		msg.erase(0, end);
-		deux_point = false;
 	}
 }
 

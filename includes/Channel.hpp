@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:44:19 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/01 13:38:13 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/05 21:09:41 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,18 +27,18 @@ enum {
 class Channel
 {
 	private :
+		int						_nbrUser;
+		int						_nbrUserMax;
+		bool					_private;
 		std::string				_name;
 		std::string				_topic;
 		std::string				_password;
-		std::vector<char>		_mode;
-		std::vector<User *>		_waitlist;
-		std::map<User *, int>	_lstUsers;
-		std::vector<User *>		_vecUsers;
-		bool					_private;
-		int						_nbrUser;
-		int						_nbrUserMax;
 		std::string				_creationTimeChannel;
 		std::string				_topicInfo;
+		std::vector<char>		_mode;
+		std::vector<User *>		_waitlist;
+		std::vector<User *>		_vecUsers;
+		std::map<User *, int>	_lstUsers;
 
 	public :
 		Channel();
@@ -47,37 +47,38 @@ class Channel
 		Channel &operator=(const Channel &channel);
 		
 		//Getters
-		std::string				getName() const;
-		std::string				getTopic() const;
-		std::map<User *, int>	getLstUsers() const;
-		std::vector<User *>		getVecUsers() const;
-		bool					getStatus() const;
 		int						getNbrUser() const;
 		int						getNbrUserMax() const;
+		bool					getStatus() const;
+		std::string				getName() const;
+		std::string				getTopic() const;
 		std::string				getPassword() const;
-		std::string				getModestring() const;
 		std::string				getCreationTimeChannel() const;
 		std::string				getTopicInfo() const;
+		std::string				getModestring() const;
+		std::vector<User *>		getWaitlist() const;
+		std::vector<User *>		getVecUsers() const;
+		std::map<User *, int>	getLstUsers() const;
 
 		//Setters
-		void			setName(std::string name);
-		void			setTopic(std::string topic, std::string nickSetter);
+		void					setName(std::string name);
+		void					setTopic(std::string topic, std::string nickSetter);
 		
 		//Add
-		void			addUser(User *new_user);
-		void			addMode(char new_mode, std::string param);
-		void			addTopic(std::string new_topic);
-		void			addUserToWaitlist(User *guest);
+		void					addUser(User *new_user);
+		void					addMode(char new_mode, std::string param);
+		void					addTopic(std::string new_topic);
+		void					addUserToWaitlist(User *guest);
 		
 		//Delete
-		void			deleteUser(User &user);
-		void			deleteMode(char mode, std::string param);
-		void			deleteUserToWaitlist(User user);
+		void					deleteUser(User &user);
+		void					deleteMode(char mode, std::string param);
+		void					deleteUserToWaitlist(User user);
 		
 		//Find
-		bool			findUser(User *user) const;
-		bool			findOperators(User &user) const;
-		bool			findInWaitList(User user) const;
+		bool					findUser(User *user) const;
+		bool					findOperators(User &user) const;
+		bool					findInWaitList(User user) const;
 };
 
 void	split_cmd(std::vector<std::string> *cmd, std::string msg);

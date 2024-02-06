@@ -75,7 +75,7 @@ send_msg(user, HEADER_CMD(user) + "473 " + user.getNickname() + SPACE + channel_
 send_msg(user, HEADER_CMD(user) + "471 " + user.getNickname() + SPACE + channel_name + SPACE + ":Cannot join channel, channel is full" + RN)
 
 # define RPL_TOPIC(user, channel_name, channel_topic) \
-send_msg(user, HEADER_CMD(user) + "332 " + user.getNickname() + SPACE + channel_name + SPACE + ":" + channel_topic + RN)
+send_msg(user, HEADER_CMD(user) + "332 " + user.getNickname() + SPACE + channel_name + SPACE  + ":" + channel_topic + RN)
 
 # define ERR_CHANOPRIVSNEEDED(user, channel_name) \
 send_msg(user, HEADER_CMD(user) + "482 " + user.getNickname() + SPACE + channel_name + SPACE + ":You're not channel operator" + RN)

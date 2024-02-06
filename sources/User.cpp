@@ -123,10 +123,10 @@ std::ostream &operator<<(std::ostream &out, const User &Object) {
 
 void User::addChannel(std::string name_channel)
 {
-	std::cout << "[TEST] name : " << name_channel << std::endl;
+	// std::cout << "[TEST] name : " << name_channel << std::endl;
 	this->_userChannels.push_back(name_channel);
-	std::cout << "add channel function" << std::endl;
-	std::cout << "SIZE = " << this->_userChannels.size();
+	// std::cout << "add channel function" << std::endl;
+	// std::cout << "SIZE = " << this->_userChannels.size();
 }
 
 void User::deleteChannel(std::string name_channel)

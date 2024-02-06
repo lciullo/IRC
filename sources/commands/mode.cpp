@@ -16,17 +16,20 @@
 bool	checkparam(char mode, std::string param, std::map<User *, int> lstUsers_channel, std::string channel_name, User &user);
 
 void Server::mode(std::string msg, int fd) {
-	std::vector<std::string>	cmd;
+	char						sign;
 	std::string					channel_name;
-	std::string					protagonist;
 	std::string					param;
 	std::string					modestring;
-	char						sign;
+	std::vector<std::string>	cmd;
 
-	std::cout << msg << std::endl;
 	split_cmd(&cmd, msg);
-	protagonist = this->GetUserByFd(fd).getUsername();
+	User	client =this->GetUserByFd(fd);;
 	
+	if (cmd.size() < 2) {
+		ERR_NEEDMOREPARAMS(client, "INVITE");
+		return ;
+	}
+
 	if (cmd[0] == "MODE")
 		cmd.erase(cmd.begin());
 	
@@ -36,7 +39,7 @@ void Server::mode(std::string msg, int fd) {
 	Channel						*current_channel;
 	std::map<std::string, Channel>::iterator	it_serv;
 	if ((it_serv = this->_lst_channel.find(channel_name)) == this->_lst_channel.end()) {
-		ERR_NOSUCHCHANNEL(this->GetUserByFd(fd), channel_name);
+		ERR_NOSUCHCHANNEL(client, channel_name);
 		return ;
 	}
 	else
@@ -48,25 +51,25 @@ void Server::mode(std::string msg, int fd) {
 		cmd.erase(cmd.begin());
 	}
 	else {
-		RPL_CHANNELMODEIS(this->GetUserByFd(fd), channel_name, current_channel->getModestring());
-		RPL_CREATIONTIME(this->GetUserByFd(fd), channel_name, current_channel->getCreationTimeChannel());
+		RPL_CHANNELMODEIS(client, channel_name, current_channel->getModestring());
+		RPL_CREATIONTIME(client, channel_name, current_channel->getCreationTimeChannel());
 		return ;
 	}
 
-	//Check that the user who want to invite is on the channel and have the good privilege
+	//Check that the client is on the channel and have the good privilege
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		if (it_channel->first->getUsername() == protagonist) {
+		if (it_channel->first->getNickname() == client.getNickname()) {
 			if (it_channel->second == VOICE) {
-				ERR_CHANOPRIVSNEEDED(this->GetUserByFd(fd), channel_name);;
+				ERR_CHANOPRIVSNEEDED(client, channel_name);;
 				return ;
 			}
 			break ;
 		}
 	}
 	if (it_channel == lstUsrChannel.end()) {
-		ERR_NOTONCHANNEL(this->GetUserByFd(fd), channel_name);
+		ERR_NOTONCHANNEL(client, channel_name);
 		return ;
 	}
 
@@ -76,11 +79,11 @@ void Server::mode(std::string msg, int fd) {
 		modestring.erase(modestring.begin());
 	}
 	else {
-		ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "MODE");
+		ERR_NEEDMOREPARAMS(client, "MODE");
 		return ;
 	}
 
-	//Check the mode the param and add/delte the mode
+	//Check the mode, the param and add/delte the mode
 	std::string::iterator	it;
 	unsigned long	i = 0;
 	for (it = modestring.begin(); it != modestring.end(); it++) {
@@ -89,7 +92,7 @@ void Server::mode(std::string msg, int fd) {
 			continue ;
 		}
 		else if (isMode(*it) == false) {
-			ERR_UNKNOWNMODE(this->GetUserByFd(fd), *it);
+			ERR_UNKNOWNMODE(client, *it);
 			return ;
 		}
 
@@ -97,11 +100,12 @@ void Server::mode(std::string msg, int fd) {
 			if (i < cmd.size()) {
 				param = cmd.at(i);
 				i++;
-				if (checkparam(*it, param, current_channel->getLstUsers(), channel_name, this->GetUserByFd(fd)) == false)
+				if (checkparam(*it, param, current_channel->getLstUsers(), channel_name, client) == false) {
 					continue ;
+				}
 			}
 			else {
-				ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "MODE");
+				ERR_NEEDMOREPARAMS(client, "MODE");
 				continue ;
 			}
 		}
@@ -129,8 +133,10 @@ bool	checkparam(char mode, std::string param, std::map<User *, int> lstUsers_cha
 	if (mode == 'o') {
 		std::map<User *, int>::iterator	it_lstUsers;
 		for (it_lstUsers = lstUsers_channel.begin(); it_lstUsers != lstUsers_channel.end(); it_lstUsers++) {
-			if (it_lstUsers->first->getNickname() == param)
+			if (it_lstUsers->first->getNickname() == param) {
+
 				break ;
+			}
 		}
 		if (it_lstUsers == lstUsers_channel.end()) {
 			ERR_INVALIDMODEPARAM(user, channel_name, mode, param, "User not in the channel");

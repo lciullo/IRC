@@ -65,7 +65,7 @@ void Server::launch()
 					getcmd(user.getLine(), cmd);
 					while (cmd.size() != 0)
 					{
-						std::cout << "[LOG] " << i << " " << cmd << "|" << std::endl;
+						// std::cout << "[LOG] " << i << " " << cmd << "|" << std::endl;
 						user.setLine(user.getLine().substr(cmd.size() + 2));
 						std::string str = user.getLine();
 						this->launch_cmd(cmd, this->_lst_fd[i].fd);
