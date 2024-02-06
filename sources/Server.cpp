@@ -65,7 +65,7 @@ void Server::launch()
 					getcmd(user.getLine(), cmd);
 					while (cmd.size() != 0)
 					{
-						std::cout << "[LOG] " << i << " " << cmd << "|" << std::endl;
+						// std::cout << "[LOG] " << i << " " << cmd << "|" << std::endl;
 						user.setLine(user.getLine().substr(cmd.size() + 2));
 						std::string str = user.getLine();
 						this->launch_cmd(cmd, this->_lst_fd[i].fd);
@@ -85,8 +85,8 @@ void Server::launch_cmd(std::string msg, int fd)
 	
 	/*ERR_NOTREGISTERED (451) "<client> :You have not registered"*/
 	User &user = GetUserByFd(fd);
-	std::cout << BLUE << "============================" << RESET << std::endl;
-	std::cout << BLUE << "LEVEL = " << user.getLevel() << RESET << std::endl;
+	// std::cout << BLUE << "============================" << RESET << std::endl;
+	// std::cout << BLUE << "LEVEL = " << user.getLevel() << RESET << std::endl;
 	std::vector<std::string> cmd;
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 1)

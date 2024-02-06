@@ -20,30 +20,32 @@ void Server::invite(std::string msg, int fd)
 	std::vector<std::string>	cmd;
 	std::string					channel_name;
 	std::string					guest_nickname;
-	std::string					client_nickname;
 	User						client;
-	split_cmd(&cmd, msg);
-	client_nickname = this->GetUserByFd(fd).getNickname();
 
+	split_cmd(&cmd, msg);
 	client = this->GetUserByFd(fd);
+
 	// Check that the command have enough parameters
+	if (cmd.size() == 1) {
+		std::string	invite_list = client.getNickname();
+		std::vector<std::string> invite = client.getInvite();
+		std::vector<std::string>::iterator	it;
+		if (invite.empty())
+			std::cout << "C'est vide\n";
+		for (it = invite.begin(); it != invite.end(); it++)
+			std::cout << *it << " ";
+		std::cout << std::endl;
+		RPL_INVITELIST(client, invite_list);
+		return ;
+	}
+
 	if (cmd.size() < 3) {
 		ERR_NEEDMOREPARAMS(client, "INVITE");
 		return ;
 	}
-	
 	if (cmd.size() > 3) {
-		for (std::vector<std::string>::iterator i = cmd.end(); cmd.size() > 4; i--) {
+		for (std::vector<std::string>::iterator i = cmd.end(); cmd.size() > 4; i--)
 			cmd.erase(i);
-		}
-	}
-	
-	if (cmd.size() == 1) {
-		std::vector<std::string>::iterator	it;
-		std::vector<std::string> invite = client.getInvite();
-		for (it = invite.begin(); it != invite.end(); it++) {
-			RPL_INVITELIST(client, *it);
-		}
 	}
 	
 	if (cmd[0] == "INVITE") {cmd.erase(cmd.begin());}
@@ -60,9 +62,19 @@ void Server::invite(std::string msg, int fd)
 	else
 		current_channel = &it_serv->second;
 
+	//DEBUG
+	{
+		std::vector<User *>	waitlist = current_channel->getWaitlist();
+		std::vector<User *>::iterator	it;
+		for (it = waitlist.begin(); it != waitlist.end(); it++) {
+			std::cout << (*it)->getNickname() << " ";
+		}
+		std::cout << std::endl;
+	}
+
 	// Check that the guest exist and that is not already on the channel
-	std::map<int, User>::iterator	it_serv_usr;
 	User	*guest;
+	std::map<int, User>::iterator	it_serv_usr;
 	for (it_serv_usr = this->_lst_usr.begin(); it_serv_usr != this->_lst_usr.end(); it_serv_usr++) {
 		if (it_serv_usr->second.getNickname() == guest_nickname) {
 			guest = &(it_serv_usr->second);
@@ -78,7 +90,7 @@ void Server::invite(std::string msg, int fd)
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		if (it_channel->first->getNickname() == client_nickname) {
+		if (it_channel->first->getNickname() == client.getNickname()) {
 			if (it_channel->second != OPERATOR && current_channel->getStatus() == true) {
 				ERR_CHANOPRIVSNEEDED(client, channel_name);
 				return ;
@@ -100,7 +112,25 @@ void Server::invite(std::string msg, int fd)
 	}
 
 	current_channel->addUserToWaitlist(guest);
+	std::cout << BLUE <<guest->getNickname() << RESET << std::endl;
 	guest->addInvite(channel_name);
+	
+	//DEBUG
+	{
+		std::vector<User *>	waitlist = current_channel->getWaitlist();
+		std::vector<User *>::iterator	it;
+		for (it = waitlist.begin(); it != waitlist.end(); it++) {
+			std::cout << (*it)->getNickname() << " ";
+		}
+		std::cout << std::endl;
+	}
+	// {
+	// 	std::vector<std::string> invite = guest->getInvite();
+	// 	std::vector<std::string>::iterator	it;
+	// 	for (it = invite.begin(); it != invite.end(); it++)
+	// 		std::cout << *it << " ";
+	// 	std::cout << std::endl;
+	// }
 	RPL_INVITING(client, channel_name, guest_nickname);
 	INVITE_MESSAGE(guest, channel_name, client.getNickname());
 }

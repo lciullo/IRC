@@ -13,23 +13,23 @@
 #include "Server.hpp"
 #include "Numerics.hpp"
 
-void Server::kick(std::string msg, int fd) {
-	std::vector<std::string>	cmd;
-	std::vector<std::string>	all_ban;
+void Server::kick(std::string msg, int fd) 
+{
+	int							kick_count = 0;
+	User						client;
 	std::string					channel_name;
 	std::string					reason;
-	std::string					protagonist;
-	int							kick_count = 0;
+	std::vector<std::string>	cmd;
+	std::vector<std::string>	all_ban;
 
 	split_cmd(&cmd, msg);
-	protagonist = this->GetUserByFd(fd).getNickname();
-	
-	// Check that the command have enough parameters
+	client = this->GetUserByFd(fd);
+
+	//Check nbr parameters
 	if (cmd.size() < 3) {
-		ERR_NEEDMOREPARAMS(this->GetUserByFd(fd), "KICK");
+		ERR_NEEDMOREPARAMS(client, "KICK");
 		return ;
 	}
-
 	if (cmd.size() > 4) {
 		for (std::vector<std::string>::iterator i = cmd.end(); cmd.size() > 4; i--) {
 			cmd.erase(i);
@@ -46,44 +46,38 @@ void Server::kick(std::string msg, int fd) {
 	}
 	if (cmd[0] == "KICK")
 		cmd.erase(cmd.begin());
-	channel_name = cmd.at(0);
 	
-	// Check that the channel exist
+	//Check that the channel exist
+	channel_name = cmd.at(0);
 	if (channel_name[0] != '#' && channel_name[0] != '&') {
-		ERR_BADCHANMASK(this->GetUserByFd(fd), channel_name);
+		ERR_BADCHANMASK(client, channel_name);
 		return ;
 	}
 
 	Channel						*current_channel;
 	std::map<std::string, Channel>::iterator	it_serv;
 	if ((it_serv = this->_lst_channel.find(channel_name)) == this->_lst_channel.end()) {
-		ERR_NOSUCHCHANNEL(this->GetUserByFd(fd), channel_name);
+		ERR_NOSUCHCHANNEL(client, channel_name);
 		return ;
 	}
 	else
 		current_channel = &it_serv->second;
 	cmd.erase(cmd.begin());
 
-
-	
-	//Check that the user who want to invite is on the channel and have the good privilege
+	//Check that the client is on the channel and have the good privilege
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		std::cout << it_channel->first->getNickname() << " ";
-	}
-	std::cout << std::endl;
-	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		if (it_channel->first->getNickname() == protagonist) {
+		if (it_channel->first->getNickname() == client.getNickname()) {
 			if (it_channel->second != OPERATOR) {
-				ERR_CHANOPRIVSNEEDED(this->GetUserByFd(fd), channel_name);
+				ERR_CHANOPRIVSNEEDED(client, channel_name);
 				return ;
 			}
 			break ;
 		}
 	}
 	if (it_channel == lstUsrChannel.end()) {
-		ERR_NOTONCHANNEL(this->GetUserByFd(fd), channel_name);
+		ERR_NOTONCHANNEL(client, channel_name);
 		return ;
 	}
 
@@ -98,16 +92,17 @@ void Server::kick(std::string msg, int fd) {
 			}
 		}
 		if (it_channel == lstUsrChannel.end()) {
-			ERR_USERNOTINCHANNEL(this->GetUserByFd(fd), channel_name, *it_cmd);
+			ERR_USERNOTINCHANNEL(client, channel_name, *it_cmd);
 			continue ;
 		}
 
+		//Send the kick message to all user on the channel
 		for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
 			User user = *it_channel->first;
 			if (reason.empty())
-				KICK_WITHOUT_REASON(user, this->GetUserByFd(fd), channel_name, *it_cmd);
+				KICK_WITHOUT_REASON(user, client, channel_name, *it_cmd);
 			else
-				KICK_WITH_REASON(user, this->GetUserByFd(fd), channel_name, *it_cmd, reason);
+				KICK_WITH_REASON(user, client, channel_name, *it_cmd, reason);
 		}
 
 		current_channel->deleteUser(*banned);
@@ -117,12 +112,4 @@ void Server::kick(std::string msg, int fd) {
 
 	if (kick_count != 0)
 		sendUserList(*current_channel);
-	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
-		std::cout << it_channel->first->getNickname() << " ";
-	}
-	std::cout << std::endl;
 }
-
-//quand je kick quelqu'un du channel vois pas les nouveau message et peut pas en envoye maistoujours acces
-//une fois que la personne  ete kick quand elle essaie de join elle ne peut plus envoye de message sur le channel
-//GARBAGE s'affiche avant mes message ?

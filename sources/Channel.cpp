@@ -88,6 +88,8 @@ std::string	Channel::getModestring() const {
 	return (modestring);
 }
 
+std::vector<User *>		Channel::getWaitlist() const { return (this->_waitlist);}
+
 std::vector<User *>		Channel::getVecUsers() const {return (this->_vecUsers);}
 
 std::map<User *, int>	Channel::getLstUsers() const {return (this->_lstUsers);}
@@ -109,10 +111,10 @@ void	Channel::setTopic(std::string topic, std::string nickSetter) {
 /*- - - - - - - - - - - - - - - - - - ADD - - - - - - - - - - - - -- - -  - -*/
 void	Channel::addUser(User *new_user)
 {
-		this->_vecUsers.push_back(new_user);
-		this->_lstUsers[new_user] = VOICE;
-		this->_nbrUser += 1;
-		new_user->addChannel(this->_name);
+	this->_vecUsers.push_back(new_user);
+	this->_lstUsers[new_user] = VOICE;
+	this->_nbrUser += 1;
+	new_user->addChannel(this->_name);
 }
 
 void	Channel::addMode(char new_mode, std::string param)

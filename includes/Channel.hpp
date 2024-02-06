@@ -15,7 +15,7 @@
 
 # include <iostream>
 # include <vector>
-// # include <bits/stdc++.h>
+# include <bits/stdc++.h>
 # include <map>
 # include "User.hpp"
 
@@ -56,6 +56,7 @@ class Channel
 		std::string				getCreationTimeChannel() const;
 		std::string				getTopicInfo() const;
 		std::string				getModestring() const;
+		std::vector<User *>		getWaitlist() const;
 		std::vector<User *>		getVecUsers() const;
 		std::map<User *, int>	getLstUsers() const;
 
