@@ -18,12 +18,11 @@ Channel::Channel() : _name("default") {
 	this->_nbrUserMax = -1;
 }
 
-Channel::Channel(std::string name, User *operators, std::string creation_time) {
+Channel::Channel(std::string name, User *operators) {
 	this->_nbrUser = 1;
 	this->_nbrUserMax = -1;
 	this->_private = false;
 	this->_name = name; 
-	this->_creationTimeChannel = creation_time;
 	this->_vecUsers.push_back(operators);
 	this->_lstUsers[operators] = OPERATOR;
 	operators->addChannel(this->_name);
@@ -37,7 +36,6 @@ Channel::Channel(const Channel &channel)
 	this->_name = channel._name;
 	this->_topic = channel._topic;
 	this->_password = channel._password;
-	this->_creationTimeChannel = channel._creationTimeChannel;
 	this->_topicInfo = channel._topicInfo;
 	this->_mode = channel._mode;
 	this->_waitlist = channel._waitlist;
@@ -53,7 +51,6 @@ Channel &Channel::operator=(const Channel &channel)
 	this->_name = channel._name;
 	this->_topic = channel._topic;
 	this->_password = channel._password;
-	this->_creationTimeChannel = channel._creationTimeChannel;
 	this->_topicInfo = channel._topicInfo;
 	this->_mode = channel._mode;
 	this->_waitlist = channel._waitlist;
@@ -75,7 +72,6 @@ std::string	Channel::getTopic() const {return (this->_topic);}
 
 std::string	Channel::getPassword() const {return (this->_password);}
 
-std::string	Channel::getCreationTimeChannel() const {return (this->_creationTimeChannel);}
 
 std::string	Channel::getTopicInfo() const {return (this->_topicInfo);}
 

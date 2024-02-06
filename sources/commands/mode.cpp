@@ -52,7 +52,6 @@ void Server::mode(std::string msg, int fd) {
 	}
 	else {
 		RPL_CHANNELMODEIS(client, channel_name, current_channel->getModestring());
-		RPL_CREATIONTIME(client, channel_name, current_channel->getCreationTimeChannel());
 		return ;
 	}
 

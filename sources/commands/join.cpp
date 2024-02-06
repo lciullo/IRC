@@ -75,9 +75,7 @@ void Server::join(std::string msg, int fd)
 				SIMPLE_MSG(user , "Not good channel name : " + channels_name[i] + " (there is a ctrl-g in)");
 				continue ;
 			}
-			std::time_t	now = time(0);
-			std::string	date_time = ctime(&now);
-			Channel new_channel(channels_name[i], &user, date_time);
+			Channel new_channel(channels_name[i], &user);
 			if (channels_name[i][0] == '#')
 				new_channel.addMode('t', "");
 			this->_lst_channel[channels_name[i]] = new_channel;
