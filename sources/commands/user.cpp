@@ -9,6 +9,11 @@ bool Server::switchUserCase(User &user, std::string msg)
 		ERR_NOTREGISTERED(user);
 		return (false);
 	}
+	if (user.getUsername().size() != 0)
+	{
+		ERR_ALREADYREGISTERED(user);
+		return (false);
+	}
 	if (cmd.size() != 5)
 	{
 		ERR_NEEDMOREPARAMS(user, "USER");
@@ -21,7 +26,7 @@ bool Server::switchUserCase(User &user, std::string msg)
 	}
 	if (user.getUsername().empty() && user.getLevel() >= 1)
 		user.addLevel();
-	user.setUsername(findUsername(cmd[1]));
+	user.setUsername(findUsername(msg));
 	return (true);
 }
 
