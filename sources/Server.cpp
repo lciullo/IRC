@@ -37,7 +37,11 @@ void Server::launch()
 	first.fd = this->_socketfd;
 	first.events = POLLIN;
 	this->_lst_fd.push_back(first);
-	listen(this->_socketfd,5);
+	if (listen(this->_socketfd,5) == -1)
+	{
+		std::cout << "[ERROR] listen failed";
+		return;
+	}
 	while (1)
 	{
 		if (poll(&this->_lst_fd[0], this->_lst_fd.size(), -1) >= 0)
@@ -59,7 +63,7 @@ void Server::launch()
 					}
 					if (n == 0)
 					{
-						this->quit("QUIT :test", this->_lst_fd[i].fd);
+						this->quit("QUIT", this->_lst_fd[i].fd);
 						continue ;
 					}
 					User &user = GetUserByFd(this->_lst_fd[i].fd);

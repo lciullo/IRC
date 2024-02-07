@@ -86,7 +86,7 @@ send_msg(user, HEADER_CMD(user) + "443 " + user.getNickname() + SPACE + nick + S
 
 //451 - ERR_NOTREGISTERED
 # define ERR_NOTREGISTERED(user) \
-send_msg(user, HEADER_CMD(user) + "451 " + user.getNickname() + SPACE + "You have not registered" + RN)
+send_msg(user, HEADER_CMD(user) + "451 " + user.getNickname() + SPACE + ": You have not registered" + RN)
 
 //461 - ERR_NEEDMOREPARAMS
 # define ERR_NEEDMOREPARAMS(user, cmd) \
