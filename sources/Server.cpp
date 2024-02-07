@@ -109,7 +109,7 @@ void Server::launch_cmd(std::string msg, int fd)
 		if (switchUserCase(user, msg) == false)
 			return ;
 	}
-	else if (user.getLevel() < 2)
+	else if (user.getLevel() < 3)
 	{
 		ERR_NOTREGISTERED(user);
 		return ;
