@@ -31,6 +31,7 @@ void Server::launch()
 	if (bind(this->_socketfd, (struct sockaddr *) &this->_serv_addr, sizeof(this->_serv_addr)))
 	{
 		std::cout << "[ERROR] Bind socket failed";
+		close(this->_socketfd);
 		return;
 	}
 	struct pollfd first;
@@ -40,6 +41,7 @@ void Server::launch()
 	if (listen(this->_socketfd,5) == -1)
 	{
 		std::cout << "[ERROR] listen failed";
+		close(this->_socketfd);
 		return;
 	}
 	while (1)
@@ -109,7 +111,7 @@ void Server::launch_cmd(std::string msg, int fd)
 		if (switchUserCase(user, msg) == false)
 			return ;
 	}
-	else if (user.getLevel() < 2)
+	else if (user.getLevel() < 3)
 	{
 		ERR_NOTREGISTERED(user);
 		return ;
