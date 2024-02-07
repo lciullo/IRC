@@ -6,13 +6,11 @@ bool Server::switchNickCase(User &user, std::string msg, int fd)
 	split_cmd(&cmd, msg);
 	if (cmd.size() < 2)
 	{
-		std::cout << "size < 2 " << RESET << std::endl;
 		ERR_NEEDMOREPARAMS(user, "NICK");
 		return (false);
 	}
 	if (user.getLevel() == 0)
 	{
-		std::cout << "getLevel == 0 " << RESET << std::endl;
 		ERR_NOTREGISTERED(user);
 		return (false);
 	}
