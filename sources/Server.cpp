@@ -31,6 +31,7 @@ void Server::launch()
 	if (bind(this->_socketfd, (struct sockaddr *) &this->_serv_addr, sizeof(this->_serv_addr)))
 	{
 		std::cout << "[ERROR] Bind socket failed";
+		close(this->_socketfd);
 		return;
 	}
 	struct pollfd first;
@@ -40,6 +41,7 @@ void Server::launch()
 	if (listen(this->_socketfd,5) == -1)
 	{
 		std::cout << "[ERROR] listen failed";
+		close(this->_socketfd);
 		return;
 	}
 	while (1)
