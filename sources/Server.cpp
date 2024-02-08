@@ -74,9 +74,9 @@ void Server::launch()
 					getcmd(user.getLine(), cmd);
 					while (cmd.size() != 0)
 					{
-						user.setLine(user.getLine().substr(cmd.size() + 2));
+						user.setLine(user.getLine().substr(cmd.size()));
 						std::string str = user.getLine();
-						this->launch_cmd(cmd, this->_lst_fd[i].fd);
+						this->launch_cmd(cmd.substr(0, cmd.size() - 2), this->_lst_fd[i].fd);
 						getcmd(str, cmd);
 					}
 				}

@@ -18,7 +18,7 @@ void getcmd(std::string str, std::string &cmd)
 	{
 		if (str[i] == '\r' && str[i + 1] && str[i + 1] == '\n')
 		{
-			cmd = str.substr(0,i);
+			cmd = str.substr(0,i + 2);
 			return ;
 		}
 		i++;
