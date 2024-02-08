@@ -25,6 +25,12 @@ void Server::quit(std::string msg, int fd)
 		message.append("\r\n");
 		this->part(message, fd);
 	}
+	std::vector<std::string> userChannelInvite = user.getInvite();
+	for (it = userChannelInvite.begin(); it != userChannelInvite.end(); it++) 
+	{
+		Channel &channel = this->_lst_channel[*it];
+		channel.deleteUserToWaitlist(user);
+	}
 	std::cout << RED << "USER QUIT (" << fd << ")" << RESET << std::endl;
 	message = HEADER_CMD(user) + "QUIT";
 	if (cmd.size() == 2)
