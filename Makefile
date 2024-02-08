@@ -4,6 +4,12 @@
 
 NAME			=	ircserv
 
+# --- Debug ---
+
+DEBUG			=	no
+
+VALGRIND		=	no
+
 # --- Command ---
 
 RM				=	rm -rf
@@ -65,6 +71,16 @@ CPP				=	c++ -std=c++98
 
 DEP_FLAGS		=	-MMD -MP
 
+# ---- Debug ---- #
+
+DFLAGS			= -g3 -fsanitize=address
+
+ifeq (${DEBUG}, yes)
+ FLAGS		+= ${DFLAGS}
+endif
+
+LEAKS			=	valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --quiet
+
 # ====================== RULES ====================== #
 
 # ---- Compilation ---- #
@@ -79,6 +95,16 @@ ${NAME}:		${OBJ}
 ${DIR_DEP}%.o: %.cpp
 				@mkdir -p $(shell dirname $@)
 				${CPP} ${FLAGS} ${DEP_FLAGS} -c $< -o $@
+
+# ---- Debug ---- #
+
+debug:
+	${MAKE} -j re DEBUG=yes
+
+leaks:
+	clear
+	${MAKE} -j VALGRIND=yes
+	${LEAKS} ./ircserv 6969 test
 
 # ---- Clean ---- #
 
