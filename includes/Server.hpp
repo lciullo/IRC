@@ -84,7 +84,6 @@ class Server
 		bool searchUserInServer(std::string nickname);
 };
 
-void sendUserList(Channel channel);
 void getcmd(std::string str, std::string &cmd);
 void split_arg(std::vector<std::string> *cmd, std::string arg);
 

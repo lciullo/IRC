@@ -46,7 +46,6 @@ void Server::part(std::string msg, int fd)
 		}
 		channel.deleteUser(user);
 		user.deleteChannel(channel.getName());
-		sendUserList(channel);
 		if (channel.getVecUsers().size() == 0)
 		{
 			std::map<std::string, Channel>::iterator it = this->_lst_channel.find(channel.getName());

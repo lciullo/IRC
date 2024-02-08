@@ -108,7 +108,4 @@ void Server::kick(std::string msg, int fd)
 		banned->deleteChannel(channel_name);
 		kick_count++;
 	}
-
-	if (kick_count != 0)
-		sendUserList(*current_channel);
 }
