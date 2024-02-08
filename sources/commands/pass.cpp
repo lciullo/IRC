@@ -41,8 +41,7 @@ bool Server::isRightPassword(User &user,std::string msg, int fd)
 	}
 	if (password != this->_password)
 	{
-		const char* quitMessage = ":Password incorrect";
-   		send(fd, quitMessage, strlen(quitMessage), 0);
+		ERR_PASSWDMISMATCH(GetUserByFd(fd));
 		close(fd);
 		for (size_t i = 0; i < this->_lst_fd.size(); i++)
 		{

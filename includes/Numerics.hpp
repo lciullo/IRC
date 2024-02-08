@@ -10,7 +10,7 @@ void	send_msg(User user, std::string msg);
 # define IP_ADDR "localhost"
 
 # define HEADER_CMD(User) \
-":" + User.getNickname() + "!" + User.getUsername() + " "
+(!User.getNickname().empty() ? ":" + User.getNickname() + "!" + User.getUsername() + " " : ":unknown ")
 
 //001 - SIMPLE_MSG
 # define SIMPLE_MSG(user, msg) \
@@ -86,7 +86,7 @@ send_msg(user, HEADER_CMD(user) + "443 " + user.getNickname() + SPACE + nick + S
 
 //451 - ERR_NOTREGISTERED
 # define ERR_NOTREGISTERED(user) \
-send_msg(user, HEADER_CMD(user) + "451 " + user.getNickname() + SPACE + ": You have not registered" + RN)
+send_msg(user, HEADER_CMD(user) + "451 " + (!user.getNickname().empty() ? user.getNickname() : "unknown") + SPACE + ":You have not registered" + RN)
 
 //461 - ERR_NEEDMOREPARAMS
 # define ERR_NEEDMOREPARAMS(user, cmd) \
@@ -94,7 +94,11 @@ send_msg(user, HEADER_CMD(user) + "461 " + user.getNickname() + SPACE + cmd + SP
 
 //462 - ERR_ALREADYREGISTERED
 # define ERR_ALREADYREGISTERED(user) \
-send_msg(user, HEADER_CMD(user) + "462 " + user.getNickname() + SPACE + "You may not reregister" + RN)
+send_msg(user, HEADER_CMD(user) + "462 " + user.getNickname() + SPACE + ":You may not reregister" + RN)
+
+//464 - ERR_PASSWDMISMATCH
+# define ERR_PASSWDMISMATCH(user) \
+send_msg(user, HEADER_CMD(user) + "464 " + (!user.getNickname().empty() ? user.getNickname() : "unknown") + SPACE + ":Password incorrect" + RN)
 
 //471 - ERR_CHANNELISFULL
 # define ERR_CHANNELISFULL(user, channel_name) \

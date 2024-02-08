@@ -3,8 +3,8 @@
 
 void sendStringSocket(int socket, const std::string& str)
 {
-	std::cout << "[Server]: Sending : " << str;
-	ssize_t bytesSent = send(socket, str.c_str(), str.length(), 0);
+	std::cout << YELLOW << str << RESET;
+	ssize_t bytesSent = send(socket, str.c_str(), str.length(), MSG_NOSIGNAL | MSG_DONTWAIT);
 	if (bytesSent == -1)
 		std::cerr << "Error sending data to client" << std::endl;
 	return ;
@@ -62,8 +62,8 @@ void	send_msg(User user, std::string msg)
 
 	while (byteSent < msg.length())
 	{
-		std::cout << YELLOW << msg << RESET << std::endl;
-		long len = send(user.getFd(), msg.c_str(), msg.size(), 0);
+		std::cout << YELLOW << msg << RESET;
+		long len = send(user.getFd(), msg.c_str(), msg.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 		if (len < 0)
 			break ;
 		byteSent += len;
