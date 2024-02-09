@@ -7,12 +7,6 @@
 #include "Numerics.hpp"
 #include <map>
 
-
-//======== DEFINE FOR CMD ==========//
-
-# define HEADER_CMD(User) \
-":" + User.getNickname() + "!" + User.getUsername() + " "
-
 class User;
 
 class Server
@@ -84,7 +78,6 @@ class Server
 		bool searchUserInServer(std::string nickname);
 };
 
-void sendUserList(Channel channel);
 void getcmd(std::string str, std::string &cmd);
 void split_arg(std::vector<std::string> *cmd, std::string arg);
 

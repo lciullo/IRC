@@ -88,7 +88,9 @@ void Server::topic(std::string msg, int fd)
 		return ;
 	}
 
-	current_channel->setTopic(topic, client.getNickname() + " " + std::asctime(std::localtime(&now)));
+	std::ostringstream convert;
+	convert << now;
+	current_channel->setTopic(topic, client.getNickname() + " " + convert.str());
 
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
 		User user = *it_channel->first;

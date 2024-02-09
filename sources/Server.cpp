@@ -49,15 +49,12 @@ void Server::launch()
 		if (poll(&this->_lst_fd[0], this->_lst_fd.size(), -1) >= 0)
 		{
 			if (this->_lst_fd[0].revents & POLLIN)
-			{
-				std::cout << "NEW USER" << std::endl;
 				this->create_user();
-			}
 			for (size_t i=1; i < this->_lst_fd.size(); i++)
 			{
 				if (this->_lst_fd[i].revents & POLLIN){
 					bzero(buffer,256);
-					n = recv(this->_lst_fd[i].fd,buffer,255,0);
+					n = recv(this->_lst_fd[i].fd, buffer, 255, MSG_DONTWAIT);
 					if (n < 0)
 					{
 						std::cout << "ERROR writing to socket" << std::endl;
@@ -74,9 +71,9 @@ void Server::launch()
 					getcmd(user.getLine(), cmd);
 					while (cmd.size() != 0)
 					{
-						user.setLine(user.getLine().substr(cmd.size() + 2));
+						user.setLine(user.getLine().substr(cmd.size()));
 						std::string str = user.getLine();
-						this->launch_cmd(cmd, this->_lst_fd[i].fd);
+						this->launch_cmd(cmd.substr(0, cmd.size() - 2), this->_lst_fd[i].fd);
 						getcmd(str, cmd);
 					}
 				}
@@ -111,7 +108,7 @@ void Server::launch_cmd(std::string msg, int fd)
 		if (switchUserCase(user, msg) == false)
 			return ;
 	}
-	else if (user.getLevel() < 3)
+	else if (user.getLevel() < 3 && cmd[0] != "CAP")
 	{
 		ERR_NOTREGISTERED(user);
 		return ;
@@ -139,7 +136,7 @@ void Server::create_user()
 
 	clilen = sizeof(struct sockaddr_in);
 	int newsockfd = accept(this->_socketfd, (struct sockaddr *) &cli_addr, &clilen);
-	std::cout << "fd : " << newsockfd << std::endl;
+	std::cout << RED << "NEW USER TRY TO CONNECT (" << newsockfd << ")" << RESET << std::endl;
 	struct pollfd new_socket_fd;
 	new_socket_fd.fd = newsockfd;
 	new_socket_fd.events = POLLIN;

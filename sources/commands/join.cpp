@@ -2,30 +2,37 @@
 #include <iostream>
 #include <ctime>
 
-void sendUserList(Channel channel)
+void sendUserList(Channel channel, User &userToSend)
 {
 	std::string message;
 
 	for (size_t i = 0; i < channel.getVecUsers().size(); i++)
 	{
 		User &user2 = *channel.getVecUsers()[i];
-		for (size_t j = 0; j < channel.getVecUsers().size(); j++)
-		{
-			std::cout << RED << channel.getName() << RESET << std::endl;
-			User userToSend = *channel.getVecUsers()[j];
-			message = HEADER_CMD(userToSend) + "353 " + userToSend.getNickname() + " = " + channel.getName() + " :";
-			if (channel.getLstUsers()[&user2] == OPERATOR)
-				message.append("@");
-			else if (channel.getLstUsers()[&user2] == VOICE)
-				message.append("+");
-			message.append(user2.getNickname() + "\r\n");
-			send_msg(userToSend, message);
-		}
+		std::cout << RED << channel.getName() << RESET << std::endl;
+		message = HEADER_CMD(userToSend) + "353 " + userToSend.getNickname() + " = " + channel.getName() + " :";
+		if (channel.getLstUsers()[&user2] == OPERATOR)
+			message.append("@");
+		else if (channel.getLstUsers()[&user2] == VOICE)
+			message.append("+");
+		message.append(user2.getNickname() + "\r\n");
+		send_msg(userToSend, message);
 	}
-	for (size_t j = 0; j < channel.getVecUsers().size(); j++)
+	message = HEADER_CMD(userToSend) + "366 " + userToSend.getNickname() + " " + channel.getName() + " :End of /NAMES list\r\n";
+	send_msg(userToSend, message);
+}
+
+void sendJoinToAll(Channel channel, User &user)
+{
+	std::string message;
+
+	for (size_t i = 0; i < channel.getVecUsers().size(); i++)
 	{
-		User userToSend = *channel.getVecUsers()[j];
-		message = HEADER_CMD(userToSend) + "366 " + userToSend.getNickname() + " " + channel.getName() + " :End of /NAMES list\r\n";
+		User &userToSend = *channel.getVecUsers()[i];
+		if (userToSend.getNickname() == user.getNickname())
+			continue ;
+		std::cout << RED << channel.getName() << RESET << std::endl;
+		message = ":+" + user.getNickname() + "!" + user.getUsername() + " JOIN " + channel.getName() + "\r\n";
 		send_msg(userToSend, message);
 	}
 }
@@ -123,6 +130,7 @@ void Server::join(std::string msg, int fd)
 		send_msg(user, message);
 		if (!channel.getTopic().empty())
 			RPL_TOPIC(user, channel.getName(), channel.getTopic());
-		sendUserList(channel);
+		sendUserList(channel, user);
+		sendJoinToAll(channel, user);
 	}
 }
