@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/05 21:21:39 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/13 15:56:54 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,10 +112,12 @@ void	Channel::addUser(User *new_user)
 
 void	Channel::addMode(char new_mode, std::string param)
 {
-	std::vector<char>::iterator	it;
-	for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
-		if (*it == new_mode) 
-			return ;
+	if (new_mode != 'l') {
+		std::vector<char>::iterator	it;
+		for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
+			if (*it == new_mode) 
+				return ;
+		}
 	}
 	
 	switch (new_mode) {
