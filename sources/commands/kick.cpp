@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Kick.cpp                                           :+:      :+:    :+:   */
+/*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 14:44:36 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/05 21:05:02 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/13 15:20:00 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ void Server::kick(std::string msg, int fd)
 	if (cmd.size() == 4) {
 		if (cmd.at(cmd.size() - 1)[0] == ':')
 			reason = cmd.at(cmd.size() - 1);
+		else
+			SIMPLE_MSG(client, "The reason needs to begin by ':'"); // a tester
 		cmd.erase(cmd.end());
 	}
 	if (cmd.size() == 3) {
