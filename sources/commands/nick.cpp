@@ -54,7 +54,7 @@ bool Server::nick(User &user, std::string nickname, int fd)
 	else
 		toUpdate = oldNickname;
  	user.setoldNickname(nickname);
-	if (user.getNickname().empty() && user.getLevel() == 1)
+	if (user.getNickname().empty())
 	{
 		user.addLevel();
 	}
