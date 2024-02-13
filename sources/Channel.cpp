@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/13 16:02:27 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/13 16:05:01 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,9 @@ void	Channel::addUser(User *new_user)
 void	Channel::addMode(char new_mode, std::string param)
 {
 	switch (new_mode) {
-		case 'i' : {this->_private = true;
+		case 'i' : {
+			if (this->_private == false)
+				this->_private = true;
 			break ;
 		}
 		case 'k' : {this->_password = param;
