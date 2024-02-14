@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 14:45:08 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/13 15:23:55 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/14 15:54:37 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void Server::mode(std::string msg, int fd) {
 	std::string					channel_name;
 	std::string					param;
 	std::string					modestring;
+	std::string					param_used;
 	std::vector<std::string>	cmd;
 
 	split_cmd(&cmd, msg);
@@ -61,7 +62,7 @@ void Server::mode(std::string msg, int fd) {
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
 		if (it_channel->first->getNickname() == client.getNickname()) {
 			if (it_channel->second == VOICE) {
-				ERR_CHANOPRIVSNEEDED(client, channel_name);;
+				ERR_CHANOPRIVSNEEDED(client, channel_name);
 				return ;
 			}
 			break ;
@@ -100,15 +101,19 @@ void Server::mode(std::string msg, int fd) {
 				param = cmd.at(i);
 				i++;
 				if (checkparam(*it, param, current_channel->getLstUsers(), channel_name, client) == false) {
+					modestring.erase(it);
 					continue ;
 				}
 				if (*it == 'l' && atoi(param.c_str()) >= current_channel->getNbrUser()) {
 					SIMPLE_MSG(client, "User limit must be superiror to the number of user that are already on the channel"); // a tester
+					modestring.erase(it);
 					continue ;
 				}
+				param_used += param + " ";
 			}
 			else {
 				ERR_NEEDMOREPARAMS(client, "MODE");
+				modestring.erase(it);
 				continue ;
 			}
 		}
@@ -117,8 +122,15 @@ void Server::mode(std::string msg, int fd) {
 			current_channel->addMode(*it, param);
 		else if (sign == '-')
 			current_channel->deleteMode(*it, param);
-			
 		param.clear();
+	}
+
+	//Send the mode message to all user on the channel
+	if (!param_used.empty())
+		modestring += " " + param_used;
+	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
+		User user = *it_channel->first;
+		MODE_MESSAGE(user, client, channel_name, modestring);
 	}
 }
 

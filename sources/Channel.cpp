@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 15:47:41 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/13 16:05:01 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/14 15:55:11 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,34 +110,37 @@ void	Channel::addUser(User *new_user)
 	new_user->addChannel(this->_name);
 }
 
-void	Channel::addMode(char new_mode, std::string param)
+bool	Channel::addMode(char new_mode, std::string param)
 {
 	switch (new_mode) {
 		case 'i' : {
 			if (this->_private == false)
 				this->_private = true;
+			else
+				return (false);
 			break ;
 		}
 		case 'k' : {this->_password = param;
-			break ;
+			break;
 		}
 		case 'l' : {
 			this->_nbrUserMax = atoi(param.c_str());
-			break ;
+			break;
 		}
 		case 'o' : {
 			std::map<User *, int>::iterator	it;
 			for (it = _lstUsers.begin(); it != _lstUsers.end(); it++) {
 				if (it->first->getNickname() == param) {
 					it->second = OPERATOR;
-					break ;
+					return (true);
 				}
 			}
-			return ;
+			return (false);
 		}
 	}
 	
 	this->_mode.push_back(new_mode);
+	return (true);
 }
 
 void	Channel::addUserToWaitlist(User *guest)
@@ -166,7 +169,7 @@ void	Channel::deleteUser(User &user)
 	this->_nbrUser -= 1;
 }
 
-void	Channel::deleteMode(char mode, std::string param)
+bool	Channel::deleteMode(char mode, std::string param)
 {	
 	std::vector<char>::iterator	it;
 	if (mode == 'o') {
@@ -174,10 +177,10 @@ void	Channel::deleteMode(char mode, std::string param)
 		for (it = _lstUsers.begin(); it != _lstUsers.end(); it++) {
 			if (it->first->getNickname() == param) {
 				it->second = VOICE;
-				break ;
+				return (true) ;
 			}
 		}
-		return ;
+		return (false);
 	}
 	for (it = this->_mode.begin(); it != this->_mode.end(); it++) {
 		if (*it == mode) {
@@ -199,6 +202,7 @@ void	Channel::deleteMode(char mode, std::string param)
 			break;
 		}
 	}
+	return (true);
 }
 
 void	Channel::deleteUserToWaitlist(User user) 
