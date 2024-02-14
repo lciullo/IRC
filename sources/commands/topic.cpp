@@ -39,8 +39,10 @@ void Server::topic(std::string msg, int fd)
 			topic.erase(topic.begin());
 		}
 		else
+		{
 			SIMPLE_MSG(client, "The topic needs to begin by ':'"); // a tester avec hexchat
-		cmd.erase(cmd.end());
+			cmd.erase(cmd.end());
+		}
 	}
 
 	// Check that the channel exist
