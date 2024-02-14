@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 14:45:08 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/14 16:17:08 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/14 16:31:19 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,15 +114,19 @@ void Server::mode(std::string msg, int fd) {
 		}
 
 		if (sign == '+') {
-			if (current_channel->addMode(*it, param) == true)
-				mode_change += sign + *it + " ";
+			if (current_channel->addMode(*it, param) == true) {
+				mode_change += " +";
+				mode_change.push_back(*it);
+			}
 		}
 		else if (sign == '-') {
-			if (current_channel->deleteMode(*it, param) == true)
-				mode_change += sign + *it + " ";
+			if (current_channel->deleteMode(*it, param) == true) {
+				mode_change += " -";
+				mode_change.push_back(*it);
+			}
 		}
 		if (!param.empty())
-			mode_change += param + " ";
+			mode_change += " " + param;
 		param.clear();
 	}
 
