@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 14:44:36 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/13 15:20:00 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/14 16:16:59 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void Server::kick(std::string msg, int fd)
 		if (cmd.at(cmd.size() - 1)[0] == ':')
 			reason = cmd.at(cmd.size() - 1);
 		else
-			SIMPLE_MSG(client, "The reason needs to begin by ':'"); // a tester
+			SIMPLE_MSG(client, "The reason needs to begin by ':'"); // a tester avec hexchat
 		cmd.erase(cmd.end());
 	}
 	if (cmd.size() == 3) {
