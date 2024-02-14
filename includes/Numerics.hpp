@@ -140,4 +140,7 @@ send_msg(user, HEADER_CMD(kicker) + "KICK " +  channel_name + SPACE + nick + RN)
 # define KICK_WITH_REASON(user, kicker, channel_name, nick, reason) \
 send_msg(user, HEADER_CMD(kicker) + "KICK " +  channel_name + SPACE + nick + SPACE + reason + RN)
 
+# define MODE_MESSAGE(user, client, channel_name, modestring) \
+send_msg(user, HEADER_CMD(client) + "MODE " +  channel_name + SPACE + modestring + RN)
+
 #endif

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Topic.cpp                                          :+:      :+:    :+:   */
+/*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:56:17 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/05 21:06:00 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/14 16:17:17 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,11 @@ void Server::topic(std::string msg, int fd)
 			topic = cmd.at(cmd.size() - 1);
 			topic.erase(topic.begin());
 		}
-		else 
+		else
+		{
+			SIMPLE_MSG(client, "The topic needs to begin by ':'"); // a tester avec hexchat
 			cmd.erase(cmd.end());
+		}
 	}
 
 	// Check that the channel exist

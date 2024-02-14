@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cllovio <cllovio@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 14:45:08 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/01 13:49:45 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/14 16:31:19 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void Server::mode(std::string msg, int fd) {
 	std::string					channel_name;
 	std::string					param;
 	std::string					modestring;
+	std::string					mode_change;
 	std::vector<std::string>	cmd;
 
 	split_cmd(&cmd, msg);
@@ -61,7 +62,7 @@ void Server::mode(std::string msg, int fd) {
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
 		if (it_channel->first->getNickname() == client.getNickname()) {
 			if (it_channel->second == VOICE) {
-				ERR_CHANOPRIVSNEEDED(client, channel_name);;
+				ERR_CHANOPRIVSNEEDED(client, channel_name);
 				return ;
 			}
 			break ;
@@ -99,7 +100,10 @@ void Server::mode(std::string msg, int fd) {
 			if (i < cmd.size()) {
 				param = cmd.at(i);
 				i++;
-				if (checkparam(*it, param, current_channel->getLstUsers(), channel_name, client) == false) {
+				if (checkparam(*it, param, current_channel->getLstUsers(), channel_name, client) == false)
+					continue ;
+				if (*it == 'l' && atoi(param.c_str()) < current_channel->getNbrUser()) {
+					SIMPLE_MSG(client, "User limit must be superiror to the number of user that are already on the channel"); // a tester avec hexchat
 					continue ;
 				}
 			}
@@ -109,12 +113,29 @@ void Server::mode(std::string msg, int fd) {
 			}
 		}
 
-		if (sign == '+')
-			current_channel->addMode(*it, param);
-		else if (sign == '-')
-			current_channel->deleteMode(*it, param);
-			
+		if (sign == '+') {
+			if (current_channel->addMode(*it, param) == true) {
+				mode_change += " +";
+				mode_change.push_back(*it);
+			}
+		}
+		else if (sign == '-') {
+			if (current_channel->deleteMode(*it, param) == true) {
+				mode_change += " -";
+				mode_change.push_back(*it);
+			}
+		}
+		if (!param.empty())
+			mode_change += " " + param;
 		param.clear();
+	}
+
+	//Send the mode message to all user on the channel
+	if (mode_change.empty())
+		return ;
+	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
+		User user = *it_channel->first;
+		MODE_MESSAGE(user, client, channel_name, mode_change);
 	}
 }
 
