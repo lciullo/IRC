@@ -113,7 +113,7 @@ void Server::join(std::string msg, int fd)
 					continue ;
 				}
 			}
-			if (channel.getNbrUser() == channel.getNbrUserMax())
+			if (channel.getNbrUserMax() != -1 && channel.getNbrUser() >= channel.getNbrUserMax())
 			{
 				ERR_CHANNELISFULL(user, channels_name[i]);
 				continue ;

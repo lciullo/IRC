@@ -70,7 +70,7 @@ send_msg(user, HEADER_CMD(user) + "432 " + user.getNickname() + SPACE + nickname
 
 //433 - ERR_NICKNAMEINUSE
 # define ERR_NICKNAMEINUSE(user, nickname) \
-send_msg(user, HEADER_CMD(user) + "433 " + user.getNickname() + SPACE + nickname + SPACE + "Nickname is already in use" + RN)
+send_msg(user, HEADER_CMD(user) + "433 " + (!user.getNickname().empty() ? user.getNickname() : "unknown") + SPACE + nickname + SPACE + ":Nickname is already in use" + RN)
 
 //441 - ERR_USERNOTINCHANNEL
 # define ERR_USERNOTINCHANNEL(user, channel_name, nick) \
