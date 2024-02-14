@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 16:56:17 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/14 16:17:17 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/14 20:20:32 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,24 +57,10 @@ void Server::topic(std::string msg, int fd)
 		current_channel = &it_serv->second;
 	}
 
-	if (cmd.size() == 2) {
-		if (cmd[0] == "TOPIC")
-			cmd.erase(cmd.begin());
-		if (current_channel->getTopic().empty()) {
-			RPL_NOTOPIC(client, channel_name);
-			return ;
-		}
-		else {
-			RPL_TOPIC(client, channel_name, current_channel->getTopic());
-			RPL_TOPICWHOTIME(client, channel_name, current_channel->getTopicInfo());
-			return ;
-		}
-	}
-
 	if (current_channel->getModestring().find('t') != std::string::npos)
 		operator_needed = true;
 
-	//Check that the user who want to invite is on the channel and have the good privilege
+	//Check that the client is on the channel and have the good privilege
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
@@ -91,6 +77,20 @@ void Server::topic(std::string msg, int fd)
 		return ;
 	}
 
+	if (cmd.size() == 2) {
+		if (cmd[0] == "TOPIC")
+			cmd.erase(cmd.begin());
+		if (current_channel->getTopic().empty()) {
+			RPL_NOTOPIC(client, channel_name);
+			return ;
+		}
+		else {
+			RPL_TOPIC(client, channel_name, current_channel->getTopic());
+			RPL_TOPICWHOTIME(client, channel_name, current_channel->getTopicInfo());
+			return ;
+		}
+	}
+	
 	std::ostringstream convert;
 	convert << now;
 	current_channel->setTopic(topic, client.getNickname() + " " + convert.str());

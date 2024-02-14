@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 14:44:36 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/14 16:16:59 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/14 20:23:25 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,12 @@ void Server::kick(std::string msg, int fd)
 			continue ;
 		}
 
+		// /!\ /!\ A tester /!\ /!\ Doit empecher de pouvoir s'auto kick
+		if (banned->getNickname() == client.getNickname()) {
+			SIMPLE_MSG(client, "Auto-kick not allowed"); // a tester avec hexchat
+			continue ;
+		}
+		
 		//Send the kick message to all user on the channel
 		for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
 			User user = *it_channel->first;
