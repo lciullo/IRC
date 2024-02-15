@@ -133,7 +133,6 @@ void Server::mode(std::string msg, int fd) {
 
 	bool sign_bool = false;
 	for (it = mode_added.begin(); it != mode_added.end(); it++) {
-		std::cout << *it << std::endl;
 		if ((*it == '+' || *it == '-') && sign_bool == true) {
 			if (it > mode_added.begin())
 				it--;
