@@ -103,7 +103,7 @@ void Server::mode(std::string msg, int fd) {
 				if (checkparam(*it, param, current_channel->getLstUsers(), channel_name, client) == false)
 					continue ;
 				if (*it == 'l' && atoi(param.c_str()) < current_channel->getNbrUser()) {
-					SIMPLE_MSG(client, "User limit must be superiror to the number of user that are already on the channel"); // a tester avec hexchat
+					NOTICE(client, channel_name,  "User limit must be superiror to the number of user that are already on the channel");
 					continue ;
 				}
 			}

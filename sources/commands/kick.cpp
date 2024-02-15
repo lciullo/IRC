@@ -38,7 +38,7 @@ void Server::kick(std::string msg, int fd)
 		if (cmd.at(cmd.size() - 1)[0] == ':')
 			reason = cmd.at(cmd.size() - 1);
 		else
-			SIMPLE_MSG(client, "The reason needs to begin by ':'"); // a tester avec hexchat
+			NOTICE(client, channel_name,  "The reason needs to begin by ':' (user was kicked without reason)");
 		cmd.erase(cmd.end());
 	}
 	if (cmd.size() == 3) {
@@ -97,9 +97,8 @@ void Server::kick(std::string msg, int fd)
 			continue ;
 		}
 
-		// /!\ /!\ A tester /!\ /!\ Doit empecher de pouvoir s'auto kick
 		if (banned->getNickname() == client.getNickname()) {
-			SIMPLE_MSG(client, "Auto-kick not allowed"); // a tester avec hexchat
+			NOTICE(client, channel_name,  "[ERROR] Auto-kick not allowed");
 			continue ;
 		}
 		

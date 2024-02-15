@@ -24,7 +24,7 @@ void Server::invite(std::string msg, int fd)
 	split_cmd(&cmd, msg);
 	User	client = this->GetUserByFd(fd);
 
-	// Check that the command have enough parameters
+	// Check that the command size
 	if (cmd.size() == 1) {
 		std::string	invite_list;
 		std::vector<std::string> invite = client.getInvite();
@@ -68,11 +68,11 @@ void Server::invite(std::string msg, int fd)
 		}
 	}
 	if (it_serv_usr == this->_lst_usr.end()) {
-		ERR_NEEDMOREPARAMS(client, "INVITE");
+		NOTICE(client, channel_name, "[ERROR] The user you are trying to invite does not exist");
 		return ;
 	}
 
-	//Check that the user who want to invite is on the channel and have the good privilege
+	//Check that the client is on the channel and have the good privilege
 	std::map<User *, int>	lstUsrChannel = current_channel->getLstUsers();
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
@@ -101,5 +101,5 @@ void Server::invite(std::string msg, int fd)
 	guest->addInvite(channel_name);
 
 	RPL_INVITING(client, channel_name, guest_nickname);
-	INVITE_MESSAGE(guest, channel_name, client.getNickname());
+	INVITE_MESSAGE(guest, channel_name, client);
 }

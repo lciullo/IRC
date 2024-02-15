@@ -40,8 +40,9 @@ void Server::topic(std::string msg, int fd)
 		}
 		else
 		{
-			SIMPLE_MSG(client, "The topic needs to begin by ':'"); // a tester avec hexchat
+			NOTICE(client, channel_name, "The topic needs to begin by ':'");
 			cmd.erase(cmd.end());
+			return ;
 		}
 	}
 
@@ -65,7 +66,7 @@ void Server::topic(std::string msg, int fd)
 	std::map<User *, int>::iterator	it_channel;
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
 		if (it_channel->first->getNickname() == client.getNickname()) {
-			if (it_channel->second != OPERATOR && operator_needed == true) {
+			if (it_channel->second != OPERATOR && operator_needed == true && cmd.size() > 2) {
 				ERR_CHANOPRIVSNEEDED(client, channel_name);
 				return ;
 			}
