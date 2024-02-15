@@ -60,6 +60,10 @@ send_msg(user, HEADER_CMD(user) + "404 " + user.getNickname() + SPACE + channel_
 # define ERR_NOTEXTTOSEND(user) \
 send_msg(user, HEADER_CMD(user) + "412 " + user.getNickname() + SPACE + ":No text to send (put ':' before text)" + RN)
 
+//421 - ERR_UNKNOWNCOMMAND
+# define ERR_UNKNOWNCOMMAND(user, command) \
+send_msg(user, HEADER_CMD(user) + "421 " + user.getNickname() + SPACE + command + SPACE + ":Unknown command" + RN)
+
 //431 - ERR_NONICKNAMEGIVEN
 # define ERR_NONICKNAMEGIVEN(user, nickname) \
 send_msg(user, HEADER_CMD(user) + "431 " + user.getNickname() + SPACE + nickname + SPACE + "No nickname given" + RN)
