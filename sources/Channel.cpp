@@ -116,10 +116,7 @@ bool	Channel::addMode(char new_mode, std::string param)
 {
 	switch (new_mode) {
 		case 'i' : {
-			if (this->_private == false)
-				this->_private = true;
-			else
-				return (false);
+			this->_private = true;
 			break ;
 		}
 		case 'k' : {this->_password = param;
