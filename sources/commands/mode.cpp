@@ -20,7 +20,8 @@ void Server::mode(std::string msg, int fd) {
 	std::string					channel_name;
 	std::string					param;
 	std::string					modestring;
-	std::string					mode_change;
+	std::string					param_used;
+	std::string					mode_added;
 	std::vector<std::string>	cmd;
 
 	split_cmd(&cmd, msg);
@@ -76,10 +77,10 @@ void Server::mode(std::string msg, int fd) {
 	//Check the format of the mode string
 	if (modestring[0] == '+' || modestring[0] == '-') {
 		sign = modestring[0];
-		modestring.erase(modestring.begin());
+		// modestring.erase(modestring.begin());
 	}
 	else {
-		ERR_NEEDMOREPARAMS(client, "MODE");
+		NOTICE(client, channel_name, "[ERROR] <modestring> needs to begin by '+' or '-'");
 		return ;
 	}
 
@@ -89,6 +90,7 @@ void Server::mode(std::string msg, int fd) {
 	for (it = modestring.begin(); it != modestring.end(); it++) {
 		if (*it == '+' || *it == '-') {
 			sign = *it;
+			mode_added.push_back(*it);
 			continue ;
 		}
 		else if (isMode(*it) == false) {
@@ -100,42 +102,61 @@ void Server::mode(std::string msg, int fd) {
 			if (i < cmd.size()) {
 				param = cmd.at(i);
 				i++;
-				if (checkparam(*it, param, current_channel->getLstUsers(), channel_name, client) == false)
+				if (checkparam(*it, param, current_channel->getLstUsers(), channel_name, client) == false) {
+					
 					continue ;
+				}
 				if (*it == 'l' && atoi(param.c_str()) < current_channel->getNbrUser()) {
+					
 					NOTICE(client, channel_name,  "User limit must be superiror to the number of user that are already on the channel");
 					continue ;
 				}
+				param_used += " " + param;
 			}
 			else {
-				ERR_NEEDMOREPARAMS(client, "MODE");
+				
+				NOTICE(client, channel_name, *it + " needs a parameters");
 				continue ;
 			}
 		}
 
 		if (sign == '+') {
-			if (current_channel->addMode(*it, param) == true) {
-				mode_change += " +";
-				mode_change.push_back(*it);
-			}
+			if (current_channel->addMode(*it, param) == true)
+				mode_added.push_back(*it);
 		}
 		else if (sign == '-') {
-			if (current_channel->deleteMode(*it, param) == true) {
-				mode_change += " -";
-				mode_change.push_back(*it);
-			}
+			if (current_channel->deleteMode(*it, param) == true)
+				mode_added.push_back(*it);
 		}
-		if (!param.empty())
-			mode_change += " " + param;
 		param.clear();
 	}
 
-	//Send the mode message to all user on the channel
-	if (mode_change.empty())
+	bool sign_bool = false;
+	for (it = mode_added.begin(); it != mode_added.end(); it++) {
+		
+		if ((*it == '+' || *it == '-') && sign_bool == true) {
+			if (it > mode_added.begin())
+				it--;
+			mode_added.erase(it);
+			sign_bool = false;
+		}
+		else if (*it == '+' || *it == '-') {
+			sign_bool = true;
+		}
+		else
+			sign_bool = false;
+	}
+	if (sign_bool == true)	{
+		mode_added.erase(it);
+	}
+	mode_added += param_used;
+	if (mode_added.empty())
 		return ;
+	
+	//Send the mode message to all user on the channel
 	for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
 		User user = *it_channel->first;
-		MODE_MESSAGE(user, client, channel_name, mode_change);
+		MODE_MESSAGE(user, client, channel_name, mode_added);
 	}
 }
 
