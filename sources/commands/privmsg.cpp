@@ -20,6 +20,8 @@ void Server::privmsg(std::string msg, int fd)
 	std::vector<std::string> lst_dest;
 	split_arg(&lst_dest, dest);
 	std::string msg_to_send = cmd[2];
+	if (msg_to_send.size() <= 1)
+		return ;
 	for (size_t i = 0; i < lst_dest.size(); i++)
 	{
 		if (lst_dest[i][0] == '#' || lst_dest[i][0] == '&')

@@ -127,6 +127,8 @@ void Server::launch_cmd(std::string msg, int fd)
 		this->topic(msg, fd);
 	else if (cmd[0] == "MODE")
 		this->mode(msg, fd);
+	else if (cmd[0] != "WHO")
+		ERR_UNKNOWNCOMMAND(user, msg);
 }
 
 void Server::create_user()

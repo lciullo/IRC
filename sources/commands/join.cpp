@@ -77,7 +77,12 @@ void Server::join(std::string msg, int fd)
 		it = this->_lst_channel.find(channels_name[i]);
 		if (it == this->_lst_channel.end())
 		{
-  			if (channels_name[i].find(7) != std::string::npos) //for find ctrl-g in a channel name
+			if (channels_name[i].size() == 1)
+			{
+				ERR_NOSUCHCHANNEL(user, channels_name[i]);
+				continue ;
+			}
+  			if (channels_name[i].find(7) != std::string::npos) //to find ctrl-g in a channel name
 			{
 				SIMPLE_MSG(user , "Not good channel name : " + channels_name[i] + " (there is a ctrl-g in)");
 				continue ;
@@ -127,6 +132,7 @@ void Server::join(std::string msg, int fd)
 		send_msg(user, message);
 		if (!channel.getTopic().empty())
 			RPL_TOPIC(user, channel.getName(), channel.getTopic());
+		RPL_CHANNELMODEIS(user, channel.getName(), channel.getModestring());
 		sendUserList(channel, user);
 		sendJoinToAll(channel, user);
 	}
