@@ -55,6 +55,7 @@ class Channel
 		std::string				getTopicInfo() const;
 		std::string				getModestring() const;
 		std::vector<User *>		getVecUsers() const;
+		std::vector<User *>		getwaitlist() const;
 		std::map<User *, int>	getLstUsers() const;
 
 		//Setters

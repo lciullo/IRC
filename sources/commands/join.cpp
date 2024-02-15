@@ -118,11 +118,8 @@ void Server::join(std::string msg, int fd)
 				ERR_CHANNELISFULL(user, channels_name[i]);
 				continue ;
 			}
-			if (channel.getStatus())
-			{
-				channel.deleteUserToWaitlist(user);
-				user.deleteInvite(channel.getName());
-			}
+			channel.deleteUserToWaitlist(user);
+			user.deleteInvite(channel.getName());
 			channel.addUser(&user);
 		}
 		Channel &channel = this->_lst_channel[channels_name[i]];

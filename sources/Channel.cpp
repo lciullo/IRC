@@ -87,6 +87,8 @@ std::string	Channel::getModestring() const {
 
 std::vector<User *>		Channel::getVecUsers() const {return (this->_vecUsers);}
 
+std::vector<User *>		Channel::getwaitlist() const {return (this->_waitlist);}
+
 std::map<User *, int>	Channel::getLstUsers() const {return (this->_lstUsers);}
 
 /*- - - - - - - - - - - - - - - - - SETTERS - - - - - - - - - - - -- - -  - - */

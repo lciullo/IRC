@@ -48,6 +48,12 @@ void Server::part(std::string msg, int fd)
 		user.deleteChannel(channel.getName());
 		if (channel.getVecUsers().size() == 0)
 		{
+			std::vector<User *> waitlist = channel.getwaitlist();
+			std::vector<User *>::iterator ite = waitlist.end();
+			for (std::vector<User *>::iterator it = waitlist.begin(); it != ite; ++it)
+			{
+				(*it)->deleteInvite(channel.getName());
+			}
 			std::map<std::string, Channel>::iterator it = this->_lst_channel.find(channel.getName());
 			this->_lst_channel.erase(it);
 		}
