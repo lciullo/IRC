@@ -6,7 +6,7 @@
 /*   By: cllovio <cllovio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 14:44:36 by cllovio           #+#    #+#             */
-/*   Updated: 2024/02/14 16:16:59 by cllovio          ###   ########lyon.fr   */
+/*   Updated: 2024/02/14 20:23:25 by cllovio          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void Server::kick(std::string msg, int fd)
 		if (cmd.at(cmd.size() - 1)[0] == ':')
 			reason = cmd.at(cmd.size() - 1);
 		else
-			SIMPLE_MSG(client, "The reason needs to begin by ':'"); // a tester avec hexchat
+			NOTICE(client, channel_name,  "The reason needs to begin by ':' (user was kicked without reason)");
 		cmd.erase(cmd.end());
 	}
 	if (cmd.size() == 3) {
@@ -97,6 +97,11 @@ void Server::kick(std::string msg, int fd)
 			continue ;
 		}
 
+		if (banned->getNickname() == client.getNickname()) {
+			NOTICE(client, channel_name,  "[ERROR] Auto-kick not allowed");
+			continue ;
+		}
+		
 		//Send the kick message to all user on the channel
 		for (it_channel = lstUsrChannel.begin(); it_channel != lstUsrChannel.end(); it_channel++) {
 			User user = *it_channel->first;

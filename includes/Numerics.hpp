@@ -132,7 +132,7 @@ send_msg(user, HEADER_CMD(user) + "696 " + user.getNickname() + channel_name + S
 # define RPL_NICK(nickname, username, newNickname) (":" + nickname + "!" + username + "@localhost NICK " +  newNickname + RN)
 
 # define INVITE_MESSAGE(user, channel_name, nick) \
-send_msg(*user, ":" + user->getNickname() + "!" + user->getUsername() SPACE + "INVITE " + nick SPACE + channel_name RN)
+send_msg(*user, HEADER_CMD(client) + "INVITE " + user->getNickname() + SPACE + channel_name RN)
 
 # define KICK_WITHOUT_REASON(user, kicker, channel_name, nick) \
 send_msg(user, HEADER_CMD(kicker) + "KICK " +  channel_name + SPACE + nick + RN)
@@ -142,5 +142,8 @@ send_msg(user, HEADER_CMD(kicker) + "KICK " +  channel_name + SPACE + nick + SPA
 
 # define MODE_MESSAGE(user, client, channel_name, modestring) \
 send_msg(user, HEADER_CMD(client) + "MODE " +  channel_name + SPACE + modestring + RN)
+
+# define NOTICE(user, channel_name, msg) \
+send_msg(user, HEADER_CMD(user) + "NOTICE " +  channel_name + SPACE + msg + RN)
 
 #endif
