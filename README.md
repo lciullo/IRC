@@ -9,7 +9,7 @@ A lightweight Internet Relay Chat (IRC) server implementation in C++, developed 
 
 ## 📋 Overview
 
-ft_irc is an IRC server implementation that enables real-time communication between multiple clients. This project focuses on understanding network programming, socket communication, and implementing the IRC protocol specifications.
+IRC is a server implementation that enables real-time communication between multiple clients. This project focuses on understanding network programming, socket communication, and implementing the IRC protocol specifications.
 
 ## ✨ Features
 
@@ -49,8 +49,8 @@ ft_irc is an IRC server implementation that enables real-time communication betw
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/ft_irc.git
-cd ft_irc
+git clone git@github.com:lciullo/IRC.git
+cd IRC
 
 # Compile the project
 make
