@@ -80,18 +80,18 @@ nc localhost <port>
 ```
 ft_irc/
 ├── src/
-│   ├── main.cpp
-│   ├── Server.cpp
-│   ├── Client.cpp
+|   ├── commands/
 │   ├── Channel.cpp
-│   ├── Command.cpp
-│   └── Utils.cpp
+│   ├── Server.cpp
+│   ├── User.cpp
+│   ├── main.cpp
+│   └── utils.cpp
 ├── include/
-│   ├── Server.hpp
-│   ├── Client.hpp
 │   ├── Channel.hpp
-│   ├── Command.hpp
-│   └── Utils.hpp
+│   ├── IRC.hpp
+│   ├── Numerics.hpp
+│   ├── Server.hpp
+│   └── User.hpp
 ├── Makefile
 └── README.md
 ```
